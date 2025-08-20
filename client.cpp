@@ -16,7 +16,7 @@ struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int
 {
 	ServAddr.sin_family = AF_INET;
    	ServAddr.sin_port = htons(ServPort);
-        if (!inet_aton(ip, &(ServAddr.sin_addr)))
+    if (!inet_aton(ip, &(ServAddr.sin_addr)))
 	{
         printf("ошибка: %d", errno);
 		return ServAddr;

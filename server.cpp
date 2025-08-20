@@ -14,7 +14,7 @@ struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int
 {
 	ServAddr.sin_family = AF_INET;
    	ServAddr.sin_port = htons(ServPort);
-        if (!inet_aton(ip, &(ServAddr.sin_addr)))
+    if (!inet_aton(ip, &(ServAddr.sin_addr)))
 	{
 		printf("error with filling sin_addr: %d\n", errno);
 		return ServAddr;
@@ -61,8 +61,8 @@ int AcceptNewPlayer(int sd, int *pd, struct sockaddr_in *PlayerAddr, int &player
 int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds, fd_set &exceptfds)
 {
 	FD_ZERO(&readfds);
-    	FD_ZERO(&writefds);
-        FD_ZERO(&exceptfds);
+	FD_ZERO(&writefds);
+	FD_ZERO(&exceptfds);
 	if(playerCount < 4)
 	{
 		FD_SET(sd, &readfds);
@@ -81,10 +81,10 @@ int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds,
 int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 {
 	printf("игрок ливнул. туда его\n");
-        shutdown(pd[playerNum], SHUT_RDWR);
-        close(pd[playerNum]);
+	shutdown(pd[playerNum], SHUT_RDWR);
+	close(pd[playerNum]);
 	FD_CLR(pd[playerNum], &fds);
-        pd[playerNum] = pd[playerCount-1];
+	pd[playerNum] = pd[playerCount-1];
 	playerCount--;
 	return 0;
 }
@@ -138,7 +138,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-	    AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
+	    	AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
         }
 
         if (FD_ISSET(sd, &exceptfds))
@@ -152,17 +152,17 @@ int main()
         {
             if(FD_ISSET(pd[i], &readfds))
             {
-		    printf("пришло сообщение от игрока\n");
-		    if (0 > (ReadBytes = read(pd[i], messangeFrom, sizeof(messangeFrom))))
-		    {
-		    	printf("ошибка чтения данных:%d\n", errno);
-		    	return(-1);
-		   }else if(ReadBytes > 0)
-		   {
-			printf("сообщение от игрока: %d\n", messangeFrom[i]);
-			messangeFor[i] = 123;
-		   }else PlayerLeaved(playerCount, pd, readfds, i);
-            }
+		    	printf("пришло сообщение от игрока\n");
+				if (0 > (ReadBytes = read(pd[i], messangeFrom, sizeof(messangeFrom))))
+				{
+					printf("ошибка чтения данных:%d\n", errno);
+					return(-1);
+				}else if(ReadBytes > 0)
+				{
+					printf("сообщение от игрока: %d\n", messangeFrom[i]);
+					messangeFor[i] = 123;
+				}else PlayerLeaved(playerCount, pd, readfds, i);
+			}
         }
 
         for (int i = 0; i < playerCount; i++)  
@@ -171,7 +171,7 @@ int main()
             {
                 if(FD_ISSET(pd[i], &writefds))
                 {
-			SendMessange(pd[i], messangeFor[i]);
+					SendMessange(pd[i], messangeFor[i]);
                 }
             }
         }
@@ -188,7 +188,7 @@ int main()
     }
     for (int i = 0; i < playerCount; i++)
     {
-	shutdown(pd[i], SHUT_RDWR);
+		shutdown(pd[i], SHUT_RDWR);
         close(pd[i]);
     }
     close(sd);
