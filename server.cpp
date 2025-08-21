@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <ncurses.h>
 
 const char *ip = "192.168.1.120";
 int ServPort = 7;
@@ -118,6 +119,9 @@ int main()
     MaxD = sd;
     playerCount = 0;
     socklen_t addrlen = sizeof(PlayerAddr[0]);
+
+    keypad(stdscr, 1);
+
     while (true)
     {
 
@@ -160,7 +164,27 @@ int main()
 				}else if(ReadBytes > 0)
 				{
 					printf("сообщение от игрока: %d\n", messangeFrom[i]);
-					messangeFor[i] = 123;
+					switch (messangeFrom[i])
+					{
+					case KEY_UP:
+						messangeFor[i] = KEY_UP;
+						printf("%d", messangeFor[i]);
+						break;
+					case KEY_RIGHT:
+						messangeFor[i] = KEY_RIGHT;
+						printf("%d", messangeFor[i]);
+						break;
+					case KEY_LEFT:
+						messangeFor[i] = KEY_LEFT;
+						printf("%d", messangeFor[i]);
+						break;
+					case KEY_DOWN:
+						messangeFor[i] = KEY_DOWN;
+						printf("%d", messangeFor[i]);
+						break;
+					default:
+						break;
+					}
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
         }
