@@ -124,7 +124,10 @@ int main()
 
     while (true)
     {
-
+	if (playerCount > 4)
+	{
+		sd = -1;
+	}
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
         if ((SelRes = select(MaxD+1, &readfds, NULL, &exceptfds, NULL)) == -1)
@@ -140,13 +143,10 @@ int main()
             continue;
         }
 
-        if(FD_ISSET(sd, &readfds))
-        {
-			if (playerCount < 4)
-			{
-				AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
-			}
-        }
+		if(FD_ISSET(sd, &readfds))
+		{
+			AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
+		}
 
         if (FD_ISSET(sd, &exceptfds))
         {
