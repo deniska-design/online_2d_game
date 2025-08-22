@@ -125,19 +125,19 @@ int main()
                 {
                 case KEY_UP:
                     messangeFor = KEY_UP;
-                    mvprintw(0, 0, "%d", messangeFor);
+                    mvprintw(0, 0, "messange for:%d", messangeFor);
                     break;
                 case KEY_RIGHT:
                     messangeFor = KEY_RIGHT;
-                    mvprintw(0, 0, "%d", messangeFor);
+                    mvprintw(0, 0, "messange for:%d", messangeFor);
                     break;
                 case KEY_LEFT:
                     messangeFor = KEY_LEFT;
-                    mvprintw(0, 0, "%d", messangeFor);
+                    mvprintw(0, 0, "messange for:%d", messangeFor);
                     break;
                 case KEY_DOWN:
                     messangeFor = KEY_DOWN;
-                    mvprintw(0, 0, "%d", messangeFor);
+                    mvprintw(0, 0, "messange for:%d", messangeFor);
                     break;
                 default:
                     break;
@@ -161,7 +161,7 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            printf("messsange from: %d\n", messangeFrom);
+            mvprintw(1, 0, "messsange from: %d\n", messangeFrom);
         }
 
         if (messangeFor != 0)
