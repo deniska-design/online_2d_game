@@ -142,7 +142,10 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-	    	AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
+			if (playerCount < 4)
+			{
+				AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
+			}
         }
 
         if (FD_ISSET(sd, &exceptfds))
