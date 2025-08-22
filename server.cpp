@@ -157,7 +157,7 @@ int main()
             if(FD_ISSET(pd[i], &readfds))
             {
 		    	printf("пришло сообщение от игрока\n");
-				if (0 > (ReadBytes = read(pd[i], messangeFrom, sizeof(messangeFrom))))
+				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(messangeFrom[i]))))
 				{
 					printf("ошибка чтения данных:%d\n", errno);
 					return(-1);
