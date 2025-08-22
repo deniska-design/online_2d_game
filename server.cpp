@@ -9,7 +9,7 @@
 #include <ncurses.h>
 
 const char *ip = "192.168.1.120";
-int ServPort = 7;
+int ServPort = 8;
 
 struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
