@@ -12,6 +12,8 @@
 const char *ServerIp = "192.168.1.120";
 int ServPort = 8;
 
+enum {secret_code = 2364};
+
 struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
@@ -34,14 +36,16 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 		return -1;
 	}
 
-    while (13 == read(sd, &messangeFrom, sizeof(messangeFrom)))
+    do 
     {
-        if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr)))){   
+        printf("подключение к серверу\n");
+        if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
+        {   
             printf("ошибка: %d", errno);
             return -1;
         }
-        printf("подключение к серверу");
-    }
+    read(sd, &messangeFrom, sizeof(messangeFrom));
+    }while (messangeFrom != secret_code);
 	return sd;
 }
 

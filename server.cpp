@@ -11,6 +11,8 @@
 const char *ip = "192.168.1.120";
 int ServPort = 8;
 
+enum {secret_code = 2364};
+
 struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
@@ -143,6 +145,7 @@ int main()
 		if(FD_ISSET(sd, &readfds))
 		{
 			AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
+			messangeFor[playerCount - 1] = secret_code;
 		}
 
         if (FD_ISSET(sd, &exceptfds))
