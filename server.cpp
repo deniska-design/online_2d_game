@@ -124,10 +124,7 @@ int main()
 
     while (true)
     {
-	if (playerCount > 4)
-	{
-		sd = -1;
-	}
+		
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
         if ((SelRes = select(MaxD+1, &readfds, NULL, &exceptfds, NULL)) == -1)
@@ -171,19 +168,19 @@ int main()
 					{
 					case KEY_UP:
 						messangeFor[i] = KEY_UP;
-						printf("%d", messangeFor[i]);
+						printf("сообщение для игрока:%d", messangeFor[i]);
 						break;
 					case KEY_RIGHT:
 						messangeFor[i] = KEY_RIGHT;
-						printf("%d", messangeFor[i]);
+						printf("сообщение для игрока:%d", messangeFor[i]);
 						break;
 					case KEY_LEFT:
 						messangeFor[i] = KEY_LEFT;
-						printf("%d", messangeFor[i]);
+						printf("сообщение для игрока:%d", messangeFor[i]);
 						break;
 					case KEY_DOWN:
 						messangeFor[i] = KEY_DOWN;
-						printf("%d", messangeFor[i]);
+						printf("сообщение для игрока:%d", messangeFor[i]);
 						break;
 					default:
 						break;
