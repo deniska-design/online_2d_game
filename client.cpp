@@ -28,24 +28,25 @@ struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int
 
 int CreateAndConnectTo(struct sockaddr_in ServAddr)
 {
-    int messangeFrom;
-	int sd = 0;
+	int sd;
 	if((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
         printf("ошибка: %d", errno);
 		return -1;
 	}
 
-    do 
-    {
-        printf("подключение к серверу\n");
-        if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
-        {   
+    int flags = fcntl(sd, F_GETFL);
+    fcntl(sd, F_SETFL, flags | O_NONBLOCK);
+
+    while (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
+    {   
+        if(errno != EINPROGRESS)
+        {
             printf("ошибка: %d", errno);
             return -1;
-        }
-    read(sd, &messangeFrom, sizeof(messangeFrom));
-    }while (messangeFrom != secret_code);
+        }else printf("подключение к серверу\n");
+    }
+    printf("вы подключились к серверу\n");
 	return sd;
 }
 
