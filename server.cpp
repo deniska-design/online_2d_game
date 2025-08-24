@@ -64,12 +64,12 @@ int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds,
 	FD_ZERO(&readfds);
 	FD_ZERO(&writefds);
 	FD_ZERO(&exceptfds);
-	//if(playerCount < 4)
-	//{
+	if(playerCount < 4)
+	{
 		FD_SET(sd, &readfds);
 		FD_SET(sd, &writefds);
 		FD_SET(sd, &exceptfds);
-	//}
+	}
 	for(int i = 0; i < playerCount; i++)
 	{
 		FD_SET(pd[i], &readfds);
@@ -108,6 +108,7 @@ int main()
     int sd, MaxD, SelRes, ReadBytes;
     int playerCount = 0;
     int pd[4];
+	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
@@ -142,10 +143,8 @@ int main()
 
 		if(FD_ISSET(sd, &readfds))
 		{
-			if (playerCount < 4)
-			{
-				AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
-			}
+			AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
+			messangeFor[playerCount-1] = firstMessange;
 		}
 
         if (FD_ISSET(sd, &exceptfds))

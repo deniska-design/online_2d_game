@@ -35,17 +35,36 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 		return -1;
 	}
 
+    int flags = fcntl(sd, F_GETFL);
+    fcntl(sd, F_SETFL, flags | O_NONBLOCK);
+
+
     if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
     {   
-        if(errno != EINPROGRESS)
+        if(errno == EINPROGRESS)
+        {
+            printf("сервер переполнен. попробуйте позже ещё раз\n");
+            fd_set readfds;
+            FD_ZERO(&readfds);
+            FD_SET(sd, &readfds);
+            select(sd+1, &readfds, NULL, NULL, NULL);
+            if (FD_ISSET(sd, &readfds))
+            {
+                printf("пенис1\n");
+                int opt;
+                socklen_t optlen = sizeof(opt);
+                getsockopt(sd, SOL_SOCKET, SO_ERROR, &opt, &optlen); 
+                if(opt != 0)
+                {
+                    printf("ошибка: %d", errno);
+                    return -1;
+                } 
+            }
+        }else
         {
             printf("ошибка: %d", errno);
             return -1;
-        }else
-        {
-            printf("сервер переполнен. попробуйте позже ещё раз\n");
-            return -1;
-        } 
+        }
     }
     printf("вы подключились к серверу\n");
 	return sd;
