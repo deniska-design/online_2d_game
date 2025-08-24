@@ -28,17 +28,12 @@ struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int
 
 int CreateAndConnectTo(struct sockaddr_in ServAddr)
 {
-    fd_set writefds;
-    FD_ZERO(&writefds);
 	int sd;
 	if((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
         printf("ошибка: %d", errno);
 		return -1;
 	}
-
-    int flags = fcntl(sd, F_GETFL);
-    fcntl(sd, F_SETFL, flags | O_NONBLOCK);
 
     if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
     {   
@@ -48,19 +43,8 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
             return -1;
         }else
         {
-            FD_SET(sd, &writefds);
-            select(sd+1, NULL, &writefds, NULL, NULL);
-            if(FD_ISSET(sd, &writefds))
-            {
-                int opt;
-                socklen_t optlen = sizeof(opt);
-                getsockopt(sd, SOL_SOCKET, SO_ERROR, &opt, &optlen);
-                if (opt != 0)
-                {
-                    printf("ошибка: %d", errno);
-                    return -1;
-                }
-            }
+            printf("сервер переполнен. попробуйте позже ещё раз\n");
+            return -1;
         } 
     }
     printf("вы подключились к серверу\n");
@@ -112,7 +96,10 @@ int main()
     
     ServAddr = FillServAddr(ServAddr, ServerIp, ServPort);
     
-    sd = CreateAndConnectTo(ServAddr);
+    if ((sd = CreateAndConnectTo(ServAddr)) == -1)
+    {
+        return -1;
+    }
 
     MaxD = sd;
 

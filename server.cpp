@@ -168,19 +168,19 @@ int main()
 					{
 					case KEY_UP:
 						messangeFor[i] = KEY_UP;
-						printf("сообщение для игрока:%d", messangeFor[i]);
+						printf("сообщение для игрока:%d\n", messangeFor[i]);
 						break;
 					case KEY_RIGHT:
 						messangeFor[i] = KEY_RIGHT;
-						printf("сообщение для игрока:%d", messangeFor[i]);
+						printf("сообщение для игрока:%d\n", messangeFor[i]);
 						break;
 					case KEY_LEFT:
 						messangeFor[i] = KEY_LEFT;
-						printf("сообщение для игрока:%d", messangeFor[i]);
+						printf("сообщение для игрока:%d\n", messangeFor[i]);
 						break;
 					case KEY_DOWN:
 						messangeFor[i] = KEY_DOWN;
-						printf("сообщение для игрока:%d", messangeFor[i]);
+						printf("сообщение для игрока:%d\n", messangeFor[i]);
 						break;
 					default:
 						break;
