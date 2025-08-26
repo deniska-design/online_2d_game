@@ -128,7 +128,7 @@ int main()
 		
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
-        if ((SelRes = select(MaxD+1, &readfds, NULL, &exceptfds, NULL)) == -1)
+        if ((SelRes = select(MaxD+1, &readfds, &writefds, &exceptfds, NULL)) == -1)
         {
             if (errno != EINTR)
             {

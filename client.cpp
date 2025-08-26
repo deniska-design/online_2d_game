@@ -35,10 +35,6 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 		return -1;
 	}
 
-    int flags = fcntl(sd, F_GETFL);
-    fcntl(sd, F_SETFL, flags | O_NONBLOCK);
-
-
     if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
     {   
         if(errno == EINPROGRESS)
@@ -50,6 +46,7 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
             select(sd+1, &writefds, NULL, NULL, NULL);
             if (FD_ISSET(sd, &writefds))
             {
+                printf("сервер ответил\n");
                 int opt; 
                 socklen_t optlen = sizeof(opt);
                 getsockopt(sd, SOL_SOCKET, SO_ERROR, &opt, &optlen);
