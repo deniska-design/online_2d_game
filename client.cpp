@@ -10,7 +10,7 @@
 #include "player.h"
 
 const char *ServerIp = "192.168.1.120";
-int ServPort = 8;
+int ServPort = 9;
 
 enum {secret_code = 2364};
 
@@ -43,22 +43,25 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
     {   
         if(errno == EINPROGRESS)
         {
-            printf("сервер переполнен. попробуйте позже ещё раз\n");
-            fd_set readfds;
-            FD_ZERO(&readfds);
-            FD_SET(sd, &readfds);
-            select(sd+1, &readfds, NULL, NULL, NULL);
-            if (FD_ISSET(sd, &readfds))
+            printf("сервер не отвечает\n");
+            fd_set writefds;
+            FD_ZERO(&writefds);
+            FD_SET(sd, &writefds);
+            select(sd+1, &writefds, NULL, NULL, NULL);
+            if (FD_ISSET(sd, &writefds))
             {
-                printf("пенис1\n");
-                int opt;
+                int opt; 
                 socklen_t optlen = sizeof(opt);
-                getsockopt(sd, SOL_SOCKET, SO_ERROR, &opt, &optlen); 
-                if(opt != 0)
+                getsockopt(sd, SOL_SOCKET, SO_ERROR, &opt, &optlen);
+                if (opt == 0)
+                {
+                    printf("вы подключились к серверу\n");
+	                return sd;
+                }else
                 {
                     printf("ошибка: %d", errno);
                     return -1;
-                } 
+                }
             }
         }else
         {
