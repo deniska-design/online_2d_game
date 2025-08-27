@@ -108,7 +108,6 @@ int SendMessange(int recipSock, void *messange)
 int main()
 {   
     int messangeFrom[4];
-    int messangeFor[4];
 	Vector position[4];
     int sd, MaxD, ReadBytes;
     int playerCount = 0;
@@ -190,20 +189,16 @@ int main()
 					switch (messangeFrom[i])
 					{
 					case KEY_UP:
-						messangeFor[i] = KEY_UP;
-						printf("сообщение для игрока:%d\n", messangeFor[i]);
+						position->y++;
 						break;
 					case KEY_RIGHT:
-						messangeFor[i] = KEY_RIGHT;
-						printf("сообщение для игрока:%d\n", messangeFor[i]);
+						position->x++;
 						break;
 					case KEY_LEFT:
-						messangeFor[i] = KEY_LEFT;
-						printf("сообщение для игрока:%d\n", messangeFor[i]);
+						position->x--;
 						break;
 					case KEY_DOWN:
-						messangeFor[i] = KEY_DOWN;
-						printf("сообщение для игрока:%d\n", messangeFor[i]);
+						position->y--;
 						break;
 					default:
 						break;
@@ -216,10 +211,13 @@ int main()
         {
 			if(FD_ISSET(pd[i], &writefds))
 			{
-				if ((SendMessange(pd[i], &position[i])) == -1)
+				for(int n = 0; n < playerCount; n++)
 				{
-					return -1;
-				}	
+					if ((SendMessange(pd[i], &position[n])) == -1)
+					{
+						return -1;
+					}	
+				}
 			}
         }
 
