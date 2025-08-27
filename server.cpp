@@ -8,16 +8,19 @@
 #include <stdio.h>
 #include <ncurses.h>
 
+#include "vector.h"
+
 const char *ip = "192.168.1.120";
 int ServPort = 9;
 
-struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
+struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
    	ServAddr.sin_port = htons(ServPort);
     if (!inet_aton(ip, &(ServAddr.sin_addr)))
 	{
 		printf("error with filling sin_addr: %d\n", errno);
+		ServAddr.sin_port = NULL;
 		return ServAddr;
 	}else printf("sin_addr was filled\n");
 	return ServAddr;
@@ -90,12 +93,13 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 	return 0;
 }
 
-int SendMessange(int recipSock, int &messange)
+int SendMessange(int recipSock, void *messange)
 {
 	printf("пришло время отправить сообщение игроку\n");
 	if(write(recipSock, &messange, sizeof(messange)) == -1)
 	{
 		printf("ошибка отправки сообщения:%d", errno);
+		return -1;
 	}else printf("messange was sent\n");
 	messange = 0;
 	return 0;
@@ -105,7 +109,8 @@ int main()
 {   
     int messangeFrom[4];
     int messangeFor[4];
-    int sd, MaxD, SelRes, ReadBytes;
+	Vector position[4];
+    int sd, MaxD, ReadBytes;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -113,9 +118,17 @@ int main()
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
 
-    ServAddr = FillServAddr(ServAddr, ip, ServPort);
+    FillAddr(ServAddr, ip, ServPort);
+	if (ServAddr.sin_port == NULL)
+	{
+		return -1;
+	}
+	
 
-    sd = SetSock(ServAddr);
+    if((sd = SetSock(ServAddr)) == -1)
+	{
+		return -1;
+	}
 
     MaxD = sd;
     playerCount = 0;
@@ -128,7 +141,7 @@ int main()
 		
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
-        if ((SelRes = select(MaxD+1, &readfds, &writefds, &exceptfds, NULL)) == -1)
+        if ((select(MaxD+1, &readfds, &writefds, &exceptfds, NULL)) == -1)
         {
             if (errno != EINTR)
             {
@@ -143,8 +156,16 @@ int main()
 
 		if(FD_ISSET(sd, &readfds))
 		{
-			AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen);
-			messangeFor[playerCount-1] = firstMessange;
+			if ((AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen)) == -1)
+			{
+				return -1;
+			}
+			if(write(pd[playerCount-1], &firstMessange, sizeof(firstMessange)) == -1)
+			{
+				printf("ошибка отправки первого сообщения:%d", errno);
+				return -1;
+			}
+			position[playerCount-1] = {0, 0};
 		}
 
         if (FD_ISSET(sd, &exceptfds))
@@ -191,15 +212,15 @@ int main()
 			}
         }
 
-        for (int i = 0; i < playerCount; i++)  
+		for (int i = 0; i < playerCount; i++)  
         {
-            if (messangeFor[i] != 0)
-            {
-                if(FD_ISSET(pd[i], &writefds))
-                {
-					SendMessange(pd[i], messangeFor[i]);
-                }
-            }
+			if(FD_ISSET(pd[i], &writefds))
+			{
+				if ((SendMessange(pd[i], &position[i])) == -1)
+				{
+					return -1;
+				}	
+			}
         }
 
 	//конец

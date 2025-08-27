@@ -7,20 +7,20 @@
 #include <unistd.h>
 #include <ncurses.h>
 
+#include "vector.h"
 #include "player.h"
 
 const char *ServerIp = "192.168.1.120";
 int ServPort = 9;
 
-enum {secret_code = 2364};
-
-struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
+struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
    	ServAddr.sin_port = htons(ServPort);
     if (!inet_aton(ip, &(ServAddr.sin_addr)))
 	{
         printf("ошибка: %d", errno);
+        ServAddr.sin_port = NULL;
 		return ServAddr;
 	}
 	return ServAddr;
@@ -28,7 +28,7 @@ struct sockaddr_in FillServAddr(struct sockaddr_in ServAddr, const char *ip, int
 
 int CreateAndConnectTo(struct sockaddr_in ServAddr)
 {
-	int sd;
+	int sd, ReadBytes, messangeFrom;
 	if((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
         printf("ошибка: %d", errno);
@@ -37,36 +37,14 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 
     if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
     {   
-        if(errno == EINPROGRESS)
-        {
-            printf("сервер не отвечает\n");
-            fd_set writefds;
-            FD_ZERO(&writefds);
-            FD_SET(sd, &writefds);
-            select(sd+1, &writefds, NULL, NULL, NULL);
-            if (FD_ISSET(sd, &writefds))
-            {
-                printf("сервер ответил\n");
-                int opt; 
-                socklen_t optlen = sizeof(opt);
-                getsockopt(sd, SOL_SOCKET, SO_ERROR, &opt, &optlen);
-                if (opt == 0)
-                {
-                    printf("вы подключились к серверу\n");
-	                return sd;
-                }else
-                {
-                    printf("ошибка: %d", errno);
-                    return -1;
-                }
-            }
-        }else
-        {
-            printf("ошибка: %d", errno);
-            return -1;
-        }
+        printf("ошибка: %d", errno);
+        return -1;
     }
-    printf("вы подключились к серверу\n");
+    if (0 > (ReadBytes = read(sd, &messangeFrom, sizeof(messangeFrom))))
+    {   
+        printf( "while connect read error:%d\n", errno);
+        return(-1);
+    }
 	return sd;
 }
 
@@ -82,7 +60,7 @@ int SetFdss(int fd, fd_set &readfds, fd_set &writefds, fd_set &exceptfds)
 	return 0;
 }
 
-int SendMessange(int recipSock, int &messange)
+int SendMessange(int recipSock, void *messange)
 {
 	if(write(recipSock, &messange, sizeof(messange)) == -1)
 	{
@@ -104,7 +82,7 @@ void StartWindow()
 
 int main()
 {    
-    int messangeFrom;
+    Vector Position; 
     int messangeFor = 0;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
@@ -113,7 +91,11 @@ int main()
     FD_ZERO(&writefds);
     FD_ZERO(&exceptfds);
     
-    ServAddr = FillServAddr(ServAddr, ServerIp, ServPort);
+    ServAddr = FillAddr(ServAddr, ServerIp, ServPort);
+    if (ServAddr.sin_port == NULL)
+    {
+        return -1;
+    }
     
     if ((sd = CreateAndConnectTo(ServAddr)) == -1)
     {
@@ -130,7 +112,6 @@ int main()
 
     while (true)
     {
-
         SetFdss(sd, readfds, writefds, exceptfds);
         FD_SET(STDIN_FILENO, &readfds);
 
@@ -174,7 +155,7 @@ int main()
                     break;
                 default:
                     break;
-               } 
+                } 
             }else return(-1);
         }
 
@@ -184,7 +165,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &messangeFrom, sizeof(messangeFrom))))
+            if (0 > (ReadBytes = read(sd, &Position, sizeof(Position))))
             {   
                 printf( "read error:%d\n", errno);
                 return(-1);
@@ -194,14 +175,19 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            mvprintw(1, 0, "messsange from: %d\n", messangeFrom);
+            Player.setPosition(Position.y, Position.x);
+            Player.hidePlayer();
+            Player.showPlayer();
         }
 
         if (messangeFor != 0)
         {
             if(FD_ISSET(sd, &writefds))
             {
-                SendMessange(sd, messangeFor);
+                if (SendMessange(sd, &messangeFor) == -1)
+                {
+                    return -1;
+                }
             }
         }
         
@@ -212,7 +198,6 @@ int main()
             printf("произошла исключительная ситуация\n");
             return -1;
         }
-        Player.showPlayer();
         refresh();
     }
     close(sd);
