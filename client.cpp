@@ -60,17 +60,6 @@ int SetFdss(int fd, fd_set &readfds, fd_set &writefds, fd_set &exceptfds)
 	return 0;
 }
 
-int SendMessange(int recipSock, void *messange)
-{
-	if(write(recipSock, &messange, sizeof(messange)) == -1)
-	{
-		printf("ошибка: %d", errno);
-        return -1;
-	}
-	messange = 0;
-	return 0;
-}
-
 void StartWindow()
 {
     initscr();
@@ -184,10 +173,12 @@ int main()
         {
             if(FD_ISSET(sd, &writefds))
             {
-                if (SendMessange(sd, &messangeFor) == -1)
+                if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
                 {
+                    printf("ошибка: %d", errno);
                     return -1;
                 }
+                messangeFor = 0;
             }
         }
         

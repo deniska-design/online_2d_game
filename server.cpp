@@ -93,18 +93,6 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 	return 0;
 }
 
-int SendMessange(int recipSock, void *messange)
-{
-	printf("пришло время отправить сообщение игроку\n");
-	if(write(recipSock, &messange, sizeof(messange)) == -1)
-	{
-		printf("ошибка отправки сообщения:%d", errno);
-		return -1;
-	}else printf("messange was sent\n");
-	messange = 0;
-	return 0;
-}
-
 int main()
 {   
     int messangeFrom[4];
@@ -218,11 +206,14 @@ int main()
 				{
 					for(int n = 0; n < playerCount; n++)
 					{
-						if ((SendMessange(pd[i], &position[n])) == -1)
+						printf("пришло время отправить сообщение игроку\n");
+						if(write(pd[i], &position[n], sizeof(&position[n])) == -1)
 						{
+							printf("ошибка отправки сообщения:%d", errno);
 							return -1;
-						}	
+						}else printf("messange was sent\n");
 					}
+					positionChanged = false;
 				}
 			}
 		}
