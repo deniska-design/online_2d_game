@@ -181,8 +181,8 @@ int main()
 						if (position[i].y > 0)
 						{
 							position[i].y--;
-							break;
 						}
+						break;
 					case KEY_RIGHT:
 						position[i].x++;
 						break;
@@ -190,8 +190,8 @@ int main()
 						if (position[i].x > 0)
 						{
 							position[i].x--;
-							break;
 						}
+						break;
 					case KEY_DOWN:
 						position[i].y++;
 						break;

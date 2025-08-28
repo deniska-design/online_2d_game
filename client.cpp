@@ -128,19 +128,15 @@ int main()
                 {
                 case KEY_UP:
                     messangeFor = KEY_UP;
-                    mvprintw(0, 0, "messange for:%d", messangeFor);
                     break;
                 case KEY_RIGHT:
                     messangeFor = KEY_RIGHT;
-                    mvprintw(0, 0, "messange for:%d", messangeFor);
                     break;
                 case KEY_LEFT:
                     messangeFor = KEY_LEFT;
-                    mvprintw(0, 0, "messange for:%d", messangeFor);
                     break;
                 case KEY_DOWN:
                     messangeFor = KEY_DOWN;
-                    mvprintw(0, 0, "messange for:%d", messangeFor);
                     break;
                 default:
                     break;
