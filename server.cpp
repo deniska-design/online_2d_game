@@ -117,7 +117,7 @@ int main()
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
 
-    FillAddr(ServAddr, ip, ServPort);
+    ServAddr = FillAddr(ServAddr, ip, ServPort);
 	if (errno == -1)
 	{
 		return -1;
