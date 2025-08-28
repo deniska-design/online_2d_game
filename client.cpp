@@ -20,7 +20,7 @@ struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int Ser
     if (!inet_aton(ip, &(ServAddr.sin_addr)))
 	{
         printf("ошибка: %d", errno);
-        ServAddr.sin_port = 0;
+        errno = -1;
 		return ServAddr;
 	}
 	return ServAddr;
@@ -92,7 +92,7 @@ int main()
     FD_ZERO(&exceptfds);
     
     ServAddr = FillAddr(ServAddr, ServerIp, ServPort);
-    if (ServAddr.sin_port == 0)
+    if (errno == -1)
     {
         return -1;
     }
