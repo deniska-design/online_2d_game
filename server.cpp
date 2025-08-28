@@ -154,6 +154,7 @@ int main()
 				return -1;
 			}
 			position[playerCount-1] = {0, 0};
+			positionChanged = true;
 		}
 
         if (FD_ISSET(sd, &exceptfds))
