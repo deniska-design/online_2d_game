@@ -189,16 +189,16 @@ int main()
 					switch (messangeFrom[i])
 					{
 					case KEY_UP:
-						position->y++;
+						position[i].y++;
 						break;
 					case KEY_RIGHT:
-						position->x++;
+						position[i].x++;
 						break;
 					case KEY_LEFT:
-						position->x--;
+						position[i].x--;
 						break;
 					case KEY_DOWN:
-						position->y--;
+						position[i].y--;
 						break;
 					default:
 						break;
