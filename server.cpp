@@ -97,7 +97,7 @@ int main()
 {   
     int messangeFrom[4];
 	Vector position[4];
-	bool positionChanged[4];
+	bool positionChanged = false;
     int sd, MaxD, ReadBytes;
     int playerCount = 0;
     int pd[4];
@@ -154,10 +154,7 @@ int main()
 				return -1;
 			}
 			position[playerCount-1] = {0, 0};
-			for (int i = 0; i < playerCount; i++)
-			{
-				positionChanged[i] = true;
-			}
+			positionChanged = true;
 		}
 
         if (FD_ISSET(sd, &exceptfds))
@@ -202,16 +199,15 @@ int main()
 					default:
 						break;
 					}
-					positionChanged[i] = true;
+					positionChanged = true;
 					printf("position changed\n");
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
         }
 
-		
-		for (int i = 0; i < playerCount; i++)  
+		if (positionChanged)
 		{
-			if (positionChanged[i])
+			for (int i = 0; i < playerCount; i++)  
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
@@ -224,9 +220,9 @@ int main()
 							return -1;
 						}else printf("messange was sent\n");
 					}
-					positionChanged[i] = false;
 				}
 			}
+			positionChanged = false;		//нужно сделать так что бы positionChanged был false когда уже всем была отправлена новая позиция
 		}
 	//конец
 
