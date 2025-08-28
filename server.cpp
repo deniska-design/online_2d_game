@@ -210,10 +210,10 @@ int main()
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
         }
-
-		if (positionChanged)
+		
+		for (int i = 0; i < playerCount; i++)  
 		{
-			for (int i = 0; i < playerCount; i++)  
+			if (positionChanged[i])
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
