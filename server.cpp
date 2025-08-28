@@ -109,6 +109,7 @@ int main()
 {   
     int messangeFrom[4];
 	Vector position[4];
+	bool positionChanged = false;
     int sd, MaxD, ReadBytes;
     int playerCount = 0;
     int pd[4];
@@ -203,24 +204,28 @@ int main()
 					default:
 						break;
 					}
+					positionChanged = true;
+					printf("position changed\n");
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
         }
 
-		for (int i = 0; i < playerCount; i++)  
-        {
-			if(FD_ISSET(pd[i], &writefds))
+		if (positionChanged)
+		{
+			for (int i = 0; i < playerCount; i++)  
 			{
-				for(int n = 0; n < playerCount; n++)
+				if(FD_ISSET(pd[i], &writefds))
 				{
-					if ((SendMessange(pd[i], &position[n])) == -1)
+					for(int n = 0; n < playerCount; n++)
 					{
-						return -1;
-					}	
+						if ((SendMessange(pd[i], &position[n])) == -1)
+						{
+							return -1;
+						}	
+					}
 				}
 			}
-        }
-
+		}
 	//конец
 
         for (int i = 0; i < playerCount; i++)
