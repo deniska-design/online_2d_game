@@ -125,6 +125,7 @@ int main()
     keypad(stdscr, 1);
 
 	getmaxyx(stdscr, MaxY, MaxX);
+	printf("maxyses:%d, %d\n", MaxX, MaxY);
 
     while (true)
     {
