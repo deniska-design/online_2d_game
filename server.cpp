@@ -124,8 +124,10 @@ int main()
 
     keypad(stdscr, 1);
 
+	initscr();
 	getmaxyx(stdscr, MaxY, MaxX);
-	printf("maxyses:%d, %d\n", MaxX, MaxY);
+    endwin();
+
 
     while (true)
     {
@@ -191,7 +193,10 @@ int main()
 						}
 						break;
 					case KEY_RIGHT:
-						position[i].x++;
+						if (position[i].x < MaxX)
+						{
+							position[i].x++;
+						}
 						break;
 					case KEY_LEFT:
 						if (position[i].x > 0)
@@ -200,7 +205,10 @@ int main()
 						}
 						break;
 					case KEY_DOWN:
-						position[i].y++;
+						if (position[i].y < MaxY)
+						{
+							position[i].y++;
+						}
 						break;
 					default:
 						break;
