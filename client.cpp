@@ -3,7 +3,6 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <cstdio>
-#include <fcntl.h>
 #include <unistd.h>
 #include <ncurses.h>
 

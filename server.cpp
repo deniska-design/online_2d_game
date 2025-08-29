@@ -3,7 +3,6 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <cstdio>
-#include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
@@ -124,11 +123,6 @@ int main()
 
     keypad(stdscr, 1);
 
-	initscr();
-	getmaxyx(stdscr, MaxY, MaxX);
-    endwin();
-
-
     while (true)
     {
 		
@@ -193,10 +187,7 @@ int main()
 						}
 						break;
 					case KEY_RIGHT:
-						if (position[i].x < MaxX)
-						{
-							position[i].x++;
-						}
+						position[i].x++;
 						break;
 					case KEY_LEFT:
 						if (position[i].x > 0)
@@ -205,10 +196,7 @@ int main()
 						}
 						break;
 					case KEY_DOWN:
-						if (position[i].y < MaxY)
-						{
-							position[i].y++;
-						}
+						position[i].y++;
 						break;
 					default:
 						break;
