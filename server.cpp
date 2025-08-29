@@ -98,7 +98,7 @@ int main()
     int messangeFrom[4];
 	Vector position[4];
 	bool positionChanged[4];
-    int sd, MaxD, ReadBytes;
+    int sd, MaxD, ReadBytes, MaxY, MaxX;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -123,6 +123,8 @@ int main()
     socklen_t addrlen = sizeof(PlayerAddr[0]);
 
     keypad(stdscr, 1);
+
+	getmaxyx(stdscr, MaxY, MaxX);
 
     while (true)
     {
@@ -226,7 +228,7 @@ int main()
 							return -1;
 						}else printf("messange was sent\n");
 					}
-					positionChanged[i] = false;		//нужно сделать так что бы positionChanged был false когда уже всем была отправлена новая позиция
+					positionChanged[i] = false;
 				}
 			}
 		}
