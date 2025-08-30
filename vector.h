@@ -3,8 +3,8 @@
 
 typedef struct Vector 
 {
-   int x;                
-   int y;     
+   int x = 0;                
+   int y = 0;     
 
    bool operator==(Vector arg)
    {
@@ -15,6 +15,15 @@ typedef struct Vector
       return false;
    }  
    
+   bool operator!=(Vector arg)
+   {
+      if((this->x != arg.x) && (this->y != arg.y))
+      {
+         return true;
+      }
+      return false;
+   }  
+
    Vector operator+ (Vector addition)
    {
       Vector tmp;

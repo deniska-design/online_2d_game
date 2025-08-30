@@ -96,8 +96,9 @@ int main()
 {   
     int messangeFrom[4];
 	Vector position[4];
+	Vector PositionBorders[4];
 	bool positionChanged[4];
-    int sd, MaxD, ReadBytes, MaxY, MaxX;
+    int sd, MaxD, ReadBytes;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -187,7 +188,10 @@ int main()
 						}
 						break;
 					case KEY_RIGHT:
-						position[i].x++;
+						if(position->x < PositionBorders[i].x)
+						{
+							position[i].x++;
+						}
 						break;
 					case KEY_LEFT:
 						if (position[i].x > 0)
@@ -196,7 +200,10 @@ int main()
 						}
 						break;
 					case KEY_DOWN:
-						position[i].y++;
+						if(position->y < PositionBorders[i].y)
+						{
+							position[i].y++;
+						}
 						break;
 					default:
 						break;
@@ -209,6 +216,25 @@ int main()
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
         }
+
+		for (int i = 0; i < playerCount; i++)
+		{
+			if (PositionBorders[i] == Vector{0, 0})
+			{
+				if(FD_ISSET(pd[i], &readfds))
+            	{
+					if (0 > (ReadBytes = read(pd[i], &PositionBorders[i], sizeof(&PositionBorders[i]))))
+					{
+						printf("ошибка чтения данных:%d\n", errno);
+						return(-1);
+					}else if (ReadBytes == 0)
+					{
+						PlayerLeaved(playerCount, pd, readfds, i);
+					}
+					printf("PositionBorders.x: %d\n", PositionBorders[i].x);
+				}
+			}
+		}
 		
 		for (int i = 0; i < playerCount; i++)  
 		{
@@ -229,6 +255,7 @@ int main()
 				}
 			}
 		}
+		
 	//конец
 
         for (int i = 0; i < playerCount; i++)

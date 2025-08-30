@@ -27,7 +27,7 @@ struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int Ser
 
 int CreateAndConnectTo(struct sockaddr_in ServAddr)
 {
-	int sd, ReadBytes, messangeFrom;
+	int sd;
 	if((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
         printf("ошибка: %d", errno);
@@ -38,11 +38,6 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
     {   
         printf("ошибка: %d", errno);
         return -1;
-    }
-    if (0 > (ReadBytes = read(sd, &messangeFrom, sizeof(messangeFrom))))
-    {   
-        printf( "while connect read error:%d\n", errno);
-        return(-1);
     }
 	return sd;
 }
@@ -71,8 +66,9 @@ void StartWindow()
 int main()
 {    
     Vector Position; 
+    Vector PositionBorders;
     int messangeFor = 0;
-    int sd, MaxD, SelRes, ReadBytes, key;
+    int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
     FD_ZERO(&readfds);
@@ -90,9 +86,23 @@ int main()
         return -1;
     }
 
+    if (0 > (ReadBytes = read(sd, &messangeFrom, sizeof(messangeFrom))))
+    {   
+        printf( "while connect read error:%d\n", errno);
+        return(-1);
+    }
+
+    if(write(sd, &PositionBorders, sizeof(&PositionBorders)) == -1)
+    {
+        printf("ошибка: %d", errno);
+        return -1;
+    }
+
     MaxD = sd;
 
     StartWindow();
+
+    getmaxyx(stdscr, PositionBorders.x, PositionBorders.y);
 
     player Player(5, 2);
 
@@ -176,7 +186,7 @@ int main()
                 messangeFor = 0;
             }
         }
-        
+
         //конец
 
         if(FD_ISSET(sd, &exceptfds))
