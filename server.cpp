@@ -217,7 +217,7 @@ int main()
 			}
         }
 
-		for (int i = 0; i < playerCount; i++)
+		/*for (int i = 0; i < playerCount; i++)
 		{
 			if (PositionBorders[i] == Vector{0, 0})
 			{
@@ -234,7 +234,7 @@ int main()
 					printf("PositionBorders.x: %d\n", PositionBorders[i].x);
 				}
 			}
-		}
+		}*/
 		
 		for (int i = 0; i < playerCount; i++)  
 		{
