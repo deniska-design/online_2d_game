@@ -92,17 +92,9 @@ int main()
         return(-1);
     }
 
-    /*if(write(sd, &PositionBorders, sizeof(&PositionBorders)) == -1)
-    {
-        printf("ошибка: %d", errno);
-        return -1;
-    }*/
-
     MaxD = sd;
 
     StartWindow();
-
-    getmaxyx(stdscr, PositionBorders.x, PositionBorders.y);
 
     player Player(5, 2);
 
