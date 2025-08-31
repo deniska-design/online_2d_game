@@ -182,8 +182,8 @@ int main()
 					switch(messangeFrom[i].type)
 					{
 					case INT:
-					printf(";jgdfs\n");
 						key = static_cast<int *>(messangeFrom[i].value);
+						printf("key: %d\n", *key);
 						switch (*key)
 						{
 						case KEY_UP:
