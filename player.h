@@ -5,7 +5,6 @@
 
 class player
 {
-private:
     int x, y, MaxX, MaxY, PlayerHigh, PlayerWidth;
 public:
     player(int PlayerH, int PlayerW);

@@ -8,6 +8,7 @@
 #include <ncurses.h>
 
 #include "vector.h"
+#include "typeless_type.h"
 
 const char *ip = "192.168.1.120";
 int ServPort = 9;
@@ -94,11 +95,10 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 
 int main()
 {   
-    int messangeFrom[4];
+    typeless messangeFrom[4];
 	Vector position[4];
-	Vector PositionBorders[4];
 	bool positionChanged[4];
-    int sd, MaxD, ReadBytes;
+    int sd, MaxD, ReadBytes, *key;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -178,41 +178,47 @@ int main()
 					return(-1);
 				}else if(ReadBytes > 0)
 				{
-					printf("сообщение от игрока: %d\n", messangeFrom[i]);
-					switch (messangeFrom[i])
+					printf("сообщение от игрока: %p\n", messangeFrom[i].value);
+					switch(messangeFrom[i].type)
 					{
-					case KEY_UP:
-						if (position[i].y > 0)
+					case INT:
+						key = static_cast<int *>(messangeFrom[i].value);
+						switch (*key)
 						{
-							position[i].y--;
+						case KEY_UP:
+							if (position[i].y > 0)
+							{
+								position[i].y--;
+							}
+							break;
+						case KEY_RIGHT:
+							//if(position->x < PositionBorders[i].x)
+							//{
+								position[i].x++;
+							//}
+							break;
+						case KEY_LEFT:
+							if (position[i].x > 0)
+							{
+								position[i].x--;
+							}
+							break;
+						case KEY_DOWN:
+							//if(position->y < PositionBorders[i].y)
+							//{
+								position[i].y++;
+							//}
+							break;
+						default:
+							break;
 						}
-						break;
-					case KEY_RIGHT:
-						//if(position->x < PositionBorders[i].x)
-						//{
-							position[i].x++;
-						//}
-						break;
-					case KEY_LEFT:
-						if (position[i].x > 0)
+						for (int n = 0; n < playerCount; n++)
 						{
-							position[i].x--;
+							positionChanged[n] = true;
 						}
-						break;
-					case KEY_DOWN:
-						//if(position->y < PositionBorders[i].y)
-						//{
-							position[i].y++;
-						//}
-						break;
-					default:
+						printf("position changed\n");
 						break;
 					}
-					for (int n = 0; n < playerCount; n++)
-					{
-						positionChanged[n] = true;
-					}
-					printf("position changed\n");
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
         }

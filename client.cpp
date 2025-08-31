@@ -8,6 +8,7 @@
 
 #include "vector.h"
 #include "player.h"
+#include "typeless_type.h"
 
 const char *ServerIp = "192.168.1.120";
 int ServPort = 9;
@@ -67,7 +68,7 @@ int main()
 {    
     Vector Position; 
     Vector PositionBorders;
-    int messangeFor = 0;
+    typeless messangeFor(0, INT);
     int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
@@ -128,16 +129,16 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                    messangeFor = KEY_UP;
+                    messangeFor.setValue((int *)KEY_UP, INT);
                     break;
                 case KEY_RIGHT:
-                    messangeFor = KEY_RIGHT;
+                    messangeFor.setValue((int *)KEY_RIGHT, INT);
                     break;
                 case KEY_LEFT:
-                    messangeFor = KEY_LEFT;
+                    messangeFor.setValue((int *)KEY_LEFT, INT);
                     break;
                 case KEY_DOWN:
-                    messangeFor = KEY_DOWN;
+                    messangeFor.setValue((int *)KEY_DOWN, INT);
                     break;
                 default:
                     break;
@@ -166,7 +167,7 @@ int main()
             Player.showPlayer();
         }
 
-        if (messangeFor != 0)
+        if (messangeFor.value != 0)
         {
             if(FD_ISSET(sd, &writefds))
             {
@@ -175,7 +176,7 @@ int main()
                     printf("ошибка: %d", errno);
                     return -1;
                 }
-                messangeFor = 0;
+                messangeFor.value = 0;
             }
         }
 
