@@ -95,6 +95,7 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 
 int main()
 {   
+	void *tmp;
     typeless messangeFrom[4];
 	Vector position[4];
 	bool positionChanged[4];
@@ -183,9 +184,10 @@ int main()
 					{
 					case INT:
 						printf("jopa1\n");
-						key = *static_cast<int *>(messangeFrom[i].value);
+						tmp = messangeFrom[i].value;
+						key = *static_cast<int*>(tmp);		//segmentations fault
 						printf("jopa1\n");
-						switch (key)		//segmentations fault
+						switch (key)
 						{
 						case KEY_UP:
 							if (position[i].y > 0)
