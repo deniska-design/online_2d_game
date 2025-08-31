@@ -182,9 +182,8 @@ int main()
 					switch(messangeFrom[i].type)
 					{
 					case INT:
-						key = static_cast<int *>(messangeFrom[i].value);
-						printf("key: %d\n", *key);
-						switch (*key)
+						//key = static_cast<int *>(messangeFrom[i].value);
+						switch (*static_cast<int *>(messangeFrom[i].value))		//segmentations fault
 						{
 						case KEY_UP:
 							if (position[i].y > 0)
