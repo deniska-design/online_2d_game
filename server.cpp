@@ -98,7 +98,7 @@ int main()
     typeless messangeFrom[4];
 	Vector position[4];
 	bool positionChanged[4];
-    int sd, MaxD, ReadBytes, *key;
+    int sd, MaxD, ReadBytes, key;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -182,9 +182,8 @@ int main()
 					switch(messangeFrom[i].type)
 					{
 					case INT:
-						key = static_cast<int *>(messangeFrom[i].value);
-						int jopa = *key;
-						switch (jopa)		//segmentations fault
+						key = *static_cast<int *>(messangeFrom[i].value);
+						switch (key)		//segmentations fault
 						{
 						case KEY_UP:
 							if (position[i].y > 0)
@@ -218,6 +217,10 @@ int main()
 							positionChanged[n] = true;
 						}
 						printf("position changed\n");
+						break;
+					case VECTOR:
+						break;
+					default:
 						break;
 					}
 				}else PlayerLeaved(playerCount, pd, readfds, i);

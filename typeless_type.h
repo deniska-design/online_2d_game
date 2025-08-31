@@ -1,8 +1,6 @@
 #ifndef TYPELESS_MODULE
 #define TYPELESS_MODULE
 
-#include "vector.h"
-
 enum Type
 {
     INT,
