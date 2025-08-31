@@ -185,8 +185,9 @@ int main()
 					case INT:
 						printf("jopa1\n");
 						tmp = messangeFrom[i].value;
+						printf("jopa2\n");
 						key = *static_cast<int*>(tmp);		//segmentations fault
-						printf("jopa1\n");
+						printf("jopa3\n");
 						switch (key)
 						{
 						case KEY_UP:
