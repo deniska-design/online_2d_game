@@ -182,6 +182,7 @@ int main()
 					switch(messangeFrom[i].type)
 					{
 					case INT:
+					printf(";jgdfs\n");
 						key = static_cast<int *>(messangeFrom[i].value);
 						switch (*key)
 						{
