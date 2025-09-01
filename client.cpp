@@ -131,9 +131,8 @@ int main()
                 {
                 case KEY_UP:
                     messangeFor.setValue((int *)KEY_UP, INT);
-                    printf("jopa1\n");
-                    printf("%n\n", (int*)KEY_UP);
-                    printf("jopa2\n");
+                    int* tmp = (int *)KEY_UP;
+                    printf("%d", *tmp);
                     break;
                 case KEY_RIGHT:
                     messangeFor.setValue((int *)KEY_RIGHT, INT);
