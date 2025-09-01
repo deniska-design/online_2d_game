@@ -20,13 +20,11 @@ typedef struct typeless
 
     typeless()  
     {   
-        int *tmp = new int;
-        *tmp = 0;
-        value = tmp;       //что это нахуй такое 
+        value = (int *)0;        
         type = INT;
     }   
 
-    void setValue(void *val, Type typ)      //твой консруктор залупа
+    void setValue(void *val, Type typ)      
     {
         value = val;
         type = typ;

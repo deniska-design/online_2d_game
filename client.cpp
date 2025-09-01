@@ -68,9 +68,7 @@ int main()
 {    
     Vector Position; 
     Vector PositionBorders;
-    int *tmp = new int;
-    *tmp = 0;
-    typeless messangeFor(tmp, INT); //денис ты ебаный гандон сука кто програмирует моя бабка на хадолях так не ходит как ты гандон указатели юзаешь дегинират 
+    typeless messangeFor((int *)0, INT); 
     int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
@@ -169,16 +167,34 @@ int main()
             Player.showPlayer();
         }
 
-        if (messangeFor.value != 0)
+        if(FD_ISSET(sd, &writefds))
         {
-            if(FD_ISSET(sd, &writefds))
+            switch (messangeFor.type)
             {
-                if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
+            case INT:
+                if (*static_cast<int*>(messangeFor.value) != 0)
                 {
-                    printf("ошибка: %d", errno);
-                    return -1;
-                }
-                messangeFor.value = 0;
+                    if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
+                    {
+                        printf("ошибка: %d", errno);
+                        return -1;
+                    }
+                    messangeFor.value = 0;
+                }   
+                break;
+            case VECTOR:
+                if (*static_cast<Vector*>(messangeFor.value) != Vector{0, 0})
+                {
+                    if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
+                    {
+                        printf("ошибка: %d", errno);
+                        return -1;
+                    }
+                    messangeFor.value = 0;
+                }   
+                break;
+            default:
+                break;
             }
         }
 
