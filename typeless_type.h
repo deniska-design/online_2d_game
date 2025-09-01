@@ -20,7 +20,7 @@ typedef struct typeless
 
     typeless()  
     {   
-        value = (int*)0;       //что это нахуй такое 
+        value = (int*)1;       //что это нахуй такое 
         type = INT;
     }   
 
