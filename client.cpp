@@ -133,7 +133,7 @@ int main()
                 case KEY_UP:
                     messangeFor.setValue((int *)KEY_UP, INT);
                     printf("jopa1\n");
-                    tmp = (int *)KEY_UP;
+                    tmp = (int *)0;     // (int *) = segmentation fault
                     printf("%d", *tmp);
                     printf("jopa2\n");
                     break;
