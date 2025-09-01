@@ -68,7 +68,7 @@ int main()
 {    
     Vector Position; 
     Vector PositionBorders;
-    typeless messangeFor((int *)0, INT); 
+    typeless messangeFor; 
     bool send = false;
     int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
@@ -144,6 +144,7 @@ int main()
                 default:
                     break;
                 } 
+                send = true;
             }else return(-1);
         }
 
@@ -170,23 +171,6 @@ int main()
 
         if(FD_ISSET(sd, &writefds))
         {
-            switch (messangeFor.type)
-            {
-            case INT:
-                if (*static_cast<int*>(messangeFor.value) != 0)
-                {
-                    send = true;
-                }   
-                break;
-            case VECTOR:
-                if (*static_cast<Vector*>(messangeFor.value) != Vector{0, 0})
-                {
-                    send = true;
-                }   
-                break;
-            default:
-                break;
-            }
             if (send)
             {
                 if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
@@ -194,7 +178,7 @@ int main()
                     printf("ошибка: %d", errno);
                     return -1;
                 }
-                messangeFor.value = (int *)0;
+                send = false;
             } 
         }
 
