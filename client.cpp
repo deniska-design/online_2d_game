@@ -66,6 +66,7 @@ void StartWindow()
 
 int main()
 {    
+    int* tmp;
     Vector Position; 
     Vector PositionBorders;
     typeless messangeFor; 
@@ -131,8 +132,10 @@ int main()
                 {
                 case KEY_UP:
                     messangeFor.setValue((int *)KEY_UP, INT);
-                    int* tmp = (int *)KEY_UP;
+                    printf("jopa1\n");
+                    tmp = (int *)KEY_UP;
                     printf("%d", *tmp);
+                    printf("jopa2\n");
                     break;
                 case KEY_RIGHT:
                     messangeFor.setValue((int *)KEY_RIGHT, INT);
