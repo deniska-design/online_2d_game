@@ -182,7 +182,9 @@ int main()
 					switch(messangeFrom[i].type)
 					{
 					case INT:
+						printf("jopa 1\n");
 						key = *static_cast<int*>(messangeFrom[i].value);		//segmentation fault тогда когда мы обращаемся к тому на что указывает void *value
+						printf("jopa 2\n");
 						switch (key)
 						{
 						case KEY_UP:

@@ -12,19 +12,19 @@ typedef struct typeless
     Type type;
     void *value;
 
-    typeless(void *val, Type typ)
-    {
-        value = new void*;
-        value = val;
-        type = typ;
-    }
-
     typeless()  
     {   
         value = new void*;
         value = (int *)0;        
         type = INT;
     }   
+    
+    typeless(void *val, Type typ)
+    {
+        value = new void*;
+        value = val;
+        type = typ;
+    }
 
     void setValue(void *val, Type typ)      
     {
