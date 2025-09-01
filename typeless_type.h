@@ -20,9 +20,8 @@ typedef struct typeless
 
     typeless()  
     {   
-        int *tmp = new(int);
-        *tmp = 0;
-        value = tmp;        
+        value = new void*;
+        value = (int *)0;        
         type = INT;
     }   
 
