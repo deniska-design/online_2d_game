@@ -20,7 +20,9 @@ typedef struct typeless
 
     typeless()  
     {   
-        value = (int*)1;       //что это нахуй такое 
+        int *tmp = new int;
+        *tmp = 0;
+        value = tmp;       //что это нахуй такое 
         type = INT;
     }   
 

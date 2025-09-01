@@ -68,7 +68,9 @@ int main()
 {    
     Vector Position; 
     Vector PositionBorders;
-    typeless messangeFor((int*)1, INT); //денис ты ебаный гандон сука кто програмирует моя бабка на хадолях так не ходит как ты гандон указатели юзаешь дегинират 
+    int *tmp = new int;
+    *tmp = 0;
+    typeless messangeFor(tmp, INT); //денис ты ебаный гандон сука кто програмирует моя бабка на хадолях так не ходит как ты гандон указатели юзаешь дегинират 
     int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
