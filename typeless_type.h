@@ -18,12 +18,13 @@ typedef struct typeless
         type = typ;
     }
 
-    typeless()
-    {
-        value = NULL;
-    }
+    typeless()  
+    {   
+        value = (int*)0;       //что это нахуй такое 
+        type = INT;
+    }   
 
-    void setValue(void *val, Type typ)
+    void setValue(void *val, Type typ)      //твой консруктор залупа
     {
         value = val;
         type = typ;

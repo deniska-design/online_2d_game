@@ -98,7 +98,7 @@ int main()
     typeless messangeFrom[4];
 	Vector position[4];
 	bool positionChanged[4];
-    int sd, MaxD, ReadBytes, *key;
+    int sd, MaxD, ReadBytes, key;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -182,10 +182,8 @@ int main()
 					switch(messangeFrom[i].type)
 					{
 					case INT:
-						printf("jopa1\n");
-						key = static_cast<int*>(messangeFrom[i].value);		//segmentation fault
-						printf("jopa3\n");
-						switch (*key)
+						key = *static_cast<int*>(messangeFrom[i].value);		//segmentation fault тогда когда мы обращаемся к тому на что указывает void *value
+						switch (key)
 						{
 						case KEY_UP:
 							if (position[i].y > 0)
