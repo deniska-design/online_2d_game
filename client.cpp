@@ -131,11 +131,7 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                    messangeFor.setValue((int *)KEY_UP, INT);
-                    printf("jopa1\n");
-                    tmp = (int *)0;     // (int *) = segmentation fault
-                    printf("%d", *tmp);
-                    printf("jopa2\n");
+                    messangeFor.setValue((int *)KEY_UP, INT);       // (int *) = segmentation fault
                     break;
                 case KEY_RIGHT:
                     messangeFor.setValue((int *)KEY_RIGHT, INT);
