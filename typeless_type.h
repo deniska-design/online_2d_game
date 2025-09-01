@@ -14,6 +14,7 @@ typedef struct typeless
 
     typeless(void *val, Type typ)
     {
+        value = new void*;
         value = val;
         type = typ;
     }
