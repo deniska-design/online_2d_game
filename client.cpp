@@ -66,7 +66,7 @@ void StartWindow()
 
 int main()
 {    
-    int* tmp;
+    int* tmp = new int;
     Vector Position; 
     Vector PositionBorders;
     typeless messangeFor; 
@@ -131,20 +131,21 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                    messangeFor.setValue((int *)KEY_UP, INT);       // (int *) = segmentation fault
+                    *tmp = KEY_UP;
                     break;
                 case KEY_RIGHT:
-                    messangeFor.setValue((int *)KEY_RIGHT, INT);
+                    *tmp = KEY_RIGHT;
                     break;
                 case KEY_LEFT:
-                    messangeFor.setValue((int *)KEY_LEFT, INT);
+                    *tmp = KEY_LEFT;
                     break;
                 case KEY_DOWN:
-                    messangeFor.setValue((int *)KEY_DOWN, INT);
+                    *tmp = KEY_DOWN;
                     break;
                 default:
                     break;
                 } 
+                messangeFor.setValue(tmp, INT);
                 send = true;
             }else return(-1);
         }
@@ -192,6 +193,7 @@ int main()
         }
         refresh();
     }
+    delete tmp;
     close(sd);
     endwin();
     return 0;

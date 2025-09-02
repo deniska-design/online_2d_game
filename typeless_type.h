@@ -15,8 +15,11 @@ typedef struct typeless
     typeless()  
     {   
         value = new void*;
-        value = (int *)0;        
+        int *tmp = new int; 
+        *tmp = 0;        
+        value = tmp;
         type = INT;
+        delete tmp;
     }   
     
     typeless(void *val, Type typ)
