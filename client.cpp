@@ -146,7 +146,6 @@ int main()
                     break;
                 } 
                 messangeFor.setValue(tmp, INT);
-                printf("%d\n", *static_cast<int*>(messangeFor.value));
                 send = true;
             }else return(-1);
         }
@@ -176,7 +175,6 @@ int main()
         {
             if (send)
             {
-                printf("%d\n", *static_cast<int*>(messangeFor.value));
                 if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
                 {
                     printf("ошибка: %d", errno);
