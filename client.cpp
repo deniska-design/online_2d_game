@@ -70,6 +70,7 @@ int main()
     Vector Position; 
     Vector PositionBorders;
     typeless messangeFor; 
+    printf("%d\n", *static_cast<int*>(messangeFor.value));
     bool send = false;
     int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
