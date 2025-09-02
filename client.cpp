@@ -67,6 +67,7 @@ void StartWindow()
 int main()
 {    
     int* tmp = new int;
+    int jopa;
     Vector Position; 
     Vector PositionBorders;
     typeless messangeFor; 
@@ -131,16 +132,20 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                    *tmp = KEY_UP;
+                    jopa = KEY_UP;
+                    *tmp = jopa;
                     break;
                 case KEY_RIGHT:
-                    *tmp = KEY_RIGHT;
+                    jopa = KEY_RIGHT;
+                    *tmp = jopa;
                     break;
                 case KEY_LEFT:
-                    *tmp = KEY_LEFT;
+                    jopa = KEY_LEFT;
+                    *tmp = jopa;
                     break;
                 case KEY_DOWN:
-                    *tmp = KEY_DOWN;
+                    jopa = KEY_DOWN;
+                    *tmp = jopa;
                     break;
                 default:
                     break;
