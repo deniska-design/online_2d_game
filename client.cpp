@@ -70,8 +70,6 @@ int main()
     Vector Position; 
     Vector PositionBorders;
     typeless messangeFor; 
-    printf("%d\n", *static_cast<int*>(messangeFor.value));
-    return 0;
     bool send = false;
     int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
@@ -148,9 +146,7 @@ int main()
                     break;
                 } 
                 messangeFor.setValue(tmp, INT);
-                printf("hsdf\n");
                 printf("%d\n", *static_cast<int*>(messangeFor.value));
-                printf("hsdf\n");
                 send = true;
             }else return(-1);
         }
