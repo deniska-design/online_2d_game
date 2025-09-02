@@ -172,7 +172,7 @@ int main()
             if(FD_ISSET(pd[i], &readfds))
             {
 		    	printf("пришло сообщение от игрока\n");
-				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(messangeFrom[i]))))		//до чтения данных всё хорошо но потом почему то void *value превращается в нулевой указатель
+				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))		//до чтения данных всё хорошо но потом почему то void *value превращается в нулевой указатель
 				{
 					printf("ошибка чтения данных:%d\n", errno);
 					return(-1);
