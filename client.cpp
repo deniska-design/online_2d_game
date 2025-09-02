@@ -67,7 +67,6 @@ void StartWindow()
 int main()
 {    
     int* tmp = new int;
-    int jopa;
     Vector Position; 
     Vector PositionBorders;
     typeless messangeFor; 
@@ -132,25 +131,24 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                    jopa = KEY_UP;
-                    *tmp = jopa;
+                    *tmp = KEY_UP;
                     break;
                 case KEY_RIGHT:
-                    jopa = KEY_RIGHT;
-                    *tmp = jopa;
+                    *tmp = KEY_RIGHT;
                     break;
                 case KEY_LEFT:
-                    jopa = KEY_LEFT;
-                    *tmp = jopa;
+                    *tmp = KEY_LEFT;
                     break;
                 case KEY_DOWN:
-                    jopa = KEY_DOWN;
-                    *tmp = jopa;
+                    *tmp = KEY_DOWN;
                     break;
                 default:
                     break;
                 } 
                 messangeFor.setValue(tmp, INT);
+                printf("hsdf\n");
+                printf("%d\n", *static_cast<int*>(messangeFor.value));
+                printf("hsdf\n");
                 send = true;
             }else return(-1);
         }

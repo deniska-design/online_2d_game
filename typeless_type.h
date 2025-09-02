@@ -11,14 +11,12 @@ typedef struct typeless
 {
     Type type;
     void *value;
-    int *tmp;
-    int jopa = 0;
 
     typeless()  
     {   
         value = new void*;
-        tmp = new int; 
-        *tmp = jopa;        
+        int *tmp = new int; 
+        *tmp = 0;        
         value = tmp;
         type = INT;
     }   
