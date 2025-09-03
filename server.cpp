@@ -223,6 +223,7 @@ int main()
 						break;
 					case VECTOR:
 						PositionBorders[i] = *static_cast<Vector*>(messangeFrom[i].value);
+						printf("сообщение от игрока:%d\n", PositionBorders[i].x);
 						break;
 					default:
 						break;
