@@ -99,6 +99,10 @@ int main()
 
     StartWindow();
 
+    getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
+    messangeFor.setValue(&PositionBorders, VECTOR); 
+    send = true;
+
     player Player(5, 2);
 
     //начало бесконечного цыкла

@@ -95,9 +95,9 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 
 int main()
 {   
-	typeless dsfdsf;
     typeless messangeFrom[4];
 	Vector position[4];
+	Vector PositionBorders[4];
 	bool positionChanged[4];
     int sd, MaxD, ReadBytes, key;
     int playerCount = 0;
@@ -195,10 +195,10 @@ int main()
 							}
 							break;
 						case KEY_RIGHT:
-							//if(position->x < PositionBorders[i].x)
-							//{
+							if(position->x < PositionBorders[i].x)
+							{
 								position[i].x++;
-							//}
+							}
 							break;
 						case KEY_LEFT:
 							if (position[i].x > 0)
@@ -207,10 +207,10 @@ int main()
 							}
 							break;
 						case KEY_DOWN:
-							//if(position->y < PositionBorders[i].y)
-							//{
+							if(position->y < PositionBorders[i].y)
+							{
 								position[i].y++;
-							//}
+							}
 							break;
 						default:
 							break;
@@ -222,6 +222,7 @@ int main()
 						printf("position changed\n");
 						break;
 					case VECTOR:
+						PositionBorders[i] = *static_cast<Vector*>(messangeFrom[i].value);
 						break;
 					default:
 						break;

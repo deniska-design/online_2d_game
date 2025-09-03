@@ -8,8 +8,8 @@ class player
     int x, y, MaxX, MaxY, PlayerHigh, PlayerWidth;
 public:
     player(int PlayerH, int PlayerW);
-    void showPlayer();
-    void hidePlayer();
+    void showPlayer() const;
+    void hidePlayer() const;
     void setPosition(int NewY, int NewX);
 };
 
