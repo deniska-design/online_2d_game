@@ -180,7 +180,6 @@ int main()
 					return -1;
 				}else if(ReadBytes > 0)
 				{
-					printf("сообщение от игрока:%d\n", messangeFrom[i].type);
 					switch(messangeFrom[i].type)
 					{
 					case INT:
