@@ -95,6 +95,7 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 
 int main()
 {   
+	typeless dsfdsf;
     typeless messangeFrom[4];
 	Vector position[4];
 	bool positionChanged[4];
@@ -172,17 +173,17 @@ int main()
             if(FD_ISSET(pd[i], &readfds))
             {
 		    	printf("пришло сообщение от игрока\n");
-				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))
+
+				if (0 > (ReadBytes = read(pd[i], &dsfdsf, sizeof(&dsfdsf))))
 				{
 					printf("ошибка чтения данных:%d\n", errno);
 					return -1;
 				}else if(ReadBytes > 0)
 				{
-					printf("сообщение от игрока:%d\n", messangeFrom[i].type);
 					switch(messangeFrom[i].type)
 					{
 					case INT:
-						printf("сообщение от игрока:%d\n", *static_cast<int*>(messangeFrom[i].value));
+						printf("сообщение от игрока:%d\n", *static_cast<int*>(dsfdsf.value));
 						printf("ReadBytes:%d\n", ReadBytes);
 						switch (*static_cast<int*>(messangeFrom[i].value))
 						{
