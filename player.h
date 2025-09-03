@@ -22,7 +22,7 @@ player::player(int PlayerH, int PlayerW)
     y = MaxY - PlayerHigh;
 }
 
-void player::showPlayer()
+void player::showPlayer() const
 {
     for(int i = y; i < y + PlayerHigh; i++)
     {
@@ -34,7 +34,7 @@ void player::showPlayer()
     }
 }
 
-void player::hidePlayer()
+void player::hidePlayer() const
 {
     for (int i = y-1; i < y + PlayerHigh+1; i++)
     {

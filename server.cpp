@@ -182,6 +182,7 @@ int main()
 					{
 					case INT:
 						printf("сообщение от игрока:%d\n", *static_cast<int*>(messangeFrom[i].value));
+						printf("ReadBytes:%d\n", ReadBytes);
 						switch (*static_cast<int*>(messangeFrom[i].value))
 						{
 						case KEY_UP:
