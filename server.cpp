@@ -98,7 +98,7 @@ int main()
     typeless messangeFrom[4];
 	Vector position[4];
 	bool positionChanged[4];
-    int sd, MaxD, ReadBytes, key;
+    int sd, MaxD, ReadBytes;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -172,20 +172,17 @@ int main()
             if(FD_ISSET(pd[i], &readfds))
             {
 		    	printf("пришло сообщение от игрока\n");
-				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))		//до чтения данных всё хорошо но потом почему то void *value превращается в нулевой указатель
+				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))
 				{
 					printf("ошибка чтения данных:%d\n", errno);
-					return(-1);
+					return -1;
 				}else if(ReadBytes > 0)
 				{
 					printf("сообщение от игрока:%p\n", messangeFrom[i].value);
 					switch(messangeFrom[i].type)
 					{
 					case INT:
-						printf("jopa 1\n");
-						key = *static_cast<int*>(messangeFrom[i].value);		//segmentation fault тогда когда мы обращаемся к тому на что указывает void *value
-						printf("jopa 2\n");
-						switch (key)
+						switch (*static_cast<int*>(messangeFrom[i].value))
 						{
 						case KEY_UP:
 							if (position[i].y > 0)
