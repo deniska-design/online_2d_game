@@ -16,7 +16,7 @@ typedef struct typeless
     {   
         value = new void*;
         int *tmp = new int; 
-        *tmp = 0;        
+        *tmp = 1;        
         value = tmp;
         type = INT;
     }   
