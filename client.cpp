@@ -175,6 +175,7 @@ int main()
         {
             if (send)
             {
+                printf("%d\n", *static_cast<int*>(messangeFor.value));
                 if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
                 {
                     printf("ошибка: %d", errno);
