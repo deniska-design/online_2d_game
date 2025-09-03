@@ -174,7 +174,7 @@ int main()
             {
 		    	printf("пришло сообщение от игрока\n");
 
-				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))
+				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], 64)))
 				{
 					printf("ошибка чтения данных:%d\n", errno);
 					return -1;
