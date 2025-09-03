@@ -99,7 +99,7 @@ int main()
     typeless messangeFrom[4];
 	Vector position[4];
 	bool positionChanged[4];
-    int sd, MaxD, ReadBytes;
+    int sd, MaxD, ReadBytes, key;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -183,9 +183,10 @@ int main()
 					switch(messangeFrom[i].type)
 					{
 					case INT:
-						printf("сообщение от игрока:%d\n", *static_cast<int*>(messangeFrom[i].value));
+						key = *static_cast<int*>(messangeFrom[i].value);
+						printf("сообщение от игрока:%d\n", key);
 						printf("ReadBytes:%d\n", ReadBytes);
-						switch (*static_cast<int*>(messangeFrom[i].value))
+						switch (key)
 						{
 						case KEY_UP:
 							if (position[i].y > 0)
