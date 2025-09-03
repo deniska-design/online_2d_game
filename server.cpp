@@ -174,16 +174,17 @@ int main()
             {
 		    	printf("пришло сообщение от игрока\n");
 
-				if (0 > (ReadBytes = read(pd[i], &dsfdsf, sizeof(&dsfdsf))))
+				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))
 				{
 					printf("ошибка чтения данных:%d\n", errno);
 					return -1;
 				}else if(ReadBytes > 0)
 				{
+					printf("сообщение от игрока:%d\n", messangeFrom[i].type);
 					switch(messangeFrom[i].type)
 					{
 					case INT:
-						printf("сообщение от игрока:%d\n", *static_cast<int*>(dsfdsf.value));
+						printf("сообщение от игрока:%d\n", *static_cast<int*>(messangeFrom[i].value));
 						printf("ReadBytes:%d\n", ReadBytes);
 						switch (*static_cast<int*>(messangeFrom[i].value))
 						{
