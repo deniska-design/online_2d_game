@@ -178,10 +178,10 @@ int main()
 					return -1;
 				}else if(ReadBytes > 0)
 				{
-					printf("сообщение от игрока:%p\n", messangeFrom[i].value);
 					switch(messangeFrom[i].type)
 					{
 					case INT:
+						printf("сообщение от игрока:%d\n", *static_cast<int*>(messangeFrom[i].value));
 						switch (*static_cast<int*>(messangeFrom[i].value))
 						{
 						case KEY_UP:
