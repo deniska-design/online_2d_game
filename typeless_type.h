@@ -31,6 +31,7 @@ typedef struct typeless
 
     typeless(const typeless& copy)
     {
+        printf("sbjkfas\n");
         Vector VectorValue;
         int intValue;
         value = new void*;
