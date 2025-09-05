@@ -31,19 +31,24 @@ typedef struct typeless
 
     typeless(const typeless& copy)
     {
+        Vector VectorValue;
+        int intValue;
         value = new void*;
         switch (copy.type)
         {
         case INT:
-            value = static_cast<int*>(value);
+            intValue = *static_cast<int*>(value);
+            printf("value: %d\n", intValue);
+            value = &intValue; 
             break;
         case VECTOR:
-            value = static_cast<Vector*>(value);
+            VectorValue = *static_cast<Vector*>(value);
+            printf("value:%d\n", VectorValue.x);
+            value = &VectorValue; 
             break;    
         default:
             break;
         }
-        value = copy.value;     //я присваиваю указателю указатель. В этом конструкторе нет смысла
         type = copy.type;
     }   
 
@@ -55,17 +60,6 @@ typedef struct typeless
 
     ~typeless()
     {
-        switch (type)
-        {
-        case INT:
-            value = static_cast<int*>(value);
-            break;
-        case VECTOR:
-            value = static_cast<Vector*>(value);
-            break;    
-        default:
-            break;
-        }
         delete value;
     }
 
