@@ -189,9 +189,9 @@ int main()
 				{
 					if(std::holds_alternative<int>(messangeFrom[i]))
 					{
-						printf("jopa1");
+						printf("jopa1\n");
 						key = std::get<int>(messangeFrom[i]);
-						printf("сообщение от игрока:%d\n", key);
+						printf("сообщение от игрока, key:%d\n", key);
 						printf("jopa1\n");
 						switch (key)
 						{
