@@ -102,6 +102,7 @@ int main()
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
+    printf("position border x:%d\n", PositionBorders.x);
     messangeFor = PositionBorders; 
     send = true;
 
