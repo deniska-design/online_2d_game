@@ -15,10 +15,10 @@ int ServPort = 9;
 
 typedef enum 
 {
-	right           = 261,      // Key: Cursor right
-    left            = 260,      // Key: Cursor left
-    down            = 258,      // Key: Cursor down
-    up              = 259,
+	right	=	261,      // Key: Cursor right
+    left	=	260,      // Key: Cursor left
+    down	= 	258,      // Key: Cursor down
+    up		=	259,	  // Key: Cursor up
 }keybordArrows;
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
@@ -189,7 +189,7 @@ int main()
 				{
 					if(std::holds_alternative<int>(messangeFrom[i]))
 					{
-						printf("jopa1\n");
+						printf("jopa1");
 						key = std::get<int>(messangeFrom[i]);
 						printf("сообщение от игрока:%d\n", key);
 						printf("jopa1\n");
