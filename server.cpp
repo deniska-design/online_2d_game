@@ -200,8 +200,7 @@ int main()
 							}
 							break;
 						case right:
-							printf("ReadBytes\n");
-							if(position->x < PositionBorders[i].x)
+							if(position[i].x < PositionBorders[i].x)
 							{
 								position[i].x++;
 							}
@@ -213,7 +212,7 @@ int main()
 							}
 							break;
 						case down:
-							if(position->y < PositionBorders[i].y)
+							if(position[i].y < PositionBorders[i].y)
 							{
 								position[i].y++;
 							}
