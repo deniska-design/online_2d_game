@@ -193,6 +193,7 @@ int main()
 							}
 							break;
 						case KEY_RIGHT:
+							printf("ReadBytes\n");
 							if(position->x < PositionBorders[i].x)
 							{
 								position[i].x++;
