@@ -190,8 +190,9 @@ int main()
 					if(std::holds_alternative<int>(messangeFrom[i]))
 					{
 						key = std::get<int>(messangeFrom[i]);
+						printf("jopa1\n");
 						printf("сообщение от игрока:%d\n", key);
-						printf("ReadBytes\n");
+						printf("jopa2\n");
 						switch (key)
 						{
 						case up:
