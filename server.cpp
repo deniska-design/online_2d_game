@@ -13,6 +13,14 @@
 const char *ip = "192.168.1.120";
 int ServPort = 9;
 
+typedef enum 
+{
+	right           = 261,      // Key: Cursor right
+    left            = 260,      // Key: Cursor left
+    down            = 258,      // Key: Cursor down
+    up              = 259,
+}keybordArrows;
+
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
@@ -186,26 +194,26 @@ int main()
 						printf("ReadBytes\n");
 						switch (key)
 						{
-						case KEY_UP:
+						case up:
 							if (position[i].y > 0)
 							{
 								position[i].y--;
 							}
 							break;
-						case KEY_RIGHT:
+						case right:
 							printf("ReadBytes\n");
 							if(position->x < PositionBorders[i].x)
 							{
 								position[i].x++;
 							}
 							break;
-						case KEY_LEFT:
+						case left:
 							if (position[i].x > 0)
 							{
 								position[i].x--;
 							}
 							break;
-						case KEY_DOWN:
+						case down:
 							if(position->y < PositionBorders[i].y)
 							{
 								position[i].y++;
