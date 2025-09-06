@@ -200,7 +200,7 @@ int main()
 							}
 							break;
 						case right:
-							if(position[i].x < PositionBorders[i].x-1)
+							if(position[i].x < PositionBorders[i].x-2)
 							{
 								position[i].x++;
 							}
@@ -212,7 +212,7 @@ int main()
 							}
 							break;
 						case down:
-							if(position[i].y < PositionBorders[i].y-1)
+							if(position[i].y < PositionBorders[i].y-5)
 							{
 								position[i].y++;
 							}
