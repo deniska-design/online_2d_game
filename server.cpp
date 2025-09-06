@@ -231,7 +231,7 @@ int main()
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 					{
 						PositionBorders[i] = std::get<Vector>(messangeFrom[i]);
-						printf("сообщение от игрока:%d\n", PositionBorders[i].x);
+						printf("сообщение от игрокhjskhsdf:%d\n", PositionBorders[i].x);
 					}
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
