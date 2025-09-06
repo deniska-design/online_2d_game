@@ -189,10 +189,8 @@ int main()
 				{
 					if(std::holds_alternative<int>(messangeFrom[i]))
 					{
-						printf("jopa1\n");
-						key = std::get<int>(messangeFrom[i]);
-						printf("сообщение от игрока, key:%d\n", key);
-						printf("jopa1\n");
+						key = std::get<int>(std::move(messangeFrom[i]));
+						printf("key:%d\n", key);
 						switch (key)
 						{
 						case up:
@@ -230,8 +228,8 @@ int main()
 						printf("position changed\n");
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 					{
-						PositionBorders[i] = std::get<Vector>(messangeFrom[i]);
-						printf("сообщение от игрокhjskhsdf:%d\n", PositionBorders[i].x);
+						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i]));
+						printf("position border x:%d\n", PositionBorders[i].x);
 					}
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
