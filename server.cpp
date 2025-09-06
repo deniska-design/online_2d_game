@@ -183,7 +183,7 @@ int main()
 					{
 						key = std::get<int>(messangeFrom[i]);
 						printf("сообщение от игрока:%d\n", key);
-						printf("ReadBytes:%d\n", ReadBytes);
+						printf("ReadBytes\n");
 						switch (key)
 						{
 						case KEY_UP:
