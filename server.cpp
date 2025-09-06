@@ -229,6 +229,7 @@ int main()
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 					{
 						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i]));
+						messangeFrom[i] = 0;
 						printf("position border x:%d\n", PositionBorders[i].x);
 					}
 				}else PlayerLeaved(playerCount, pd, readfds, i);
