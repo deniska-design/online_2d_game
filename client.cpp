@@ -5,10 +5,12 @@
 #include <cstdio>
 #include <unistd.h>
 #include <ncurses.h>
+#include <variant>
 
 #include "vector.h"
 #include "player.h"
-#include "typeless_type.h"
+
+using namespace std;
 
 const char *ServerIp = "192.168.1.120";
 int ServPort = 9;
@@ -69,7 +71,7 @@ int main()
     int* tmp = new int;
     Vector Position; 
     Vector PositionBorders;
-    typeless messangeFor; 
+    std::variant<Vector, int> messangeFor; 
     bool send = false;
     int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
@@ -100,7 +102,7 @@ int main()
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
-    messangeFor.setValue(&PositionBorders, VECTOR); 
+    messangeFor = PositionBorders; 
     send = true;
 
     player Player(5, 2);
@@ -135,21 +137,20 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                    *tmp = KEY_UP;
+                    messangeFor = KEY_UP;
                     break;
                 case KEY_RIGHT:
-                    *tmp = KEY_RIGHT;
+                    messangeFor = KEY_RIGHT;
                     break;
                 case KEY_LEFT:
-                    *tmp = KEY_LEFT;
+                    messangeFor = KEY_LEFT;
                     break;
                 case KEY_DOWN:
-                    *tmp = KEY_DOWN;
+                    messangeFor = KEY_DOWN;
                     break;
                 default:
                     break;
                 } 
-                messangeFor.setValue(tmp, INT);
                 send = true;
             }else return(-1);
         }
@@ -179,7 +180,6 @@ int main()
         {
             if (send)
             {
-                printf("%d\n", *static_cast<int*>(messangeFor.value));
                 if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
                 {
                     printf("ошибка: %d", errno);

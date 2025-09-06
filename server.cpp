@@ -6,9 +6,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
+#include <variant>
 
 #include "vector.h"
-#include "typeless_type.h"
 
 const char *ip = "192.168.1.120";
 int ServPort = 9;
@@ -95,7 +95,7 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 
 int main()
 {   
-    typeless messangeFrom[4];
+    std::variant<Vector, int> messangeFrom[4];
 	Vector position[4];
 	Vector PositionBorders[4];
 	bool positionChanged[4];
@@ -179,10 +179,9 @@ int main()
 					return -1;
 				}else if(ReadBytes > 0)
 				{
-					switch(messangeFrom[i].type)
+					if(std::holds_alternative<int>(messangeFrom[i]))
 					{
-					case INT:
-						key = *static_cast<int*>(messangeFrom[i].value);
+						key = std::get<int>(messangeFrom[i]);
 						printf("сообщение от игрока:%d\n", key);
 						printf("ReadBytes:%d\n", ReadBytes);
 						switch (key)
@@ -219,13 +218,10 @@ int main()
 							positionChanged[n] = true;
 						}
 						printf("position changed\n");
-						break;
-					case VECTOR:
-						PositionBorders[i] = *static_cast<Vector*>(messangeFrom[i].value);
+					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
+					{
+						PositionBorders[i] = std::get<Vector>(messangeFrom[i]);
 						printf("сообщение от игрока:%d\n", PositionBorders[i].x);
-						break;
-					default:
-						break;
 					}
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
