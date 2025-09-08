@@ -136,25 +136,25 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                if (position.y > 0)	
+                if (Position.y > 0)	
 				{		
                     messangeFor = KEY_UP;
                 }
                     break;
                 case KEY_RIGHT:
-                if(position.x < PositionBorders.x)
+                if(Position.x < PositionBorders.x)
 				{
                     messangeFor = KEY_RIGHT;
                 }
                     break;
                 case KEY_LEFT:
-                if (position.x > 0)
+                if (Position.x > 0)
 				{
                     messangeFor = KEY_LEFT;
                 }
                     break;
                 case KEY_DOWN:
-                if(position.y < PositionBorders.y)
+                if(Position.y < PositionBorders.y)
 				{
                     messangeFor = KEY_DOWN;
                 }
@@ -191,7 +191,7 @@ int main()
         {
             if (send)
             {
-                if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
+                if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
                 {
                     printf("ошибка: %d", errno);
                     return -1;
