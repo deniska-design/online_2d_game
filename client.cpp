@@ -68,12 +68,10 @@ void StartWindow()
 
 int main()
 {    
-    int* tmp = new int;
-    Vector Position; 
-    Vector PositionBorders;
-    int messangeFor; 
+    Vector MessangeFrom; 
+    Vector PositionBorders, Position = {0, 0};
     bool send = false;
-    int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
+    int sd, MaxD, SelRes, ReadBytes, key, messangeFor;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
     FD_ZERO(&readfds);
@@ -91,7 +89,7 @@ int main()
         return -1;
     }
 
-    if (0 > (ReadBytes = read(sd, &messangeFrom, sizeof(messangeFrom))))
+    if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
     {   
         printf( "while connect read error:%d\n", errno);
         return(-1);
@@ -139,24 +137,28 @@ int main()
                 if (Position.y > 0)	
 				{		
                     messangeFor = KEY_UP;
+                    Position.y--;
                 }
                     break;
                 case KEY_RIGHT:
                 if(Position.x < PositionBorders.x)
 				{
                     messangeFor = KEY_RIGHT;
+                    Position.x++;
                 }
                     break;
                 case KEY_LEFT:
                 if (Position.x > 0)
 				{
                     messangeFor = KEY_LEFT;
+                    Position.x--;
                 }
                     break;
                 case KEY_DOWN:
                 if(Position.y < PositionBorders.y)
 				{
                     messangeFor = KEY_DOWN;
+                    Position.y++;
                 }
                     break;
                 default:
@@ -172,7 +174,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &Position, sizeof(Position))))
+            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(Position))))
             {   
                 printf( "read error:%d\n", errno);
                 return(-1);
@@ -182,7 +184,7 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            Player.setPosition(Position.y, Position.x);
+            Player.setPosition(MessangeFrom.y, MessangeFrom.x);
             Player.hidePlayer();
             Player.showPlayer();
         }
@@ -209,7 +211,6 @@ int main()
         }
         refresh();
     }
-    delete tmp;
     close(sd);
     endwin();
     return 0;

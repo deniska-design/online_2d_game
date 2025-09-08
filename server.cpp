@@ -112,7 +112,6 @@ int main()
     std::variant<int> messangeFrom[4];
 	std::variant<Vector, bool> messangeFor[4]; 
 	Vector position[4];
-	Vector PositionBorders[4];
 	bool positionChanged[4];
     int sd, MaxD, ReadBytes, key;
     int playerCount = 0;
