@@ -21,6 +21,12 @@ typedef enum
     up		=	259,	  // Key: Cursor up
 }keybordArrows;
 
+enum 
+{
+	ClrScreen	=	1,      // Key: Cursor right
+    nClrScreen	=	0,      // Key: Cursor left
+};
+
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
@@ -104,6 +110,7 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
+	std::variant<Vector, bool> messangeFor[4]; 
 	Vector position[4];
 	Vector PositionBorders[4];
 	bool positionChanged[4];
@@ -121,7 +128,6 @@ int main()
 		return -1;
 	}
 	
-
     if((sd = SetSock(ServAddr)) == -1)
 	{
 		return -1;
@@ -165,6 +171,7 @@ int main()
 			position[playerCount-1] = {0, 0};
 			for (int n = 0; n < playerCount; n++)
 			{
+				messangeFor[n] = position[n];
 				positionChanged[n] = true;
 			}
 		}
@@ -222,6 +229,7 @@ int main()
 						}
 						for (int n = 0; n < playerCount; n++)
 						{
+							messangeFor[n] = position[i];
 							positionChanged[n] = true;
 						}
 						printf("position changed\n");
@@ -241,15 +249,15 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
-					for(int n = 0; n < playerCount; n++)
-					{
+					//for(int n = 0; n < playerCount; n++)
+					//{
 						printf("пришло время отправить сообщение игроку\n");
-						if(write(pd[i], &position[n], sizeof(&position[n])) == -1)
+						if(write(pd[i], &messangeFor[i], sizeof(&messangeFor[i])) == -1)
 						{
 							printf("ошибка отправки сообщения:%d", errno);
 							return -1;
 						}else printf("messange was sent\n");
-					}
+					//}
 					positionChanged[i] = false;
 				}
 			}
