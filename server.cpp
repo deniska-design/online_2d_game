@@ -169,16 +169,10 @@ int main()
 				return -1;
 			}
 			position[playerCount-1] = {0, 0};
-			for(int i = 0; i < playerCount; i++)
-			{
-				for (int n = 0; n < playerCount; n++)
-				{
-					messangeFor[i] = position[playerCount-1];
-					positionChanged[n] = true;
-				}
-			}
+
 			for (int n = 0; n < playerCount; n++)
 			{
+				messangeFor[n] = position[playerCount-1];
 				positionChanged[n] = true;
 			}
 		}
@@ -208,9 +202,9 @@ int main()
 						switch (key)
 						{
 						case up:
-							if (position[i].y > 0)
-							{
-								position[i].y--;
+							if (position[i].y > 0)	//зачем серверу получать границы и потом проверять столкновение с ними
+							{						//пусть игрок сам проверяет это и если игрок заходит за границы не отправляет серверу сообщение
+								position[i].y--;	
 							}
 							break;
 						case right:
