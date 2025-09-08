@@ -102,7 +102,7 @@ int main()
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
-    messangeFor = PositionBorders; 
+    messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
     send = true;
 
     player Player(5, 2);
