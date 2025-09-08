@@ -138,6 +138,7 @@ int main()
 				{		
                     messangeFor = KEY_UP;
                     Position.y--;
+                    send = true;
                 }
                     break;
                 case KEY_RIGHT:
@@ -145,6 +146,7 @@ int main()
 				{
                     messangeFor = KEY_RIGHT;
                     Position.x++;
+                    send = true;
                 }
                     break;
                 case KEY_LEFT:
@@ -152,6 +154,7 @@ int main()
 				{
                     messangeFor = KEY_LEFT;
                     Position.x--;
+                    send = true;
                 }
                     break;
                 case KEY_DOWN:
@@ -159,12 +162,12 @@ int main()
 				{
                     messangeFor = KEY_DOWN;
                     Position.y++;
+                    send = true;
                 }
                     break;
                 default:
                     break;
                 } 
-                send = true;
             }else return(-1);
         }
 

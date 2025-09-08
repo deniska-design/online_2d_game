@@ -109,7 +109,7 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 
 int main()
 {   
-    std::variant<int> messangeFrom[4];
+    int messangeFrom[4];
 	std::variant<Vector, bool> messangeFor[4]; 
 	Vector position[4];
 	bool positionChanged[4];
@@ -194,34 +194,31 @@ int main()
 					return -1;
 				}else if(ReadBytes > 0)
 				{
-					if(std::holds_alternative<int>(messangeFrom[i]))
+					key = messangeFrom[i];
+					printf("key:%d\n", key);
+					switch (key)
 					{
-						key = std::get<int>(std::move(messangeFrom[i]));
-						printf("key:%d\n", key);
-						switch (key)
-						{
-						case up:				
-							position[i].y--;
-							break;
-						case right:
-							position[i].x++;
-							break;
-						case left:
-							position[i].x--;
-							break;
-						case down:
-							position[i].y++;
-							break;
-						default:
-							break;
-						}
-						for (int n = 0; n < playerCount; n++)
-						{
-							messangeFor[n] = position[i];
-							positionChanged[n] = true;
-						}
-						printf("position changed\n");
+					case up:				
+						position[i].y--;
+						break;
+					case right:
+						position[i].x++;
+						break;
+					case left:
+						position[i].x--;
+						break;
+					case down:
+						position[i].y++;
+						break;
+					default:
+						break;
 					}
+					for (int n = 0; n < playerCount; n++)
+					{
+						messangeFor[n] = position[i];
+						positionChanged[n] = true;
+					}
+					printf("position changed\n");
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
         }
