@@ -169,9 +169,16 @@ int main()
 				return -1;
 			}
 			position[playerCount-1] = {0, 0};
+			for(int i = 0; i < playerCount; i++)
+			{
+				for (int n = 0; n < playerCount; n++)
+				{
+					messangeFor[i] = position[playerCount-1];
+					positionChanged[n] = true;
+				}
+			}
 			for (int n = 0; n < playerCount; n++)
 			{
-				messangeFor[n] = position[n];
 				positionChanged[n] = true;
 			}
 		}
@@ -249,15 +256,12 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
-					//for(int n = 0; n < playerCount; n++)
-					//{
-						printf("пришло время отправить сообщение игроку\n");
-						if(write(pd[i], &messangeFor[i], sizeof(&messangeFor[i])) == -1)
-						{
-							printf("ошибка отправки сообщения:%d", errno);
-							return -1;
-						}else printf("messange was sent\n");
-					//}
+					printf("пришло время отправить сообщение игроку\n");
+					if(write(pd[i], &messangeFor[i], sizeof(&messangeFor[i])) == -1)
+					{
+						printf("ошибка отправки сообщения:%d", errno);
+						return -1;
+					}else printf("messange was sent\n");
 					positionChanged[i] = false;
 				}
 			}
