@@ -71,7 +71,7 @@ int main()
     int* tmp = new int;
     Vector Position; 
     Vector PositionBorders;
-    std::variant<Vector, int> messangeFor; 
+    int messangeFor; 
     bool send = false;
     int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
@@ -102,7 +102,6 @@ int main()
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
-    messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
     send = true;
 
     player Player(5, 2);
@@ -137,16 +136,28 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
+                if (position.y > 0)	
+				{		
                     messangeFor = KEY_UP;
+                }
                     break;
                 case KEY_RIGHT:
+                if(position.x < PositionBorders.x)
+				{
                     messangeFor = KEY_RIGHT;
+                }
                     break;
                 case KEY_LEFT:
+                if (position.x > 0)
+				{
                     messangeFor = KEY_LEFT;
+                }
                     break;
                 case KEY_DOWN:
+                if(position.y < PositionBorders.y)
+				{
                     messangeFor = KEY_DOWN;
+                }
                     break;
                 default:
                     break;

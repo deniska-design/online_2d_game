@@ -109,7 +109,7 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 
 int main()
 {   
-    std::variant<Vector, int> messangeFrom[4];
+    std::variant<int> messangeFrom[4];
 	std::variant<Vector, bool> messangeFor[4]; 
 	Vector position[4];
 	Vector PositionBorders[4];
@@ -201,29 +201,17 @@ int main()
 						printf("key:%d\n", key);
 						switch (key)
 						{
-						case up:
-							if (position[i].y > 0)	//зачем серверу получать границы и потом проверять столкновение с ними
-							{						//пусть игрок сам проверяет это и если игрок заходит за границы не отправляет серверу сообщение
-								position[i].y--;	
-							}
+						case up:				
+							position[i].y--;
 							break;
 						case right:
-							if(position[i].x < PositionBorders[i].x)
-							{
-								position[i].x++;
-							}
+							position[i].x++;
 							break;
 						case left:
-							if (position[i].x > 0)
-							{
-								position[i].x--;
-							}
+							position[i].x--;
 							break;
 						case down:
-							if(position[i].y < PositionBorders[i].y)
-							{
-								position[i].y++;
-							}
+							position[i].y++;
 							break;
 						default:
 							break;
@@ -234,11 +222,6 @@ int main()
 							positionChanged[n] = true;
 						}
 						printf("position changed\n");
-					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
-					{
-						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i]));
-						printf("position border x:%d\n", PositionBorders[i].x);
-						messangeFrom[i] = 0;
 					}
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
