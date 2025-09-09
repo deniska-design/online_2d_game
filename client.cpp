@@ -68,10 +68,11 @@ void StartWindow()
 
 int main()
 {    
-    Vector MessangeFrom; 
-    Vector PositionBorders, Position = {0, 0};
+    Vector Position; 
+    Vector PositionBorders;
+    std::variant<Vector, int> messangeFor; 
     bool send = false;
-    int sd, MaxD, SelRes, ReadBytes, key, messangeFor;
+    int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
     FD_ZERO(&readfds);
@@ -89,7 +90,7 @@ int main()
         return -1;
     }
 
-    if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
+    if (0 > (ReadBytes = read(sd, &messangeFrom, sizeof(messangeFrom))))
     {   
         printf( "while connect read error:%d\n", errno);
         return(-1);
@@ -100,6 +101,8 @@ int main()
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
+    messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
+    send = true;
 
     player Player(5, 2);
 
@@ -126,49 +129,29 @@ int main()
 
         //общение с клиентом:
 
-        if(FD_ISSET(STDIN_FILENO, &readfds))        //jopa
+        if(FD_ISSET(STDIN_FILENO, &readfds))
         {
             if (10 != (key = getch()))
-            {  
-                mvprintw(0, 0, "%d\n", Position.x);
-                mvprintw(1, 0, "%d\n", PositionBorders.x);
+            {   
                 switch (key)
                 {
                 case KEY_UP:
-                if (Position.y > 0)	
-				{		
                     messangeFor = KEY_UP;
-                    Position.y--;
-                }
                     break;
                 case KEY_RIGHT:
-                if(Position.x < PositionBorders.x)
-				{
                     messangeFor = KEY_RIGHT;
-                    Position.x++;
-                    mvprintw(0, 0, "%d\n", Position.x);
-                }
                     break;
                 case KEY_LEFT:
-                if (Position.x > 0)
-				{
                     messangeFor = KEY_LEFT;
-                    Position.x--;
-                    mvprintw(0, 0, "%d\n", Position.x);
-                }
                     break;
                 case KEY_DOWN:
-                if(Position.y < PositionBorders.y)
-				{
                     messangeFor = KEY_DOWN;
-                    Position.y++;
-                }
                     break;
                 default:
-                    return 0;
+                    break;
                 } 
                 send = true;
-            }else return -1;
+            }else return(-1);
         }
 
         //конец
@@ -177,7 +160,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
+            if (0 > (ReadBytes = read(sd, &Position, sizeof(Position))))
             {   
                 printf( "read error:%d\n", errno);
                 return(-1);
@@ -187,7 +170,7 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            Player.setPosition(MessangeFrom.y, MessangeFrom.x);
+            Player.setPosition(Position.y, Position.x);
             Player.hidePlayer();
             Player.showPlayer();
         }
@@ -196,7 +179,7 @@ int main()
         {
             if (send)
             {
-                if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
+                if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
                 {
                     printf("ошибка: %d", errno);
                     return -1;
