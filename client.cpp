@@ -100,7 +100,6 @@ int main()
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
-    send = true;
 
     player Player(5, 2);
 
@@ -127,10 +126,12 @@ int main()
 
         //общение с клиентом:
 
-        if(FD_ISSET(STDIN_FILENO, &readfds))
+        if(FD_ISSET(STDIN_FILENO, &readfds))        //jopa
         {
             if (10 != (key = getch()))
-            {   
+            {  
+                mvprintw(0, 0, "%d\n", Position.x);
+                mvprintw(1, 0, "%d\n", PositionBorders.x);
                 switch (key)
                 {
                 case KEY_UP:
@@ -138,7 +139,6 @@ int main()
 				{		
                     messangeFor = KEY_UP;
                     Position.y--;
-                    send = true;
                 }
                     break;
                 case KEY_RIGHT:
@@ -146,7 +146,7 @@ int main()
 				{
                     messangeFor = KEY_RIGHT;
                     Position.x++;
-                    send = true;
+                    mvprintw(0, 0, "%d\n", Position.x);
                 }
                     break;
                 case KEY_LEFT:
@@ -154,7 +154,7 @@ int main()
 				{
                     messangeFor = KEY_LEFT;
                     Position.x--;
-                    send = true;
+                    mvprintw(0, 0, "%d\n", Position.x);
                 }
                     break;
                 case KEY_DOWN:
@@ -162,13 +162,13 @@ int main()
 				{
                     messangeFor = KEY_DOWN;
                     Position.y++;
-                    send = true;
                 }
                     break;
                 default:
-                    break;
+                    return 0;
                 } 
-            }else return(-1);
+                send = true;
+            }else return -1;
         }
 
         //конец
@@ -177,7 +177,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(Position))))
+            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);
                 return(-1);
