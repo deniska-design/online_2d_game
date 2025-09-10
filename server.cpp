@@ -174,7 +174,7 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
-			position[playerCount-1] = {0, 0};
+			//position[playerCount-1] = {0, 0};
 			messangeForAll = position[playerCount-1];
 			for (int n = 0; n < playerCount; n++)
 			{
