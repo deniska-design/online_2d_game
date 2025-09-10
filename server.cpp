@@ -110,10 +110,11 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
-	std::variant<Vector, bool> messangeFor[4][4]; 
+	Vector messangeFor[4]; 
+	Vector messangeForAll;
 	Vector position[4];
 	Vector PositionBorders[4];
-	bool positionChanged[4];
+	bool mustSendAll[4];
     int sd, MaxD, ReadBytes, key;
     int playerCount = 0;
     int pd[4];
@@ -172,8 +173,8 @@ int main()
 
 			for (int n = 0; n < playerCount; n++)
 			{
-				messangeFor[n][playerCount-1] = position[playerCount-1];
-				positionChanged[n] = true;
+				messangeForAll = position[playerCount-1];
+				mustSendAll[n] = true;
 			}
 		}
 
@@ -230,8 +231,8 @@ int main()
 						}
 						for (int n = 0; n < playerCount; n++)
 						{
-							messangeFor[n][i] = position[i];
-							positionChanged[n] = true;
+							messangeForAll = position[i];
+							mustSendAll[n] = true;
 						}
 						printf("position changed\n");
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
@@ -246,24 +247,17 @@ int main()
 		
 		for (int i = 0; i < playerCount; i++)  
 		{
-			if (positionChanged[i])
+			if (mustSendAll[i])
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
-					for (int n = 0; n < playerCount; n++)
+					printf("пришло время отправить сообщение игроку\n");
+					if(write(pd[i], &messangeForAll, sizeof(&messangeForAll)) == -1)
 					{
-						if (std::get<Vector>(messangeFor[i][n]) != (Vector){0, 0})
-						{
-							printf("пришло время отправить сообщение игроку\n");
-							if(write(pd[i], &messangeFor[i][n], sizeof(&messangeFor[i][n])) == -1)
-							{
-								printf("ошибка отправки сообщения:%d", errno);
-								return -1;
-							}else printf("messange was sent\n");
-							positionChanged[i] = false;
-						}
-						messangeFor[i][n] =  (Vector){0, 0};
-					}
+						printf("ошибка отправки сообщения:%d", errno);
+						return -1;
+					}else printf("messange was sent\n");
+					mustSendAll[i] = false;
 				}
 			}
 		}
