@@ -238,7 +238,6 @@ int main()
 					{
 						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i]));
 						printf("position border x:%d\n", PositionBorders[i].x);
-						messangeFrom[i] = 0;
 					}
 				}else PlayerLeaved(playerCount, pd, readfds, i);
 			}
