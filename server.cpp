@@ -111,16 +111,12 @@ int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
 	Vector messange[4]; 
-	for(int n = 0; n < 4; n++)	//можно сделать переменую в которой будет записано сколько надо отправить
-	{
-		messange[n] = (Vector){0, 0};
-	}
 	Vector messangeForAll;
 	Vector position[4];
 	Vector PositionBorders[4];
 	bool mustSendMessangeto[4];
 	bool mustSendAll[4];
-    int sd, MaxD, ReadBytes, key;
+    int sd, MaxD, ReadBytes, key, messangeLenght;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -174,14 +170,14 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
-			//position[playerCount-1] = {0, 0};
 			messangeForAll = position[playerCount-1];
-			for (int n = 0; n < playerCount; n++)
+			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 			{
 				mustSendAll[n] = true;
 				messange[n] = position[n];
 			}
 			mustSendMessangeto[playerCount-1] = true;
+			messangeLenght = playerCount;
 		}
 
         if (FD_ISSET(sd, &exceptfds))
@@ -270,20 +266,17 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
-					for(int n = 0; n < playerCount; n++)	//можно сделать переменую в которой будет записано сколько надо отправить
+					for(;messangeLenght > 0; messangeLenght--)	//можно сделать переменую в которой будет записано сколько надо отправить
 					{
-						if (messange[n] != (Vector){0, 0})
+						printf("пришло время отправить сообщение игроку\n");
+						if(write(pd[i], &messange[messangeLenght], sizeof(&messange[messangeLenght])) == -1)
 						{
-							printf("пришло время отправить сообщение игроку\n");
-							if(write(pd[i], &messange[n], sizeof(&messangeForAll)) == -1)
-							{
-								printf("ошибка отправки сообщения:%d", errno);
-								return -1;
-							}else printf("messange was sent\n");
-							mustSendMessangeto[i] = false;
-							messange[n] = (Vector){0, 0};
-						}
+							printf("ошибка отправки сообщения:%d", errno);
+							return -1;
+						}else printf("messange was sent\n");
+						messange[messangeLenght] = (Vector){0, 0};
 					}
+					mustSendMessangeto[i] = false;
 				}
 			}
 			
