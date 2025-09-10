@@ -111,6 +111,10 @@ int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
 	Vector messange[4]; 
+	for(int n = 0; n < 4; n++)	//можно сделать переменую в которой будет записано сколько надо отправить
+	{
+		messange[n] = (Vector){0, 0};
+	}
 	Vector messangeForAll;
 	Vector position[4];
 	Vector PositionBorders[4];
