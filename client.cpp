@@ -13,7 +13,7 @@
 using namespace std;
 
 const char *ServerIp = "192.168.1.120";
-int ServPort = 9;
+int ServPort = 10;
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {

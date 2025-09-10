@@ -262,6 +262,7 @@ int main()
 							}else printf("messange was sent\n");
 							positionChanged[i] = false;
 						}
+						messangeFor[i][n] = 0;
 					}
 				}
 			}
