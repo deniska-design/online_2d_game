@@ -110,8 +110,8 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
+	std::variant <Vector, bool>messangeForAll = nClrScreen;
 	Vector messange[4]; 
-	Vector messangeForAll;
 	Vector position[4];
 	Vector PositionBorders[4];
 	bool mustSendMessangeto[4];
@@ -204,8 +204,8 @@ int main()
 						switch (key)
 						{
 						case up:
-							if (position[i].y > 0)	//зачем серверу получать границы и потом проверять столкновение с ними
-							{						//пусть игрок сам проверяет это и если игрок заходит за границы не отправляет серверу сообщение
+							if (position[i].y > 0)	
+							{						
 								position[i].y--;	
 							}
 							break;
@@ -246,6 +246,11 @@ int main()
 				{ 
 					PlayerLeaved(playerCount, pd, readfds, i);
 					position[i] = (Vector){0, 0};
+					messangeForAll = ClrScreen;
+					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
+					{
+						mustSendAll[n] = true;
+					}
 				}
 			}
         }

@@ -77,7 +77,7 @@ int main()
     std::variant<Vector, bool> MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
-    bool send = false;
+    bool send, screen = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
@@ -176,14 +176,23 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-                if (std::holds_alternative<Vector>(MessangeFrom))
+            if (std::holds_alternative<Vector>(MessangeFrom))
+            {
+                position = std::get<Vector>(std::move(MessangeFrom));
+                Player.setPosition(position.y, position.x);
+                Player.hidePlayer();
+                Player.showPlayer();
+                MessangeFrom = (Vector){0, 0};
+            }else if (std::holds_alternative<bool>(MessangeFrom))
+            {
+                screen = std::get<bool>(std::move(MessangeFrom));
+                if (screen == ClrScreen)
                 {
-                    position = std::get<Vector>(std::move(MessangeFrom));
-                    Player.setPosition(position.y, position.x);
-                    Player.hidePlayer();
-                    Player.showPlayer();
-                    MessangeFrom = (Vector){0, 0};
+                    endwin();
+                    StartWindow();
                 }
+                MessangeFrom = (Vector){0, 0};
+            }
         }
 
         if(FD_ISSET(sd, &writefds))
