@@ -2,7 +2,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
-#include <cstdio>
+#include <cstdio>	//ehdgkjdf
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include "vector.h"
 
 const char *ip = "192.168.1.120";
-int ServPort = 9;
+int ServPort = 10;
 
 typedef enum 
 {
@@ -110,11 +110,13 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
-	std::variant<Vector, bool> messangeFor[4]; 
+	Vector messange[4]; 
+	Vector messangeForAll;
 	Vector position[4];
 	Vector PositionBorders[4];
-	bool positionChanged[4];
-    int sd, MaxD, ReadBytes, key;
+	bool mustSendMessangeto[4];
+	bool mustSendAll[4];
+    int sd, MaxD, ReadBytes, key, messangeLenght;
     int playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -168,13 +170,14 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
-			position[playerCount-1] = {0, 0};
-
-			for (int n = 0; n < playerCount; n++)
+			messangeForAll = position[playerCount-1];
+			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 			{
-				messangeFor[n] = position[playerCount-1];
-				positionChanged[n] = true;
+				mustSendAll[n] = true;
+				messange[n] = position[n];
 			}
+			mustSendMessangeto[playerCount-1] = true;
+			messangeLenght = playerCount;
 		}
 
         if (FD_ISSET(sd, &exceptfds))
@@ -230,8 +233,8 @@ int main()
 						}
 						for (int n = 0; n < playerCount; n++)
 						{
-							messangeFor[n] = position[i];
-							positionChanged[n] = true;
+							messangeForAll = position[i];
+							mustSendAll[n] = true;
 						}
 						printf("position changed\n");
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
@@ -246,19 +249,38 @@ int main()
 		
 		for (int i = 0; i < playerCount; i++)  
 		{
-			if (positionChanged[i])
+			if (mustSendAll[i])
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
 					printf("пришло время отправить сообщение игроку\n");
-					if(write(pd[i], &messangeFor[i], sizeof(&messangeFor[i])) == -1)
+					if(write(pd[i], &messangeForAll, sizeof(&messangeForAll)) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						return -1;
 					}else printf("messange was sent\n");
-					positionChanged[i] = false;
+					mustSendAll[i] = false;
 				}
 			}
+			if (mustSendMessangeto[i])
+			{
+				if(FD_ISSET(pd[i], &writefds))
+				{
+					while(messangeLenght >= 0)	//можно сделать переменую в которой будет записано сколько надо отправить
+					{
+						printf("пришло время отправить сообщение игроку\n");
+						if(write(pd[i], &messange[messangeLenght], sizeof(&messange[messangeLenght])) == -1)
+						{
+							printf("ошибка отправки сообщения:%d", errno);
+							return -1;
+						}else printf("messange was sent\n");
+						messange[messangeLenght] = (Vector){0, 0};
+						messangeLenght--;
+					}
+					mustSendMessangeto[i] = false;
+				}
+			}
+			
 		}
 		
 	//конец
