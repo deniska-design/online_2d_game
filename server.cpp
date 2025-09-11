@@ -9,6 +9,7 @@
 #include <variant>
 
 #include "vector.h"
+#include "player.h"
 
 const char *ip = "192.168.1.120";
 int ServPort = 10;
@@ -20,12 +21,6 @@ typedef enum
     down	= 	258,      // Key: Cursor down
     up		=	259,	  // Key: Cursor up
 }keybordArrows;
-
-enum 
-{
-	ClrScreen	=	1,      // Key: Cursor right
-    nClrScreen	=	0,      // Key: Cursor left
-};
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
@@ -110,9 +105,9 @@ int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
-	std::variant <Vector, bool>messangeForAll = nClrScreen;
+	Vector messangeForAll;
 	Vector messange[4]; 
-	Vector position[4];
+	player Player[4];
 	Vector PositionBorders[4];
 	bool mustSendMessangeto[4];
 	bool mustSendAll[4];
@@ -169,11 +164,11 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
-			messangeForAll = position[playerCount-1];
+			messangeForAll = Player[playerCount-1].GetPosition();
 			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 			{
 				mustSendAll[n] = true;
-				messange[n] = position[n];
+				messange[n] = Player[n].GetPosition();
 			}
 			mustSendMessangeto[playerCount-1] = true;
 			messangeLenght = playerCount;
@@ -204,27 +199,27 @@ int main()
 						switch (key)
 						{
 						case up:
-							if (position[i].y > 0)	
+							if (Player[i].GetY() > 0)	
 							{						
-								position[i].y--;	
+								Player[i].GetY()--;	
 							}
 							break;
 						case right:
-							if(position[i].x < PositionBorders[i].x)
+							if(Player[i].GetX() < PositionBorders[i].x)
 							{
-								position[i].x++;
+								Player[i].GetX()++;
 							}
 							break;
 						case left:
-							if (position[i].x > 0)
+							if (Player[i].GetX() > 0)
 							{
-								position[i].x--;
+								Player[i].GetX()--;
 							}
 							break;
 						case down:
-							if(position[i].y < PositionBorders[i].y)
+							if(Player[i].GetY() < PositionBorders[i].y)
 							{
-								position[i].y++;
+								Player[i].GetY()++;
 							}
 							break;
 						default:
@@ -232,7 +227,7 @@ int main()
 						}
 						for (int n = 0; n < playerCount; n++)
 						{
-							messangeForAll = position[i];
+							messangeForAll = Player[i].GetPosition();
 							mustSendAll[n] = true;
 						}
 						printf("position changed\n");
@@ -242,15 +237,9 @@ int main()
 						printf("position border x:%d\n", PositionBorders[i].x);
 						messangeFrom[i] = 0;
 					}
-				}else
+				}else	
 				{ 
-					position[i] = (Vector){0, 0};
 					PlayerLeaved(playerCount, pd, readfds, i);
-					messangeForAll = ClrScreen;
-					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
-					{
-						mustSendAll[n] = true;
-					}
 				}
 			}
         }

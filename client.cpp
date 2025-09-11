@@ -15,12 +15,6 @@ using namespace std;
 const char *ServerIp = "192.168.1.120";
 int ServPort = 10;
 
-enum 
-{
-	ClrScreen	=	1,      
-    nClrScreen	=	0,
-};
-
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
@@ -77,7 +71,8 @@ int main()
     std::variant<Vector, bool> MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
-    bool send, screen = false;
+    player Player(5, 2);
+    bool send = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
@@ -109,8 +104,6 @@ int main()
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
     messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
     send = true;
-
-    player Player(5, 2);
 
     //начало бесконечного цыкла
 
@@ -185,11 +178,6 @@ int main()
                 MessangeFrom = (Vector){0, 0};
             }else if (std::holds_alternative<bool>(MessangeFrom))
             {
-                screen = std::get<bool>(std::move(MessangeFrom));
-                if (screen == ClrScreen)
-                {
-                    clear();
-                }
                 MessangeFrom = (Vector){0, 0};
             }
         }
