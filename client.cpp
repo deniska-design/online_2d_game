@@ -166,7 +166,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
+            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(&MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);
                 return(-1);
@@ -176,16 +176,14 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            if (std::holds_alternative<Vector>(MessangeFrom))
-            {
-                position = std::get<Vector>(MessangeFrom);
-                Player.setPosition(position.y, position.x);
-                Player.hidePlayer();
-                Player.showPlayer();
-            }else if(std::holds_alternative<bool>(MessangeFrom))
-            {
-
-            }
+                if (std::holds_alternative<Vector>(MessangeFrom))
+                {
+                    position = std::get<Vector>(std::move(MessangeFrom));
+                    Player.setPosition(position.y, position.x);
+                    Player.hidePlayer();
+                    Player.showPlayer();
+                    MessangeFrom = (Vector){0, 0};
+                }
         }
 
         if(FD_ISSET(sd, &writefds))

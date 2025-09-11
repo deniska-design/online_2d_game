@@ -143,7 +143,6 @@ int main()
 
     while (true)
     {
-		
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
         if ((select(MaxD+1, &readfds, &writefds, &exceptfds, NULL)) == -1)
@@ -239,11 +238,15 @@ int main()
 						printf("position changed\n");
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 					{
-						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i]));
+						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i])); //похоже move тут не нужен попробуй его убрать и посотреть будет ли оно работать
 						printf("position border x:%d\n", PositionBorders[i].x);
 						messangeFrom[i] = 0;
 					}
-				}else PlayerLeaved(playerCount, pd, readfds, i);
+				}else
+				{ 
+					PlayerLeaved(playerCount, pd, readfds, i);
+					position[i] = (Vector){0, 0};
+				}
 			}
         }
 		
