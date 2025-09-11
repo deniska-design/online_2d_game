@@ -15,6 +15,12 @@ using namespace std;
 const char *ServerIp = "192.168.1.120";
 int ServPort = 10;
 
+enum 
+{
+	ClrScreen	=	1,      
+    nClrScreen	=	0,
+};
+
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
@@ -68,11 +74,11 @@ void StartWindow()
 
 int main()
 {    
-    Vector Position; 
-    Vector PositionBorders;
+    std::variant<Vector, bool> MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
+    Vector PositionBorders, position;
     bool send = false;
-    int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
+    int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
     FD_ZERO(&readfds);
@@ -90,7 +96,7 @@ int main()
         return -1;
     }
 
-    if (0 > (ReadBytes = read(sd, &messangeFrom, sizeof(messangeFrom))))
+    if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
     {   
         printf( "while connect read error:%d\n", errno);
         return(-1);
@@ -160,7 +166,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &Position, sizeof(Position))))
+            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);
                 return(-1);
@@ -170,9 +176,16 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            Player.setPosition(Position.y, Position.x);
-            Player.hidePlayer();
-            Player.showPlayer();
+            if (std::holds_alternative<Vector>(MessangeFrom))
+            {
+                position = std::get<Vector>(MessangeFrom);
+                Player.setPosition(position.y, position.x);
+                Player.hidePlayer();
+                Player.showPlayer();
+            }else if(std::holds_alternative<bool>(MessangeFrom))
+            {
+
+            }
         }
 
         if(FD_ISSET(sd, &writefds))
