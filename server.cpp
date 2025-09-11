@@ -268,7 +268,7 @@ int main()
 				{
 					while(messangeLenght >= 0)	//можно сделать переменую в которой будет записано сколько надо отправить
 					{
-						printf("пришло время отправить сообщение игроку\n");
+						printf("пришло время отправить длиное сообщение одному игроку\n");
 						if(write(pd[i], &messange[messangeLenght], sizeof(&messange[messangeLenght])) == -1)
 						{
 							printf("ошибка отправки сообщения:%d", errno);
