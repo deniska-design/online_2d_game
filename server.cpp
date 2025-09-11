@@ -266,9 +266,9 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
+					printf("пришло время отправить длиное сообщение одному игроку\n");
 					while(messangeLenght >= 0)	//можно сделать переменую в которой будет записано сколько надо отправить
 					{
-						printf("пришло время отправить длиное сообщение одному игроку\n");
 						if(write(pd[i], &messange[messangeLenght], sizeof(&messange[messangeLenght])) == -1)
 						{
 							printf("ошибка отправки сообщения:%d", errno);
