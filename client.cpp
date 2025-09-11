@@ -188,8 +188,7 @@ int main()
                 screen = std::get<bool>(std::move(MessangeFrom));
                 if (screen == ClrScreen)
                 {
-                    endwin();
-                    StartWindow();
+                    clear();
                 }
                 MessangeFrom = (Vector){0, 0};
             }

@@ -244,8 +244,8 @@ int main()
 					}
 				}else
 				{ 
-					PlayerLeaved(playerCount, pd, readfds, i);
 					position[i] = (Vector){0, 0};
+					PlayerLeaved(playerCount, pd, readfds, i);
 					messangeForAll = ClrScreen;
 					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 					{
