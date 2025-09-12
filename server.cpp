@@ -91,13 +91,12 @@ int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds,
 	return 0;
 }
 
-void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, player Player[4])
+void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
 {
 	printf("игрок ливнул. туда его\n");
 	shutdown(pd[playerNum], SHUT_RDWR);
 	close(pd[playerNum]);
 	FD_CLR(pd[playerNum], &fds);
-	Player[playerNum] = Player[playerCount-1];
 	pd[playerNum] = pd[playerCount-1];
 	playerCount--;
 }
@@ -164,6 +163,7 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
+			Player[playerCount-1].setPosition(0, 0);
 			//Player[playerCount-1].setStatue(alive);
 			messangeForAll.setPosition(Player[playerCount-1].GetY(), Player[playerCount-1].GetX());
 			//messangeForAll.setStatue(Player[playerCount-1].getStatue());
@@ -249,7 +249,7 @@ int main()
 						mustSendAll[n] = true;
 					}*/
 					
-					PlayerLeaved(playerCount, pd, readfds, i, Player); 	//какая та залупа
+					PlayerLeaved(playerCount, pd, readfds, i); 	//какая та залупа
 				}
 			}
         }
