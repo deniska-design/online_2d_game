@@ -91,22 +91,22 @@ int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds,
 	return 0;
 }
 
-int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
+void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, player Player[4])
 {
 	printf("игрок ливнул. туда его\n");
 	shutdown(pd[playerNum], SHUT_RDWR);
 	close(pd[playerNum]);
 	FD_CLR(pd[playerNum], &fds);
+	Player[playerNum] = Player[playerCount-1];
 	pd[playerNum] = pd[playerCount-1];
 	playerCount--;
-	return 0;
 }
 
 int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
-	Vector messangeForAll;
-	Vector messange[4]; 
+	player messangeForAll;
+	player messange[4]; 
 	player Player[4];
 	Vector PositionBorders[4];
 	bool mustSendMessangeto[4];
@@ -164,11 +164,14 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
-			messangeForAll = Player[playerCount-1].GetPosition();
+			//Player[playerCount-1].setStatue(alive);
+			messangeForAll.setPosition(Player[playerCount-1].GetY(), Player[playerCount-1].GetX());
+			//messangeForAll.setStatue(Player[playerCount-1].getStatue());
 			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 			{
 				mustSendAll[n] = true;
-				messange[n] = Player[n].GetPosition();
+				messange[n].setPosition(Player[n].GetY(), Player[n].GetX());
+				//messange[n].setStatue(Player[n].getStatue());
 			}
 			mustSendMessangeto[playerCount-1] = true;
 			messangeLenght = playerCount;
@@ -225,9 +228,9 @@ int main()
 						default:
 							break;
 						}
+						messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
 						for (int n = 0; n < playerCount; n++)
 						{
-							messangeForAll = Player[i].GetPosition();
 							mustSendAll[n] = true;
 						}
 						printf("position changed\n");
@@ -239,7 +242,14 @@ int main()
 					}
 				}else	
 				{ 
-					PlayerLeaved(playerCount, pd, readfds, i);
+					/*messangeForAll.setStatue(dead);
+					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
+					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
+					{
+						mustSendAll[n] = true;
+					}*/
+					
+					PlayerLeaved(playerCount, pd, readfds, i, Player); 	//какая та залупа
 				}
 			}
         }
@@ -264,14 +274,14 @@ int main()
 				if(FD_ISSET(pd[i], &writefds))
 				{
 					printf("пришло время отправить длиное сообщение одному игроку\n");
-					while(messangeLenght >= 0)	//можно сделать переменую в которой будет записано сколько надо отправить
+					while(messangeLenght >= 0)	
 					{
 						if(write(pd[i], &messange[messangeLenght], sizeof(&messange[messangeLenght])) == -1)
 						{
 							printf("ошибка отправки сообщения:%d", errno);
 							return -1;
 						}else printf("messange was sent\n");
-						messange[messangeLenght] = (Vector){0, 0};
+						messange[messangeLenght].setPosition(0, 0);
 						messangeLenght--;
 					}
 					mustSendMessangeto[i] = false;
