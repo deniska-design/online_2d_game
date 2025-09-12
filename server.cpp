@@ -248,6 +248,7 @@ int main()
 					{
 						mustSendAll[n] = true;
 					}*/
+					Player[i].setPosition(0, 0);
 					PlayerLeaved(playerCount, pd, readfds, i);
 				}
 			}
