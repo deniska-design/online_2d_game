@@ -106,7 +106,7 @@ int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
 	player messangeForAll;
-	Vector messange[4]; 
+	player messange[4]; 
 	player Player[4];
 	Vector PositionBorders[4];
 	bool mustSendMessangeto[4];
@@ -170,7 +170,8 @@ int main()
 			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 			{
 				mustSendAll[n] = true;
-				messange[n] = Player[n].GetPosition();
+				messange[n].setPosition(Player[n].GetY(), Player[n].GetX());
+				messange[n].setStatue(Player[n].getStatue());
 			}
 			mustSendMessangeto[playerCount-1] = true;
 			messangeLenght = playerCount;
@@ -280,7 +281,6 @@ int main()
 							printf("ошибка отправки сообщения:%d", errno);
 							return -1;
 						}else printf("messange was sent\n");
-						messange[messangeLenght] = (Vector){0, 0};
 						messangeLenght--;
 					}
 					mustSendMessangeto[i] = false;
