@@ -68,7 +68,7 @@ void StartWindow()
 
 int main()
 {    
-    std::variant<Vector, bool> MessangeFrom; 
+    player MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
     player Player(5, 2);
@@ -169,17 +169,18 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            if (std::holds_alternative<Vector>(MessangeFrom))
+            if (MessangeFrom.getStatue())
             {
-                position = std::get<Vector>(std::move(MessangeFrom));
+                position = MessangeFrom.GetPosition();
                 Player.setPosition(position.y, position.x);
                 Player.hidePlayer();
                 Player.showPlayer();
-                MessangeFrom = (Vector){0, 0};
-            }else if (std::holds_alternative<bool>(MessangeFrom))
+            }else
             {
-                MessangeFrom = (Vector){0, 0};
-            }
+                position = MessangeFrom.GetPosition();
+                Player.setPosition(position.y, position.x);
+                Player.hidePlayer();
+            }            
         }
 
         if(FD_ISSET(sd, &writefds))
