@@ -5,14 +5,14 @@
 
 enum 
 {
-	alive	=	true,      // Key: Cursor right
-    dead	=	false,      // Key: Cursor left
+	alive	=	1,      // Key: Cursor right
+    dead	=	0,      // Key: Cursor left
 };
 
 class player
 {
     Vector position;
-    int PlayerHigh, PlayerWidth;
+    int MaxX, MaxY, PlayerHigh, PlayerWidth;
     bool AliveOrNot;
 public:
     player();
@@ -24,7 +24,6 @@ public:
     Vector &GetPosition();
     void setPosition(int NewY, int NewX);
     void setStatue(bool newStatue);
-    bool getStatue();
 };
 
 player::player()
@@ -88,10 +87,4 @@ void player::setStatue(bool newStatue)
 {
     AliveOrNot = newStatue;
 }
-
-bool player::getStatue()
-{
-    return AliveOrNot;
-}
-
 #endif
