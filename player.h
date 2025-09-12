@@ -29,7 +29,6 @@ public:
 
 player::player()
 {
-    AliveOrNot = dead;
     PlayerHigh = 5;
     PlayerWidth = 2;
 }

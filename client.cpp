@@ -169,18 +169,14 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
+            position = MessangeFrom.GetPosition();
+            Player.setPosition(position.y, position.x);
+            Player.hidePlayer();
             if (MessangeFrom.getStatue())
             {
-                position = MessangeFrom.GetPosition();
-                Player.setPosition(position.y, position.x);
-                Player.hidePlayer();
+                printf("fsjkfsfb\n");
                 Player.showPlayer();
-            }else
-            {
-                position = MessangeFrom.GetPosition();
-                Player.setPosition(position.y, position.x);
-                Player.hidePlayer();
-            }            
+            }
         }
 
         if(FD_ISSET(sd, &writefds))
