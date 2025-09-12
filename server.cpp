@@ -248,7 +248,6 @@ int main()
 					{
 						mustSendAll[n] = true;
 					}*/
-					Player[i].setPosition(0, 0);
 					PlayerLeaved(playerCount, pd, readfds, i);
 				}
 			}
@@ -281,6 +280,7 @@ int main()
 							printf("ошибка отправки сообщения:%d", errno);
 							return -1;
 						}else printf("messange was sent\n");
+						messange[messangeLenght].setPosition(0, 0);
 						messangeLenght--;
 					}
 					mustSendMessangeto[i] = false;
