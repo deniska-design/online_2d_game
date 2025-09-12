@@ -228,9 +228,9 @@ int main()
 						default:
 							break;
 						}
+						messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
 						for (int n = 0; n < playerCount; n++)
 						{
-							messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
 							mustSendAll[n] = true;
 						}
 						printf("position changed\n");
