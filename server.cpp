@@ -242,12 +242,12 @@ int main()
 					}
 				}else	
 				{ 
-					//messangeForAll.setStatue(dead);
+					/*messangeForAll.setStatue(dead);
 					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
 					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 					{
 						mustSendAll[n] = true;
-					}
+					}*/
 					PlayerLeaved(playerCount, pd, readfds, i);
 				}
 			}
