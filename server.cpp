@@ -242,8 +242,7 @@ int main()
 					}
 				}else	
 				{ 
-					Player[i].setStatue(dead);
-					messangeForAll.setStatue(Player[i].getStatue());
+					messangeForAll.setStatue(dead);
 					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
 					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 					{

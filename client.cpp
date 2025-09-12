@@ -172,11 +172,10 @@ int main()
             position = MessangeFrom.GetPosition();
             Player.setPosition(position.y, position.x);
             Player.hidePlayer();
-            if (MessangeFrom.getStatue())
-            {
-                printf("fsjkfsfb\n");
+            //if (MessangeFrom.getStatue())
+            //{
                 Player.showPlayer();
-            }
+            //}
         }
 
         if(FD_ISSET(sd, &writefds))
