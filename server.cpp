@@ -244,13 +244,13 @@ int main()
 					}
 				}else	
 				{ 
+					PlayerLeaved(playerCount, pd, readfds, i, Player); 
 					messangeForAll.setStatue(dead);
-					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
+					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());	
 					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 					{
 						mustSendAll[n] = true;
 					}
-					PlayerLeaved(playerCount, pd, readfds, i, Player); 	
 					HowManyMustSend = playerCount;
 				}
 			}
