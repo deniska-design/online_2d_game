@@ -256,7 +256,7 @@ int main()
 			}
         }
 		
-		for (int i = HowManyMustSend; i > 0; i--)  
+		for (int i = HowManyMustSend; i > -1; i--)  
 		{
 			if (mustSendAll[i])
 			{
