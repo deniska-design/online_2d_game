@@ -43,15 +43,12 @@ player::player(int PlayerH, int PlayerW)
 
 void player::showPlayer() const
 {
-    if (AliveOrNot == alive)
+    for(int i = position.y; i < position.y + PlayerHigh; i++)
     {
-        for(int i = position.y; i < position.y + PlayerHigh; i++)
+        for (int n = position.x; n < position.x + PlayerWidth; n++)
         {
-            for (int n = position.x; n < position.x + PlayerWidth; n++)
-            {
-                move(i, n);
-                addch('*');
-            }
+            move(i, n);
+            addch('*');
         }
     }
 }

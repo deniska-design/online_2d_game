@@ -172,7 +172,12 @@ int main()
             position = MessangeFrom.GetPosition();
             Player.setPosition(position.y, position.x);
             Player.hidePlayer();
-            Player.showPlayer();
+            mvprintw(0, 0, "      ");
+            if (MessangeFrom.getStatue() == alive)
+            {
+                mvprintw(0, 0, "я гей!!");
+                Player.showPlayer();
+            }
         }
 
         if(FD_ISSET(sd, &writefds))

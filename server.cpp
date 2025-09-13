@@ -111,7 +111,7 @@ int main()
 	Vector PositionBorders[4];
 	bool mustSendMessangeto[4];
 	bool mustSendAll[4];
-    int sd, MaxD, ReadBytes, key, messangeLenght = 0, HowManyMustSend = 0, playerCount = 0;
+    int sd, MaxD, ReadBytes, key, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
@@ -167,7 +167,7 @@ int main()
 			Player[playerCount-1].setStatue(alive);
 			messangeForAll.setPosition(Player[playerCount-1].GetY(), Player[playerCount-1].GetX());
 			messangeForAll.setStatue(Player[playerCount-1].getStatue());
-			HowManyMustSend = playerCount;
+			WhowMustSend = playerCount;
 			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 			{
 				mustSendAll[n] = true;
@@ -230,7 +230,7 @@ int main()
 							break;
 						}
 						messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
-						HowManyMustSend = playerCount;
+						WhowMustSend = playerCount;
 						for (int n = 0; n < playerCount; n++)
 						{
 							mustSendAll[n] = true;
@@ -251,12 +251,12 @@ int main()
 					{
 						mustSendAll[n] = true;
 					}
-					HowManyMustSend = playerCount;
+					WhowMustSend = playerCount;
 				}
 			}
         }
 		
-		for (int i = 0; i < HowManyMustSend; i++)  
+		for (int i = 0; i < WhowMustSend; i++)  
 		{
 			if (mustSendAll[i])
 			{
@@ -272,7 +272,7 @@ int main()
 				}
 			}
 		}
-		HowManyMustSend = 0;
+		WhowMustSend = 0;
 		for (int i = 0; i < playerCount; i++)
 		{
 			if (mustSendMessangeto[i])
