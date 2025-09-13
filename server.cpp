@@ -165,14 +165,14 @@ int main()
 				return -1;
 			}
 			Player[playerCount-1].setPosition(0, 0);
-			//Player[playerCount-1].setStatue(alive);
+			Player[playerCount-1].setStatue(alive);
 			messangeForAll.setPosition(Player[playerCount-1].GetY(), Player[playerCount-1].GetX());
-			//messangeForAll.setStatue(Player[playerCount-1].getStatue());
+			messangeForAll.setStatue(Player[playerCount-1].getStatue());
 			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 			{
 				mustSendAll[n] = true;
 				messange[n].setPosition(Player[n].GetY(), Player[n].GetX());
-				//messange[n].setStatue(Player[n].getStatue());
+				messange[n].setStatue(Player[n].getStatue());
 			}
 			mustSendMessangeto[playerCount-1] = true;
 			messangeLenght = playerCount;
@@ -243,12 +243,12 @@ int main()
 					}
 				}else	
 				{ 
-					/*messangeForAll.setStatue(dead);
+					messangeForAll.setStatue(dead);
 					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
 					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 					{
 						mustSendAll[n] = true;
-					}*/
+					}
 					
 					PlayerLeaved(playerCount, pd, readfds, i, Player); 	//какая та залупа
 				}
