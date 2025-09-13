@@ -91,12 +91,13 @@ int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds,
 	return 0;
 }
 
-void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
+void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, player Player[4])
 {
 	printf("игрок ливнул. туда его\n");
 	shutdown(pd[playerNum], SHUT_RDWR);
 	close(pd[playerNum]);
 	FD_CLR(pd[playerNum], &fds);
+	Player[playerNum] = Player[playerCount-1];
 	pd[playerNum] = pd[playerCount-1];
 	playerCount--;
 }
@@ -249,7 +250,7 @@ int main()
 						mustSendAll[n] = true;
 					}*/
 					
-					PlayerLeaved(playerCount, pd, readfds, i); 	//какая та залупа
+					PlayerLeaved(playerCount, pd, readfds, i, Player); 	//какая та залупа
 				}
 			}
         }
