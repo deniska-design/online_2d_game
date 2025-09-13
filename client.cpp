@@ -172,12 +172,7 @@ int main()
             position = MessangeFrom.GetPosition();
             Player.setPosition(position.y, position.x);
             Player.hidePlayer();
-            mvprintw(0, 0, "    ");
-            if (MessangeFrom.getStatue() == alive)
-            {
-                mvprintw(0, 0, "%d", MessangeFrom.getStatue());
-                Player.showPlayer();
-            }
+            Player.showPlayer();
         }
 
         if(FD_ISSET(sd, &writefds))

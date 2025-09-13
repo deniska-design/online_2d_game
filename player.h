@@ -31,22 +31,27 @@ player::player()
 {
     PlayerHigh = 5;
     PlayerWidth = 2;
+    AliveOrNot = alive;
 }
 
 player::player(int PlayerH, int PlayerW)
 {
     PlayerHigh = PlayerH;
     PlayerWidth = PlayerW;
+    AliveOrNot = alive;
 }
 
 void player::showPlayer() const
 {
-    for(int i = position.y; i < position.y + PlayerHigh; i++)
+    if (AliveOrNot == alive)
     {
-        for (int n = position.x; n < position.x + PlayerWidth; n++)
+        for(int i = position.y; i < position.y + PlayerHigh; i++)
         {
-            move(i, n);
-            addch('*');
+            for (int n = position.x; n < position.x + PlayerWidth; n++)
+            {
+                move(i, n);
+                addch('*');
+            }
         }
     }
 }
