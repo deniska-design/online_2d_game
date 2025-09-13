@@ -246,17 +246,17 @@ int main()
 				{ 
 					messangeForAll.setStatue(dead);
 					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
-					HowManyMustSend = playerCount;
 					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 					{
 						mustSendAll[n] = true;
 					}
 					PlayerLeaved(playerCount, pd, readfds, i, Player); 	//какая та залупа
+					HowManyMustSend = playerCount;
 				}
 			}
         }
 		
-		for (int i = HowManyMustSend; i > -1; i--)  
+		for (int i = 0; i < HowManyMustSend; i++)  
 		{
 			if (mustSendAll[i])
 			{
@@ -271,6 +271,10 @@ int main()
 					mustSendAll[i] = false;
 				}
 			}
+		}
+		HowManyMustSend = 0;
+		for (int i = 0; i < playerCount; i++)
+		{
 			if (mustSendMessangeto[i])
 			{
 				if(FD_ISSET(pd[i], &writefds))
@@ -283,15 +287,12 @@ int main()
 							printf("ошибка отправки сообщения:%d", errno);
 							return -1;
 						}else printf("messange was sent\n");
-						messange[messangeLenght].setPosition(0, 0);
 						messangeLenght--;
 					}
 					mustSendMessangeto[i] = false;
 				}
 			}
-			HowManyMustSend = i;
 		}
-		
 	//конец
 
         for (int i = 0; i < playerCount; i++)
