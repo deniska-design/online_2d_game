@@ -159,7 +159,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(&MessangeFrom))))
+            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);
                 return(-1);
@@ -169,7 +169,7 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            printf("%d\n", MessangeFrom.getStatue());
+            mvprintw(0, 0,"%d\n", MessangeFrom.getStatue());
             position = MessangeFrom.GetPosition();
             Player.setPosition(position.y, position.x);
             Player.hidePlayer();

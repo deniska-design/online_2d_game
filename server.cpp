@@ -264,7 +264,7 @@ int main()
 				{
 					printf("%d\n", messangeForAll.getStatue());
 					printf("пришло время отправить сообщение игроку\n");
-					if(write(pd[i], &messangeForAll, sizeof(&messangeForAll)) == -1)
+					if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						return -1;
