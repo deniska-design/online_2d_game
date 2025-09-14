@@ -283,7 +283,7 @@ int main()
 					printf("пришло время отправить длиное сообщение одному игроку\n");
 					while(messangeLenght >= 0)	
 					{
-						if(write(pd[i], &messange[messangeLenght], sizeof(&messange[messangeLenght])) == -1)
+						if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 						{
 							printf("ошибка отправки сообщения:%d", errno);
 							return -1;
