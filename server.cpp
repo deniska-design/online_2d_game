@@ -229,6 +229,7 @@ int main()
 						default:
 							break;
 						}
+						messangeForAll.setStatue(alive);
 						messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
 						WhowMustSend = playerCount;
 						for (int n = 0; n < playerCount; n++)
