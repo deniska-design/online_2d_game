@@ -262,7 +262,7 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
-					printf("%d", messangeForAll.getStatue());
+					printf("%d\n", messangeForAll.getStatue());
 					printf("пришло время отправить сообщение игроку\n");
 					if(write(pd[i], &messangeForAll, sizeof(&messangeForAll)) == -1)
 					{

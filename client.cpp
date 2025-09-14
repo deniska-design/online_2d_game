@@ -169,7 +169,7 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            mvprintw(1, 0, "messange from server\n");
+            mvprintw(0, 0,"%d\n", MessangeFrom.getStatue());
             position = MessangeFrom.GetPosition();
             Player.setPosition(position.y, position.x);
             Player.hidePlayer();
