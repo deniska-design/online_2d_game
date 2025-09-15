@@ -68,11 +68,12 @@ void StartWindow()
 
 int main()
 {    
-    Vector Position; 
-    Vector PositionBorders;
+    player MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
+    Vector PositionBorders, position;
+    player Player(5, 2);
     bool send = false;
-    int sd, MaxD, SelRes, ReadBytes, key, messangeFrom;
+    int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds, exceptfds;
     FD_ZERO(&readfds);
@@ -90,7 +91,7 @@ int main()
         return -1;
     }
 
-    if (0 > (ReadBytes = read(sd, &messangeFrom, sizeof(messangeFrom))))
+    if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
     {   
         printf( "while connect read error:%d\n", errno);
         return(-1);
@@ -103,8 +104,6 @@ int main()
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
     messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
     send = true;
-
-    player Player(5, 2);
 
     //начало бесконечного цыкла
 
@@ -160,7 +159,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &Position, sizeof(Position))))
+            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);
                 return(-1);
@@ -170,9 +169,13 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            Player.setPosition(Position.y, Position.x);
+            position = MessangeFrom.GetPosition();
+            Player.setPosition(position.y, position.x);
             Player.hidePlayer();
-            Player.showPlayer();
+            if (MessangeFrom.getStatue() == alive)  // усливоие всегда выполняется хз поч
+            {
+                Player.showPlayer();
+            }
         }
 
         if(FD_ISSET(sd, &writefds))

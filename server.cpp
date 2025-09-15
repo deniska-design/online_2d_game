@@ -9,6 +9,7 @@
 #include <variant>
 
 #include "vector.h"
+#include "player.h"
 
 const char *ip = "192.168.1.120";
 int ServPort = 10;
@@ -20,12 +21,6 @@ typedef enum
     down	= 	258,      // Key: Cursor down
     up		=	259,	  // Key: Cursor up
 }keybordArrows;
-
-enum 
-{
-	ClrScreen	=	1,      // Key: Cursor right
-    nClrScreen	=	0,      // Key: Cursor left
-};
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
@@ -96,28 +91,27 @@ int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds,
 	return 0;
 }
 
-int PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum)
+void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, player Player[4])
 {
 	printf("игрок ливнул. туда его\n");
 	shutdown(pd[playerNum], SHUT_RDWR);
 	close(pd[playerNum]);
 	FD_CLR(pd[playerNum], &fds);
+	Player[playerNum] = Player[playerCount-1];
 	pd[playerNum] = pd[playerCount-1];
 	playerCount--;
-	return 0;
 }
 
 int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
-	Vector messange[4]; 
-	Vector messangeForAll;
-	Vector position[4];
+	player messangeForAll;
+	player messange[4]; 
+	player Player[4];
 	Vector PositionBorders[4];
 	bool mustSendMessangeto[4];
 	bool mustSendAll[4];
-    int sd, MaxD, ReadBytes, key, messangeLenght;
-    int playerCount = 0;
+    int sd, MaxD, ReadBytes, key, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
@@ -143,7 +137,6 @@ int main()
 
     while (true)
     {
-		
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
         if ((select(MaxD+1, &readfds, &writefds, &exceptfds, NULL)) == -1)
@@ -170,11 +163,16 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
-			messangeForAll = position[playerCount-1];
+			Player[playerCount-1].setPosition(0, 0);
+			Player[playerCount-1].setStatue(alive);
+			messangeForAll.setPosition(Player[playerCount-1].GetY(), Player[playerCount-1].GetX());
+			messangeForAll.setStatue(Player[playerCount-1].getStatue());
+			WhowMustSend = playerCount;
 			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
 			{
 				mustSendAll[n] = true;
-				messange[n] = position[n];
+				messange[n].setPosition(Player[n].GetY(), Player[n].GetX());
+				messange[n].setStatue(Player[n].getStatue());
 			}
 			mustSendMessangeto[playerCount-1] = true;
 			messangeLenght = playerCount;
@@ -205,56 +203,69 @@ int main()
 						switch (key)
 						{
 						case up:
-							if (position[i].y > 0)	//зачем серверу получать границы и потом проверять столкновение с ними
-							{						//пусть игрок сам проверяет это и если игрок заходит за границы не отправляет серверу сообщение
-								position[i].y--;	
+							if (Player[i].GetY() > 0)	
+							{						
+								Player[i].GetY()--;	
 							}
 							break;
 						case right:
-							if(position[i].x < PositionBorders[i].x)
+							if(Player[i].GetX() < PositionBorders[i].x)
 							{
-								position[i].x++;
+								Player[i].GetX()++;
 							}
 							break;
 						case left:
-							if (position[i].x > 0)
+							if (Player[i].GetX() > 0)
 							{
-								position[i].x--;
+								Player[i].GetX()--;
 							}
 							break;
 						case down:
-							if(position[i].y < PositionBorders[i].y)
+							if(Player[i].GetY() < PositionBorders[i].y)
 							{
-								position[i].y++;
+								Player[i].GetY()++;
 							}
 							break;
 						default:
 							break;
 						}
+						messangeForAll.setStatue(alive);
+						messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
+						WhowMustSend = playerCount;
 						for (int n = 0; n < playerCount; n++)
 						{
-							messangeForAll = position[i];
 							mustSendAll[n] = true;
 						}
 						printf("position changed\n");
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 					{
-						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i]));
+						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i])); //похоже move тут не нужен попробуй его убрать и посотреть будет ли оно работать
 						printf("position border x:%d\n", PositionBorders[i].x);
 						messangeFrom[i] = 0;
 					}
-				}else PlayerLeaved(playerCount, pd, readfds, i);
+				}else	
+				{ 
+					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());	
+					messangeForAll.setStatue(dead);
+					PlayerLeaved(playerCount, pd, readfds, i, Player); 
+					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
+					{
+						mustSendAll[n] = true;
+					}
+					WhowMustSend = playerCount;
+
+				}
 			}
         }
 		
-		for (int i = 0; i < playerCount; i++)  
+		for (int i = 0; i < WhowMustSend; i++)  
 		{
 			if (mustSendAll[i])
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
 					printf("пришло время отправить сообщение игроку\n");
-					if(write(pd[i], &messangeForAll, sizeof(&messangeForAll)) == -1)
+					if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						return -1;
@@ -262,27 +273,28 @@ int main()
 					mustSendAll[i] = false;
 				}
 			}
+		}
+		WhowMustSend = 0;
+		for (int i = 0; i < playerCount; i++)
+		{
 			if (mustSendMessangeto[i])
 			{
 				if(FD_ISSET(pd[i], &writefds))
 				{
-					while(messangeLenght >= 0)	//можно сделать переменую в которой будет записано сколько надо отправить
+					printf("пришло время отправить длиное сообщение одному игроку\n");
+					while(messangeLenght >= 0)	
 					{
-						printf("пришло время отправить сообщение игроку\n");
-						if(write(pd[i], &messange[messangeLenght], sizeof(&messange[messangeLenght])) == -1)
+						if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 						{
 							printf("ошибка отправки сообщения:%d", errno);
 							return -1;
 						}else printf("messange was sent\n");
-						messange[messangeLenght] = (Vector){0, 0};
 						messangeLenght--;
 					}
 					mustSendMessangeto[i] = false;
 				}
 			}
-			
 		}
-		
 	//конец
 
         for (int i = 0; i < playerCount; i++)
