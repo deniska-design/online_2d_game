@@ -102,6 +102,26 @@ void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, player P
 	playerCount--;
 }
 
+void SetMessangeForAll(player &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], player newValue)
+{
+	messangeForAll = newValue;
+	WhowMustSend = NewWhomMustSend;
+	for (int n = 0; n < WhowMustSend; n++)	
+	{
+		mustSendAll[n] = true;
+	}
+}
+
+void SetMessange(player messange[4], player newValue[4], bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
+{
+	for (int n = 0; n < newMessangeLength; n++)		
+	{
+		messange[n] = newValue[n];
+	}
+	mustSendMessangeto[WhowMustSend] = true;
+	messangeLenght = newMessangeLength;
+}
+
 int main()
 {   
     std::variant<Vector, int> messangeFrom[4];
@@ -165,17 +185,8 @@ int main()
 			}
 			Player[playerCount-1].setPosition(0, 0);
 			Player[playerCount-1].setStatue(alive);
-			messangeForAll.setPosition(Player[playerCount-1].GetY(), Player[playerCount-1].GetX());
-			messangeForAll.setStatue(Player[playerCount-1].getStatue());
-			WhowMustSend = playerCount;
-			for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
-			{
-				mustSendAll[n] = true;
-				messange[n].setPosition(Player[n].GetY(), Player[n].GetX());
-				messange[n].setStatue(Player[n].getStatue());
-			}
-			mustSendMessangeto[playerCount-1] = true;
-			messangeLenght = playerCount;
+			SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Player[playerCount-1]);
+			SetMessange(messange, Player, mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
 		}
 
         if (FD_ISSET(sd, &exceptfds))
@@ -229,31 +240,20 @@ int main()
 						default:
 							break;
 						}
-						messangeForAll.setStatue(alive);
-						messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());
-						WhowMustSend = playerCount;
-						for (int n = 0; n < playerCount; n++)
-						{
-							mustSendAll[n] = true;
-						}
+						Player[i].setStatue(alive);
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Player[i]);
 						printf("position changed\n");
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 					{
-						PositionBorders[i] = std::get<Vector>(std::move(messangeFrom[i])); //похоже move тут не нужен попробуй его убрать и посотреть будет ли оно работать
+						PositionBorders[i] = std::get<Vector>((messangeFrom[i]));
 						printf("position border x:%d\n", PositionBorders[i].x);
 						messangeFrom[i] = 0;
 					}
 				}else	
 				{ 
-					messangeForAll.setPosition(Player[i].GetY(), Player[i].GetX());	
-					messangeForAll.setStatue(dead);
-					PlayerLeaved(playerCount, pd, readfds, i, Player); 
-					for (int n = 0; n < playerCount; n++)		//можно написать функцию которя будет инициализировать сообщение
-					{
-						mustSendAll[n] = true;
-					}
-					WhowMustSend = playerCount;
-
+					Player[i].setStatue(dead);
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Player[i]);	
+					PlayerLeaved(playerCount, pd, readfds, i, Player);
 				}
 			}
         }

@@ -172,7 +172,7 @@ int main()
             position = MessangeFrom.GetPosition();
             Player.setPosition(position.y, position.x);
             Player.hidePlayer();
-            if (MessangeFrom.getStatue() == alive)  // усливоие всегда выполняется хз поч
+            if (MessangeFrom.getStatue() == alive) 
             {
                 Player.showPlayer();
             }
