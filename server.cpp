@@ -114,7 +114,7 @@ void SetMessangeForAll(player &messangeForAll, int &WhowMustSend, int NewWhomMus
 
 void SetMessange(player messange[4], player newValue[4], bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
 {
-	for (int n = 0; n < newMessangeLength; n++)		
+	for (int n = 0; n <= newMessangeLength; n++)		
 	{
 		messange[n] = newValue[n];
 	}
@@ -131,6 +131,7 @@ int main()
 	Vector PositionBorders[4];
 	bool mustSendMessangeto[4];
 	bool mustSendAll[4];
+	bool positionChanged = false;
     int sd, MaxD, ReadBytes, key, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
     int pd[4];
 	const int firstMessange = 1;
@@ -186,7 +187,7 @@ int main()
 			Player[playerCount-1].setPosition(0, 0);
 			Player[playerCount-1].setStatue(alive);
 			SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Player[playerCount-1]);
-			SetMessange(messange, Player, mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
+			SetMessange(messange, Player, mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
 		}
 
         if (FD_ISSET(sd, &exceptfds))
@@ -218,31 +219,39 @@ int main()
 							{						
 								Player[i].GetY()--;	
 							}
+							positionChanged = true;
 							break;
 						case right:
 							if(Player[i].GetX() < PositionBorders[i].x)
 							{
 								Player[i].GetX()++;
 							}
+							positionChanged = true;
 							break;
 						case left:
 							if (Player[i].GetX() > 0)
 							{
 								Player[i].GetX()--;
 							}
+							positionChanged = true;
 							break;
 						case down:
 							if(Player[i].GetY() < PositionBorders[i].y)
 							{
 								Player[i].GetY()++;
 							}
+							positionChanged = true;
 							break;
 						default:
-							break;
+							positionChanged = false;
+							break;	
 						}
-						Player[i].setStatue(alive);
-						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Player[i]);
-						printf("position changed\n");
+						if(positionChanged)
+						{
+							Player[i].setStatue(alive);
+							SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Player[i]);
+							printf("position changed\n");
+						}
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 					{
 						PositionBorders[i] = std::get<Vector>((messangeFrom[i]));
