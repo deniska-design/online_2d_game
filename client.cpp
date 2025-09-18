@@ -171,10 +171,10 @@ int main()
             }
             position = MessangeFrom.GetPosition();
             Player.setPosition(position.y, position.x);
-            Player.hidePlayer();
+            Player.Hide();
             if (MessangeFrom.getStatue() == alive) 
             {
-                Player.showPlayer();
+                Player.Show();
             }
         }
 
