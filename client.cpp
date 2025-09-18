@@ -71,7 +71,7 @@ int main()
     player MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
-    player Player(5, 2);
+    player Player(5, 2, position);
     bool send = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;

@@ -9,7 +9,7 @@
 #include <variant>
 
 #include "vector.h"
-#include "player.h"
+#include "game.h"
 
 const char *ip = "192.168.1.120";
 int ServPort = 10;
@@ -21,6 +21,11 @@ typedef enum
     down	= 	258,      // Key: Cursor down
     up		=	259,	  // Key: Cursor up
 }keybordArrows;
+
+enum 
+{
+	MaxPlayerCount = 4
+};
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
@@ -91,13 +96,13 @@ int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds,
 	return 0;
 }
 
-void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, player Player[4])
+void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, game Game)
 {
 	printf("игрок ливнул. туда его\n");
 	shutdown(pd[playerNum], SHUT_RDWR);
 	close(pd[playerNum]);
 	FD_CLR(pd[playerNum], &fds);
-	Player[playerNum] = Player[playerCount-1];
+	Game[playerNum] = Game[playerCount-1];
 	pd[playerNum] = pd[playerCount-1];
 	playerCount--;
 }
@@ -112,7 +117,7 @@ void SetMessangeForAll(player &messangeForAll, int &WhowMustSend, int NewWhomMus
 	}
 }
 
-void SetMessange(player messange[4], player newValue[4], bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
+void SetMessange(player messange[4], game newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
 {
 	for (int n = 0; n <= newMessangeLength; n++)		
 	{
@@ -124,16 +129,16 @@ void SetMessange(player messange[4], player newValue[4], bool mustSendMessangeto
 
 int main()
 {   
-    std::variant<Vector, int> messangeFrom[4];
+	game Game(MaxPlayerCount);
+    std::variant<Vector, int> messangeFrom[MaxPlayerCount];
 	player messangeForAll;
-	player messange[4]; 
-	player Player[4];
-	Vector PositionBorders[4];
-	bool mustSendMessangeto[4];
-	bool mustSendAll[4];
+	player messange[MaxPlayerCount]; 
+	Vector PositionBorders[MaxPlayerCount];
+	bool mustSendMessangeto[MaxPlayerCount];
+	bool mustSendAll[MaxPlayerCount];
 	bool positionChanged = false;
     int sd, MaxD, ReadBytes, key, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
-    int pd[4];
+    int pd[MaxPlayerCount];
 	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
     struct sockaddr_in ServAddr;
@@ -151,7 +156,6 @@ int main()
 	}
 
     MaxD = sd;
-    playerCount = 0;
     socklen_t addrlen = sizeof(PlayerAddr[0]);
 
     keypad(stdscr, 1);
@@ -184,10 +188,10 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
-			Player[playerCount-1].setPosition(0, 0);
-			Player[playerCount-1].setStatue(alive);
-			SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Player[playerCount-1]);
-			SetMessange(messange, Player, mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
+			Game[playerCount-1].setPosition(0, 0);
+			Game[playerCount-1].setStatue(alive);
+			SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game[playerCount-1]);
+			SetMessange(messange, Game, mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
 		}
 
         if (FD_ISSET(sd, &exceptfds))
@@ -215,30 +219,30 @@ int main()
 						switch (key)
 						{
 						case up:
-							if (Player[i].GetY() > 0)	
+							if (Game[i].GetY() > 0)	
 							{						
-								Player[i].GetY()--;	
+								Game[i].GetY()--;	
 							}
 							positionChanged = true;
 							break;
 						case right:
-							if(Player[i].GetX() < PositionBorders[i].x)
+							if(Game[i].GetX() < PositionBorders[i].x)
 							{
-								Player[i].GetX()++;
+								Game[i].GetX()++;
 							}
 							positionChanged = true;
 							break;
 						case left:
-							if (Player[i].GetX() > 0)
+							if (Game[i].GetX() > 0)
 							{
-								Player[i].GetX()--;
+								Game[i].GetX()--;
 							}
 							positionChanged = true;
 							break;
 						case down:
-							if(Player[i].GetY() < PositionBorders[i].y)
+							if(Game[i].GetY() < PositionBorders[i].y)
 							{
-								Player[i].GetY()++;
+								Game[i].GetY()++;
 							}
 							positionChanged = true;
 							break;
@@ -248,8 +252,8 @@ int main()
 						}
 						if(positionChanged)
 						{
-							Player[i].setStatue(alive);
-							SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Player[i]);
+							Game[i].setStatue(alive);
+							SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game[i]);
 							printf("position changed\n");
 						}
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
@@ -260,9 +264,9 @@ int main()
 					}
 				}else	
 				{ 
-					Player[i].setStatue(dead);
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Player[i]);	
-					PlayerLeaved(playerCount, pd, readfds, i, Player);
+					Game[i].setStatue(dead);
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game[i]);	
+					PlayerLeaved(playerCount, pd, readfds, i, Game);
 				}
 			}
         }
