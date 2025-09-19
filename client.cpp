@@ -68,7 +68,7 @@ void StartWindow()
 
 int main()
 {    
-    player MessangeFrom; 
+    object MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
     player Player(5, 2, position);

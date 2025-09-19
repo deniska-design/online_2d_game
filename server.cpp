@@ -107,7 +107,7 @@ void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, game Gam
 	playerCount--;
 }
 
-void SetMessangeForAll(player &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], player newValue)
+void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], player newValue)
 {
 	messangeForAll = newValue;
 	WhowMustSend = NewWhomMustSend;
@@ -117,7 +117,7 @@ void SetMessangeForAll(player &messangeForAll, int &WhowMustSend, int NewWhomMus
 	}
 }
 
-void SetMessange(player messange[4], game newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
+void SetMessange(object messange[4], game newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
 {
 	for (int n = 0; n <= newMessangeLength; n++)		
 	{
@@ -131,8 +131,8 @@ int main()
 {   
 	game Game(MaxPlayerCount);
     std::variant<Vector, int> messangeFrom[MaxPlayerCount];
-	player messangeForAll;
-	player messange[MaxPlayerCount]; 
+	object messangeForAll;
+	object messange[MaxPlayerCount]; 
 	Vector PositionBorders[MaxPlayerCount];
 	bool mustSendMessangeto[MaxPlayerCount];
 	bool mustSendAll[MaxPlayerCount];
