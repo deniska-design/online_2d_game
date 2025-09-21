@@ -71,7 +71,7 @@ int main()
     object MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
-    player Player(5, 2, position);
+    object Object(5, 2, position);
     bool send = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
@@ -169,12 +169,11 @@ int main()
                 printf( "novogo goda ne bydet, idi nahyi\n");
                 return 0;
             }
-            position = MessangeFrom.GetPosition();
-            Player.setPosition(position.y, position.x);
-            Player.Hide();
-            if (MessangeFrom.getStatue() == alive) 
+            Object = MessangeFrom;
+            Object.Hide();
+            if (Object.getStatue() == alive) 
             {
-                Player.Show();
+                Object.Show();
             }
         }
 

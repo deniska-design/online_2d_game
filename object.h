@@ -26,12 +26,13 @@ public:
     void setPosition(int NewY, int NewX);
     void setStatue(bool newStatue);
     bool getStatue() const;
+    int getSize();
 };
 
 object::object()
 {
     position = Vector{0, 0};
-    High = 2;
+    High = 5;
     Width = 2;
     ActiveOrNot = disactiv;
 }
@@ -97,6 +98,11 @@ void object::setStatue(bool newStatue)
 bool object::getStatue() const
 {
     return ActiveOrNot;
+}
+
+int object::getSize()
+{
+    return High;
 }
 
 #endif
