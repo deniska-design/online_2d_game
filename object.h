@@ -31,7 +31,7 @@ public:
 object::object()
 {
     position = Vector{0, 0};
-    High = 5;
+    High = 2;
     Width = 2;
     ActiveOrNot = disactiv;
 }

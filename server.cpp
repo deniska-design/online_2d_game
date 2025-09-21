@@ -138,7 +138,7 @@ int main()
 	object messange[MaxPlayerCount]; 
 	Vector PositionBorders[MaxPlayerCount];
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount], positionChanged = false, BombGenerated = false;
-    int sd, MaxD, ReadBytes, key, SelRes, RandomTime = 0, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
+    int sd, MaxD, ReadBytes, key, SelRes = 0, RandomTime = 0, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
     int pd[MaxPlayerCount];
 	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
@@ -178,22 +178,31 @@ int main()
             }
         }else if (SelRes == 0)
 		{
-			printf("timeout\n");
-			if(!BombGenerated)
+			printf("jopa\n");
+			if(playerCount > 0)
 			{
-				Game.GetBomb(MaxBombCount-1).setPosition(10, 10);
-				Game.GetBomb(MaxBombCount-1).setStatue(alive);
-				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
-				SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
-				printf("random time: %d\n", RandomTime);
-				stopwatch(RandomTime, time(NULL));
-			}else
-			{
-				printf("stopwatch\n");
-				if (0 == stopwatch(RandomTime, time(NULL)))
+				printf("timeout\n");
+				if(!BombGenerated)
 				{
-					printf("zaebis\n");
-					RandomTime = 0;
+					Game.GetBomb(MaxBombCount-1).setPosition(Random(1, 20), Random(1, 50));
+					Game.GetBomb(MaxBombCount-1).setStatue(active);
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
+					SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
+					RandomTime = Random(2, 4);
+					printf("random time: %d\n", RandomTime);
+					stopwatch(RandomTime, time(NULL));
+					BombGenerated = true;
+				}else
+				{
+					printf("stopwatch\n");
+					if (0 == stopwatch(RandomTime, time(NULL)))
+					{
+						printf("zaebis\n");
+						Game.GetBomb(MaxBombCount-1).setStatue(disactiv);
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
+						SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
+						BombGenerated = false;
+					}
 				}
 			}
 			timeout.tv_usec = 500000;
