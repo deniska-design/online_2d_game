@@ -4,30 +4,27 @@
 #include <ncurses.h>
 #include "vector.h"
 
-class bomb
+class bomb : public object
 {
-    Vector position;
-    int BombHigh, BombWidth;
-    bool active;
 public:
     bomb();
-    bomb(bool state, Vector position, int NewBombHigh, int NewBombWidth);
+    bomb(bool state, Vector position, int BombHigh, int BombWidth);
 };
 
 bomb::bomb()
 {
     position = Vector{0, 0};
-    active = false;
-    BombHigh = 2;
-    BombWidth = 2;
+    High = 2;
+    Width = 2;
+    ActiveOrNot = disactiv;
 }
 
-bomb::bomb(bool state, Vector position, int NewBombHigh, int NewBombWidth)
+bomb::bomb(bool state, Vector NewPosition, int BombHigh, int BombWidth)
 {
-    active = state;
-    position = position;
-    BombHigh = NewBombHigh;
-    BombWidth = NewBombWidth;
+    position = NewPosition;
+    High = BombHigh;
+    Width = BombWidth;
+    ActiveOrNot = state;
 }
 
 #endif

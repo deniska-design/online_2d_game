@@ -10,6 +10,7 @@
 
 #include "vector.h"
 #include "game.h"
+#include "time.h"
 
 const char *ip = "192.168.1.120";
 int ServPort = 10;
@@ -24,7 +25,8 @@ typedef enum
 
 enum 
 {
-	MaxPlayerCount = 4
+	MaxPlayerCount = 4,
+	MaxBombCount = 1
 };
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
@@ -102,12 +104,12 @@ void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, game Gam
 	shutdown(pd[playerNum], SHUT_RDWR);
 	close(pd[playerNum]);
 	FD_CLR(pd[playerNum], &fds);
-	Game[playerNum] = Game[playerCount-1];
+	Game.GetPlayer(playerNum) = Game.GetPlayer(playerCount-1);
 	pd[playerNum] = pd[playerCount-1];
 	playerCount--;
 }
 
-void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], player newValue)
+void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], object newValue)
 {
 	messangeForAll = newValue;
 	WhowMustSend = NewWhomMustSend;
@@ -117,7 +119,7 @@ void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMus
 	}
 }
 
-void SetMessange(object messange[4], game newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
+void SetMessange(object messange[4], object *newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
 {
 	for (int n = 0; n <= newMessangeLength; n++)		
 	{
@@ -129,15 +131,14 @@ void SetMessange(object messange[4], game newValue, bool mustSendMessangeto[4], 
 
 int main()
 {   
-	game Game(MaxPlayerCount);
+	struct timeval timeout;
+	game Game(MaxPlayerCount, MaxBombCount);
     std::variant<Vector, int> messangeFrom[MaxPlayerCount];
 	object messangeForAll;
 	object messange[MaxPlayerCount]; 
 	Vector PositionBorders[MaxPlayerCount];
-	bool mustSendMessangeto[MaxPlayerCount];
-	bool mustSendAll[MaxPlayerCount];
-	bool positionChanged = false;
-    int sd, MaxD, ReadBytes, key, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
+	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount], positionChanged = false, BombGenerated = false;
+    int sd, MaxD, ReadBytes, key, SelRes, RandomTime = 0, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
     int pd[MaxPlayerCount];
 	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
@@ -157,6 +158,7 @@ int main()
 
     MaxD = sd;
     socklen_t addrlen = sizeof(PlayerAddr[0]);
+	timeout.tv_usec = 500000;
 
     keypad(stdscr, 1);
 
@@ -164,7 +166,7 @@ int main()
     {
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
-        if ((select(MaxD+1, &readfds, &writefds, &exceptfds, NULL)) == -1)
+        if ((SelRes = select(MaxD+1, &readfds, NULL, &exceptfds, &timeout)) < 0)
         {
             if (errno != EINTR)
             {
@@ -174,8 +176,28 @@ int main()
             {
                 printf("пришёл неигнорируемый сигнал: %d\n", errno);
             }
-            continue;
-        }
+        }else if (SelRes == 0)
+		{
+			printf("timeout\n");
+			if(!BombGenerated)
+			{
+				Game.GetBomb(MaxBombCount-1).setPosition(10, 10);
+				Game.GetBomb(MaxBombCount-1).setStatue(alive);
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
+				SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
+				printf("random time: %d\n", RandomTime);
+				stopwatch(RandomTime, time(NULL));
+			}else
+			{
+				printf("stopwatch\n");
+				if (0 == stopwatch(RandomTime, time(NULL)))
+				{
+					printf("zaebis\n");
+					RandomTime = 0;
+				}
+			}
+			timeout.tv_usec = 500000;
+		}
 
 		if(FD_ISSET(sd, &readfds))
 		{
@@ -188,10 +210,10 @@ int main()
 				printf("ошибка отправки первого сообщения:%d", errno);
 				return -1;
 			}
-			Game[playerCount-1].setPosition(0, 0);
-			Game[playerCount-1].setStatue(alive);
-			SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game[playerCount-1]);
-			SetMessange(messange, Game, mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
+			Game.GetPlayer(playerCount-1).setPosition(0, 0);
+			Game.GetPlayer(playerCount-1).setStatue(alive);
+			SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
+			SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
 		}
 
         if (FD_ISSET(sd, &exceptfds))
@@ -219,30 +241,30 @@ int main()
 						switch (key)
 						{
 						case up:
-							if (Game[i].GetY() > 0)	
+							if (Game.GetPlayer(i).GetY() > 0)	
 							{						
-								Game[i].GetY()--;	
+								Game.GetPlayer(i).GetY()--;	
 							}
 							positionChanged = true;
 							break;
 						case right:
-							if(Game[i].GetX() < PositionBorders[i].x)
+							if(Game.GetPlayer(i).GetX() < PositionBorders[i].x)
 							{
-								Game[i].GetX()++;
+								Game.GetPlayer(i).GetX()++;
 							}
 							positionChanged = true;
 							break;
 						case left:
-							if (Game[i].GetX() > 0)
+							if (Game.GetPlayer(i).GetX() > 0)
 							{
-								Game[i].GetX()--;
+								Game.GetPlayer(i).GetX()--;
 							}
 							positionChanged = true;
 							break;
 						case down:
-							if(Game[i].GetY() < PositionBorders[i].y)
+							if(Game.GetPlayer(i).GetY() < PositionBorders[i].y)
 							{
-								Game[i].GetY()++;
+								Game.GetPlayer(i).GetY()++;
 							}
 							positionChanged = true;
 							break;
@@ -252,8 +274,8 @@ int main()
 						}
 						if(positionChanged)
 						{
-							Game[i].setStatue(alive);
-							SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game[i]);
+							Game.GetPlayer(i).setStatue(alive);
+							SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i));
 							printf("position changed\n");
 						}
 					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
@@ -264,8 +286,8 @@ int main()
 					}
 				}else	
 				{ 
-					Game[i].setStatue(dead);
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game[i]);	
+					Game.GetPlayer(i).setStatue(dead);
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game.GetPlayer(i));	
 					PlayerLeaved(playerCount, pd, readfds, i, Game);
 				}
 			}
