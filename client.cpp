@@ -182,6 +182,10 @@ int main()
                 }
                 break;
             case BombType:
+                if (Object.getStatue() == active) 
+                {
+                    Object.Show();
+                }
                 if (Object.getStatue() == exploded) 
                 {
                     printf("Jopa\n");

@@ -165,7 +165,7 @@ int main()
     {
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
-		timeout.tv_usec = 500000;
+		timeout.tv_sec = 1;
         if ((SelRes = select(MaxD+1, &readfds, NULL, &exceptfds, &timeout)) < 0)
         {
             if (errno != EINTR)
@@ -344,6 +344,30 @@ int main()
                 printf("произошла исключительная ситуация на сокете игрока\n");
             }  
         }
+
+		if(playerCount > 0)
+		{
+			printf("timeout\n");
+			if(!BombGenerated)
+			{
+				Game.GetBomb(MaxBombCount-1).setPosition(Random(1, 20), Random(1, 50));
+				Game.GetBomb(MaxBombCount-1).setStatue(active);
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
+				RandomTime = Random(2, 4);
+				stopwatch(RandomTime, time(NULL));
+				BombGenerated = true;
+			}else
+			{
+				printf("stopwatch\n");
+				if (0 == stopwatch(RandomTime, time(NULL)))
+				{
+					printf("zaebis\n");
+					Game.GetBomb(MaxBombCount-1).setStatue(exploded);
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
+					BombGenerated = false;
+				}
+			}
+		}
     }
     for (int i = 0; i < playerCount; i++)
     {
