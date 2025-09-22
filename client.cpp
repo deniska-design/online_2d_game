@@ -9,6 +9,8 @@
 
 #include "vector.h"
 #include "player.h"
+#include "bomb.h"
+
 
 using namespace std;
 
@@ -171,10 +173,25 @@ int main()
             }
             Object = MessangeFrom;
             Object.Hide();
-            if (Object.getStatue() == alive) 
+            switch (Object.getType())
             {
-                Object.Show();
+            case PlayerType:
+                if (Object.getStatue() == alive) 
+                {
+                    Object.Show();
+                }
+                break;
+            case BombType:
+                if (Object.getStatue() == exploded) 
+                {
+                    printf("Jopa\n");
+                }
+                break;
+            
+            default:
+                break;
             }
+           
         }
 
         if(FD_ISSET(sd, &writefds))

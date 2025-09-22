@@ -158,7 +158,6 @@ int main()
 
     MaxD = sd;
     socklen_t addrlen = sizeof(PlayerAddr[0]);
-	timeout.tv_usec = 500000;
 
     keypad(stdscr, 1);
 
@@ -166,6 +165,7 @@ int main()
     {
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
+		timeout.tv_usec = 500000;
         if ((SelRes = select(MaxD+1, &readfds, NULL, &exceptfds, &timeout)) < 0)
         {
             if (errno != EINTR)
@@ -187,9 +187,7 @@ int main()
 					Game.GetBomb(MaxBombCount-1).setPosition(Random(1, 20), Random(1, 50));
 					Game.GetBomb(MaxBombCount-1).setStatue(active);
 					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
-					SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
 					RandomTime = Random(2, 4);
-					printf("random time: %d\n", RandomTime);
 					stopwatch(RandomTime, time(NULL));
 					BombGenerated = true;
 				}else
@@ -200,12 +198,10 @@ int main()
 						printf("zaebis\n");
 						Game.GetBomb(MaxBombCount-1).setStatue(exploded);
 						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
-						SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
 						BombGenerated = false;
 					}
 				}
 			}
-			timeout.tv_usec = 500000;
 		}
 
 		if(FD_ISSET(sd, &readfds))
@@ -237,8 +233,8 @@ int main()
             if(FD_ISSET(pd[i], &readfds))
             {
 		    	printf("пришло сообщение от игрока\n");
-				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))
-				{
+				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))	//оптимизация: пусть игрок который сделал шаг сам себя ресует и мы не будем ему отпрявлять его нувую позицию
+				{																				//оптимизация: лучше не отпрявлять игроку каждый пиксель взрыва бомбы лучше просто отправить что ещё больше нет и он сам нарисует
 					printf("ошибка чтения данных:%d\n", errno);
 					return -1;
 				}else if(ReadBytes > 0)
