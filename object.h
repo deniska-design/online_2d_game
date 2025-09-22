@@ -11,8 +11,8 @@ enum
 
 typedef enum 
 {
-	Player,
-    Bombe
+	PlayerType,
+    BombType
 }objectType;
 
 
