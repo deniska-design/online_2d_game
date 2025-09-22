@@ -1,8 +1,12 @@
 #ifndef BOMB_MODULE
 #define BOMB_MODULE
 
-#include <ncurses.h>
-#include "vector.h"
+#include "object.h"
+
+enum 
+{
+    exploded	=	disactiv,      
+};
 
 class bomb : public object
 {
@@ -16,7 +20,7 @@ bomb::bomb()
     position = Vector{0, 0};
     High = 2;
     Width = 2;
-    ActiveOrNot = disactiv;
+    statue = disactiv;
 }
 
 bomb::bomb(bool state, Vector NewPosition, int BombHigh, int BombWidth)
@@ -24,7 +28,7 @@ bomb::bomb(bool state, Vector NewPosition, int BombHigh, int BombWidth)
     position = NewPosition;
     High = BombHigh;
     Width = BombWidth;
-    ActiveOrNot = state;
+    statue = state;
 }
 
 #endif

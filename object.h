@@ -9,12 +9,21 @@ enum
     disactiv	=	false,      
 };
 
+typedef enum 
+{
+	Player,
+    Bombe
+}objectType;
+
+
 class object
 {
 protected:
     Vector position;
     int High, Width;
-    bool ActiveOrNot;
+    bool statue;
+    objectType ObjectType;
+
 public:
     object();
     object(int objectH, int objectW, Vector NewPosition);
@@ -22,10 +31,11 @@ public:
     void Hide() const;
     int &GetY();
     int &GetX();
-    Vector &GetPosition();
     void setPosition(int NewY, int NewX);
     void setStatue(bool newStatue);
     bool getStatue() const;
+    void setType(objectType NewObjectType);
+    objectType getType() const;
     int getSize();
 };
 
@@ -34,7 +44,7 @@ object::object()
     position = Vector{0, 0};
     High = 5;
     Width = 2;
-    ActiveOrNot = disactiv;
+    statue = disactiv;
 }
 
 object::object(int PlayerH, int PlayerW, Vector NewPosition)
@@ -42,7 +52,7 @@ object::object(int PlayerH, int PlayerW, Vector NewPosition)
     position = NewPosition;
     High = PlayerH;
     Width = PlayerW;
-    ActiveOrNot = disactiv;
+    statue = disactiv;
 }
 
 void object::Show() const
@@ -85,19 +95,24 @@ int &object::GetX()
     return const_cast<int &>(position.x);
 }
 
-Vector &object::GetPosition() 
-{
-    return const_cast<Vector &>(position);
-}
-
 void object::setStatue(bool newStatue)
 {
-    ActiveOrNot = newStatue;
+    statue = newStatue;
 }
 
 bool object::getStatue() const
 {
-    return ActiveOrNot;
+    return statue;
+}
+
+void object::setType(objectType NewObjectType)
+{
+    ObjectType = NewObjectType;
+}
+
+objectType object::getType() const
+{
+    return ObjectType;
 }
 
 int object::getSize()

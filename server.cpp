@@ -198,7 +198,7 @@ int main()
 					if (0 == stopwatch(RandomTime, time(NULL)))
 					{
 						printf("zaebis\n");
-						Game.GetBomb(MaxBombCount-1).setStatue(disactiv);
+						Game.GetBomb(MaxBombCount-1).setStatue(exploded);
 						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
 						SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
 						BombGenerated = false;

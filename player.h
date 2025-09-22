@@ -22,7 +22,7 @@ player::player()
     position = Vector{0, 0};
     High = 5;
     Width = 2;
-    ActiveOrNot = disactiv;
+    statue = disactiv;
 }
 
 player::player(int PlayerH, int PlayerW, Vector NewPosition)
@@ -30,7 +30,7 @@ player::player(int PlayerH, int PlayerW, Vector NewPosition)
     position = NewPosition;
     High = PlayerH;
     Width = PlayerW;
-    ActiveOrNot = disactiv;
+    statue = disactiv;
 }
 
 #endif
