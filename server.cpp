@@ -178,10 +178,9 @@ int main()
             }
         }else if (SelRes == 0)
 		{
-			printf("jopa\n");
+			printf("timeout\n");
 			if(playerCount > 0)
 			{
-				printf("timeout\n");
 				if(!BombGenerated)
 				{
 					Game.GetBomb(MaxBombCount-1).setPosition(Random(1, 20), Random(1, 50));
@@ -192,7 +191,6 @@ int main()
 					BombGenerated = true;
 				}else
 				{
-					printf("stopwatch\n");
 					if (0 == stopwatch(RandomTime, time(NULL)))
 					{
 						printf("zaebis\n");
@@ -347,7 +345,6 @@ int main()
 
 		if(playerCount > 0)
 		{
-			printf("timeout\n");
 			if(!BombGenerated)
 			{
 				Game.GetBomb(MaxBombCount-1).setPosition(Random(1, 20), Random(1, 50));
@@ -358,7 +355,6 @@ int main()
 				BombGenerated = true;
 			}else
 			{
-				printf("stopwatch\n");
 				if (0 == stopwatch(RandomTime, time(NULL)))
 				{
 					printf("zaebis\n");

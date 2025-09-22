@@ -180,7 +180,7 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    printf("Jopa\n");
+                    //printf("Jopa\n");
                 }            
             }
            
