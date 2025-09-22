@@ -173,27 +173,15 @@ int main()
             }
             Object = MessangeFrom;
             Object.Hide();
-            switch (Object.getType())
+            if (Object.getStatue() == alive) 
             {
-            case PlayerType:
-                if (Object.getStatue() == alive) 
-                {
-                    Object.Show();
-                }
-                break;
-            case BombType:
-                if (Object.getStatue() == active) 
-                {
-                    Object.Show();
-                }
+                Object.Show();
+            }else if (Object.getType() == BombType)
+            {
                 if (Object.getStatue() == exploded) 
                 {
                     printf("Jopa\n");
-                }
-                break;
-            
-            default:
-                break;
+                }            
             }
            
         }
