@@ -178,22 +178,24 @@ int main()
             }
         }else if (SelRes == 0)
 		{
-			printf("timeout\n");
 			if(playerCount > 0)
 			{
+				printf("timeout\n");
 				if(!BombGenerated)
 				{
+					printf("genrating of bomb\n");
 					Game.GetBomb(MaxBombCount-1).setPosition(Random(1, 20), Random(1, 50));
 					Game.GetBomb(MaxBombCount-1).setStatue(active);
 					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
 					RandomTime = Random(2, 4);
+					printf("RandomTime: %d\n", RandomTime);
 					stopwatch(RandomTime, time(NULL));
 					BombGenerated = true;
 				}else
 				{
 					if (0 == stopwatch(RandomTime, time(NULL)))
 					{
-						printf("zaebis\n");
+						printf("bomb was exploded\n");
 						Game.GetBomb(MaxBombCount-1).setStatue(exploded);
 						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
 						BombGenerated = false;
@@ -219,11 +221,6 @@ int main()
 			SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
 		}
 
-        if (FD_ISSET(sd, &exceptfds))
-        {
-            printf("произошла исключительная ситуация на сокете сервера\n");
-        }
-	
 	//начало работы с игроками на прямую:
 
         for (int i = 0; i < playerCount; i++)
@@ -333,15 +330,8 @@ int main()
 				}
 			}
 		}
-	//конец
 
-        for (int i = 0; i < playerCount; i++)
-        {
-            if(FD_ISSET(pd[i], &exceptfds))
-            {
-                printf("произошла исключительная ситуация на сокете игрока\n");
-            }  
-        }
+	//конец
 
 		if(playerCount > 0)
 		{
