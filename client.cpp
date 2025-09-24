@@ -178,10 +178,7 @@ int main()
                 Object.Show();
             }else if (Object.getType() == BombType)
             {
-                if (Object.getStatue() == exploded) 
-                {
-                    //printf("Jopa\n");
-                }            
+                //printf("Jopa\n");            
             }
            
         }

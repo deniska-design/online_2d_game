@@ -29,6 +29,15 @@ enum
 	MaxBombCount = 1
 };
 
+enum 
+{
+	MaxBombYPos	=	30,      
+    MaxBombXPos	= 	50,      
+    MinBombXPos	=	1,      
+    MinBombYPos =	1,	  
+};
+
+
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
 	ServAddr.sin_family = AF_INET;
@@ -166,6 +175,7 @@ int main()
 	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
 
 		timeout.tv_sec = 1;
+		printf("select\n");
         if ((SelRes = select(MaxD+1, &readfds, NULL, &exceptfds, &timeout)) < 0)
         {
             if (errno != EINTR)
@@ -178,28 +188,15 @@ int main()
             }
         }else if (SelRes == 0)
 		{
+			printf("timeout\n");
 			if(playerCount > 0)
 			{
-				printf("timeout\n");
 				if(!BombGenerated)
 				{
-					printf("genrating of bomb\n");
-					Game.GetBomb(MaxBombCount-1).setPosition(Random(1, 20), Random(1, 50));
-					Game.GetBomb(MaxBombCount-1).setStatue(active);
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
-					RandomTime = Random(2, 4);
-					printf("RandomTime: %d\n", RandomTime);
-					stopwatch(RandomTime, time(NULL));
-					BombGenerated = true;
-				}else
-				{
-					if (0 == stopwatch(RandomTime, time(NULL)))
-					{
-						printf("bomb was exploded\n");
-						Game.GetBomb(MaxBombCount-1).setStatue(exploded);
-						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
-						BombGenerated = false;
-					}
+					printf("bomb genrating\n");
+					Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
+					Game.GetPlayer(MaxBombCount - 1).setStatue(active);
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount - 1));
 				}
 			}
 		}
@@ -330,30 +327,7 @@ int main()
 				}
 			}
 		}
-
 	//конец
-
-		if(playerCount > 0)
-		{
-			if(!BombGenerated)
-			{
-				Game.GetBomb(MaxBombCount-1).setPosition(Random(1, 20), Random(1, 50));
-				Game.GetBomb(MaxBombCount-1).setStatue(active);
-				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
-				RandomTime = Random(2, 4);
-				stopwatch(RandomTime, time(NULL));
-				BombGenerated = true;
-			}else
-			{
-				if (0 == stopwatch(RandomTime, time(NULL)))
-				{
-					printf("zaebis\n");
-					Game.GetBomb(MaxBombCount-1).setStatue(exploded);
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount-1));
-					BombGenerated = false;
-				}
-			}
-		}
     }
     for (int i = 0; i < playerCount; i++)
     {
