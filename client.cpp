@@ -191,7 +191,7 @@ int main()
                 Object.Show();
             }else if (Object.getType() == BombType)
             {
-                mvprintw(0, 0, "jopa\n");
+                mvprintw(Object.GetY(), Object.GetY(), "jopa\n");
                 if (Object.getStatue() == exploded) 
                 {
                     explode(Vector{Object.GetY(), Object.GetY()});
