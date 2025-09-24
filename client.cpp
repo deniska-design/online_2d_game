@@ -55,9 +55,9 @@ void explode(int BombPositionY, int BombPositionX)
 {
     for(int i = 0; i < AffectedArea; i++)
     {
-        for(int x = BombPositionX-AffectedArea; x < BombPositionX+AffectedArea; x++)
+        for(int x = BombPositionX-i; x < BombPositionX+i; x++)
         {
-            for(int y = BombPositionY-AffectedArea; y < BombPositionY+AffectedArea; y++)
+            for(int y = BombPositionY-i; y < BombPositionY+i; y++)
             {
                 move(y, x);
                 addch('*');
