@@ -49,7 +49,7 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 
 void explode(int BombPositionY, int BombPositionX)
 {
-    for(int AffectedArea = 0; AffectedArea > 3; AffectedArea++)
+    for(int AffectedArea = 0; AffectedArea < 3; AffectedArea++)
     {
         for(int x = BombPositionX-AffectedArea; x < BombPositionX+AffectedArea; x++)
         {
