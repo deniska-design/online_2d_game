@@ -66,15 +66,10 @@ void explode(int BombPositionY, int BombPositionX)
     }
 }
 
-int SetFdss(int fd, fd_set &readfds, fd_set &writefds, fd_set &exceptfds)
+int SetFdss(int fd, fd_set &readfds)
 {
 	FD_ZERO(&readfds);
-    FD_ZERO(&writefds);
-    FD_ZERO(&exceptfds);
-
 	FD_SET(fd, &readfds);
-    FD_SET(fd, &exceptfds);
-    FD_SET(fd, &writefds);
 	return 0;
 }
 
@@ -93,13 +88,11 @@ int main()
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
     object Object(5, 2, position);
-    bool send = false;
+    bool MustSend = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
-    fd_set readfds, writefds, exceptfds;
+    fd_set readfds;
     FD_ZERO(&readfds);
-    FD_ZERO(&writefds);
-    FD_ZERO(&exceptfds);
     
     ServAddr = FillAddr(ServAddr, ServerIp, ServPort);
     if (errno == -1)
@@ -124,16 +117,16 @@ int main()
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
     messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
-    send = true;
+    MustSend = true;
 
     //начало бесконечного цыкла
 
     while (true)
     {
-        SetFdss(sd, readfds, writefds, exceptfds);
+        SetFdss(sd, readfds);
         FD_SET(STDIN_FILENO, &readfds);
 
-        if ((SelRes = select(MaxD+1, &readfds, &writefds, &exceptfds, NULL)) < 1)
+        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, NULL)) < 1)
         {
             if (errno != EINTR)
             {
@@ -157,20 +150,24 @@ int main()
                 {
                 case KEY_UP:
                     messangeFor = KEY_UP;
+                    position.y--;
                     break;
                 case KEY_RIGHT:
                     messangeFor = KEY_RIGHT;
+                    position.x++;
                     break;
                 case KEY_LEFT:
                     messangeFor = KEY_LEFT;
+                    position.x--;
                     break;
                 case KEY_DOWN:
                     messangeFor = KEY_DOWN;
+                    position.y++;
                     break;
                 default:
                     break;
                 } 
-                send = true;
+                MustSend = true;
             }else return(-1);
         }
 
@@ -200,29 +197,34 @@ int main()
                 if (Object.getStatue() == exploded) 
                 {
                     explode(Object.GetY(), Object.GetX());
+                    if(position.x > Object.GetX() - AffectedArea)
+                    {
+                        if(position.x < Object.GetX() + AffectedArea)
+                        {
+                            if(position.y > Object.GetY() - AffectedArea)
+                            {
+                                if(position.y < Object.GetY() + AffectedArea)
+                                {
+                                    return(1);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-        if(FD_ISSET(sd, &writefds))
+
+        if (MustSend)
         {
-            if (send)
+            if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
             {
-                if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
-                {
-                    printf("ошибка: %d", errno);
-                    return -1;
-                }
-                send = false;
-            } 
-        }
+                printf("ошибка: %d", errno);
+                return -1;
+            }
+            MustSend = false;
+        } 
 
         //конец
-
-        if(FD_ISSET(sd, &exceptfds))
-        {
-            printf("произошла исключительная ситуация\n");
-            return -1;
-        }
         refresh();
     }
     close(sd);

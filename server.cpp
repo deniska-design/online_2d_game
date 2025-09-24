@@ -29,7 +29,7 @@ enum
 	MaxBombCount = 1,
 
 	MaxBombYPos	=	25,      
-    MaxBombXPos	= 	40,      
+    MaxBombXPos	= 	80,      
     MinBombXPos	=	1,      
     MinBombYPos =	1,	
 };
