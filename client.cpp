@@ -50,12 +50,14 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 void explode(Vector BombPosition)
 {
     for(int AffectedArea = 0; AffectedArea > 3; AffectedArea++)
-    for(int x = BombPosition.x-AffectedArea; x < BombPosition.x+AffectedArea; x++)
     {
-        for(int y = BombPosition.y-AffectedArea; y < BombPosition.y+AffectedArea; y++)
+        for(int x = BombPosition.x-AffectedArea; x < BombPosition.x+AffectedArea; x++)
         {
-            move(y, x);
-            addch('*');
+            for(int y = BombPosition.y-AffectedArea; y < BombPosition.y+AffectedArea; y++)
+            {
+                move(y, x);
+                addch('*');
+            }
         }
     }
 }
@@ -193,7 +195,6 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    mvprintw(Object.GetY(), Object.GetY(), "jopa\n");
                     explode(Vector{Object.GetY(), Object.GetY()});
                 }
             }
