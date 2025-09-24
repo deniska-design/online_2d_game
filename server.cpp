@@ -31,8 +31,8 @@ enum
 
 enum 
 {
-	MaxBombYPos	=	30,      
-    MaxBombXPos	= 	50,      
+	MaxBombYPos	=	25,      
+    MaxBombXPos	= 	40,      
     MinBombXPos	=	1,      
     MinBombYPos =	1,	  
 };
@@ -87,22 +87,16 @@ int AcceptNewPlayer(int sd, int *pd, struct sockaddr_in *PlayerAddr, int &player
 	return 0;
 }
 
-int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds, fd_set &writefds, fd_set &exceptfds)
+int SetFdss(int sd, int playerCount, int *pd, fd_set &readfds)
 {
 	FD_ZERO(&readfds);
-	FD_ZERO(&writefds);
-	FD_ZERO(&exceptfds);
 	if(playerCount < 4)
 	{
 		FD_SET(sd, &readfds);
-		FD_SET(sd, &writefds);
-		FD_SET(sd, &exceptfds);
 	}
 	for(int i = 0; i < playerCount; i++)
 	{
 		FD_SET(pd[i], &readfds);
-		FD_SET(pd[i], &writefds);
-		FD_SET(pd[i], &exceptfds);
 	}
 	return 0;
 }
@@ -152,7 +146,7 @@ int main()
 	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
     struct sockaddr_in ServAddr;
-    fd_set readfds, writefds, exceptfds;
+    fd_set readfds;
 
     ServAddr = FillAddr(ServAddr, ip, ServPort);
 	if (errno == -1)
@@ -172,11 +166,10 @@ int main()
 
     while (true)
     {
-	SetFdss(sd, playerCount, pd, readfds, writefds, exceptfds);
+	SetFdss(sd, playerCount, pd, readfds);
 
-		timeout.tv_sec = 1;
-		printf("select\n");
-        if ((SelRes = select(MaxD+1, &readfds, NULL, &exceptfds, &timeout)) < 0)
+		timeout.tv_usec = 1;
+        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 0)
         {
             if (errno != EINTR)
             {
@@ -188,15 +181,24 @@ int main()
             }
         }else if (SelRes == 0)
 		{
-			printf("timeout\n");
 			if(playerCount > 0)
 			{
 				if(!BombGenerated)
 				{
-					printf("bomb genrating\n");
 					Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
-					Game.GetPlayer(MaxBombCount - 1).setStatue(active);
+					Game.GetBomb(MaxBombCount - 1).setStatue(active);
+					RandomTime = Random(2, 4);
+					stopwatch(RandomTime, time(NULL));
 					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount - 1));
+					BombGenerated = true;
+				}else
+				{
+					if(true == stopwatch(RandomTime, time(NULL)))
+					{
+						Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount - 1));
+						BombGenerated = false;
+					}
 				}
 			}
 		}
@@ -294,16 +296,13 @@ int main()
 		{
 			if (mustSendAll[i])
 			{
-				if(FD_ISSET(pd[i], &writefds))
+				printf("пришло время отправить сообщение игроку\n");
+				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 				{
-					printf("пришло время отправить сообщение игроку\n");
-					if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
-					{
-						printf("ошибка отправки сообщения:%d", errno);
-						return -1;
-					}else printf("messange was sent\n");
-					mustSendAll[i] = false;
-				}
+					printf("ошибка отправки сообщения:%d", errno);
+					return -1;
+				}else printf("messange was sent\n");
+				mustSendAll[i] = false;
 			}
 		}
 		WhowMustSend = 0;
@@ -311,24 +310,22 @@ int main()
 		{
 			if (mustSendMessangeto[i])
 			{
-				if(FD_ISSET(pd[i], &writefds))
+				printf("пришло время отправить длиное сообщение одному игроку\n");
+				while(messangeLenght >= 0)	
 				{
-					printf("пришло время отправить длиное сообщение одному игроку\n");
-					while(messangeLenght >= 0)	
+					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 					{
-						if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
-						{
-							printf("ошибка отправки сообщения:%d", errno);
-							return -1;
-						}else printf("messange was sent\n");
-						messangeLenght--;
-					}
-					mustSendMessangeto[i] = false;
+						printf("ошибка отправки сообщения:%d", errno);
+						return -1;
+					}else printf("messange was sent\n");
+					messangeLenght--;
 				}
+				mustSendMessangeto[i] = false;
 			}
 		}
 	//конец
-    }
+		}
+    
     for (int i = 0; i < playerCount; i++)
     {
 		shutdown(pd[i], SHUT_RDWR);

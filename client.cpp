@@ -47,6 +47,19 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
+void explode(Vector BombPosition)
+{
+    for(int AffectedArea = 0; AffectedArea > 3; AffectedArea++)
+    for(int x = BombPosition.x-AffectedArea; x < BombPosition.x+AffectedArea; x++)
+    {
+        for(int y = BombPosition.y-AffectedArea; y < BombPosition.y+AffectedArea; y++)
+        {
+            move(y, x);
+            addch('*');
+        }
+    }
+}
+
 int SetFdss(int fd, fd_set &readfds, fd_set &writefds, fd_set &exceptfds)
 {
 	FD_ZERO(&readfds);
@@ -173,16 +186,17 @@ int main()
             }
             Object = MessangeFrom;
             Object.Hide();
-            if (Object.getStatue() == alive) 
+            if (Object.getStatue() == active) 
             {
                 Object.Show();
             }else if (Object.getType() == BombType)
             {
-                //printf("Jopa\n");            
+                if (Object.getStatue() == exploded) 
+                {
+                    explode(Vector{Object.GetY(), Object.GetY()});
+                }
             }
-           
         }
-
         if(FD_ISSET(sd, &writefds))
         {
             if (send)

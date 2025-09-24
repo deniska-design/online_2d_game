@@ -36,7 +36,6 @@ public:
     bool getStatue() const;
     void setType(objectType NewObjectType);
     objectType getType() const;
-    int getSize();
 };
 
 object::object()
@@ -115,9 +114,6 @@ objectType object::getType() const
     return ObjectType;
 }
 
-int object::getSize()
-{
-    return High;
-}
+
 
 #endif

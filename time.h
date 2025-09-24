@@ -7,9 +7,8 @@
 
 using namespace std;
 
-int stopwatch(time_t WaitingTime, time_t CurrentTime)
+bool stopwatch(time_t WaitingTime, time_t CurrentTime)
 {
-    srand(time(NULL));
     static time_t EndTime;
     static bool firstExecution = true;
 
@@ -23,10 +22,10 @@ int stopwatch(time_t WaitingTime, time_t CurrentTime)
         if (time(NULL) >= EndTime)
         {
             firstExecution = true;
-            return 0;
+            return true;
         }
     }
-    return 1;
+    return false;
 }
 
 float Random(float a, float b)
