@@ -11,8 +11,12 @@
 #include "player.h"
 #include "bomb.h"
 
-
 using namespace std;
+
+enum
+{
+    AffectedArea = 3,
+};
 
 const char *ServerIp = "192.168.1.120";
 int ServPort = 10;
@@ -49,7 +53,7 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 
 void explode(int BombPositionY, int BombPositionX)
 {
-    for(int AffectedArea = 0; AffectedArea < 3; AffectedArea++)
+    for(int i = 0; i < AffectedArea; i++)
     {
         for(int x = BombPositionX-AffectedArea; x < BombPositionX+AffectedArea; x++)
         {

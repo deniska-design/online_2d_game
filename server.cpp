@@ -26,17 +26,13 @@ typedef enum
 enum 
 {
 	MaxPlayerCount = 4,
-	MaxBombCount = 1
-};
+	MaxBombCount = 1,
 
-enum 
-{
 	MaxBombYPos	=	25,      
     MaxBombXPos	= 	40,      
     MinBombXPos	=	1,      
-    MinBombYPos =	1,	  
+    MinBombYPos =	1,	
 };
-
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
