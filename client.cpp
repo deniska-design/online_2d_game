@@ -15,7 +15,7 @@ using namespace std;
 
 enum
 {
-    AffectedArea = 3,
+    AffectedArea = 10,
 };
 
 const char *ServerIp = "192.168.1.120";
