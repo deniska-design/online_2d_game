@@ -58,10 +58,6 @@ void explode(int BombPositionY, int BombPositionX)
     float waitingTime = 0.5;
     for(int i = 0; i < AffectedArea; i++)
     {
-        while(stopwatch(waitingTime, time(NULL)) != true)
-        {
-            
-        }
         for(int x = BombPositionX-i; x < BombPositionX+i; x++)
         {
             for(int y = BombPositionY-i; y < BombPositionY+i; y++)
@@ -70,11 +66,7 @@ void explode(int BombPositionY, int BombPositionX)
                 addch('*');
             }
         }
-        
-    }
-
-    for(int i = 0; i < AffectedArea; i++)
-    {
+        while(stopwatch(waitingTime, time(NULL)) != true)
         for(int x = BombPositionX-i; x < BombPositionX+i; x++)
         {
             for(int y = BombPositionY-i; y < BombPositionY+i; y++)
@@ -84,7 +76,6 @@ void explode(int BombPositionY, int BombPositionX)
             }
         }
     }
-
 }
 
 int SetFdss(int fd, fd_set &readfds)
