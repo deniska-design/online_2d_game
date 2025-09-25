@@ -75,7 +75,7 @@ void explode(int BombPositionY, int BombPositionX)
     {
         readyTodeleate = stopwatch(waitingTime, time(NULL));
     }
-    
+
     for(int i = 0; i < AffectedArea; i++)
     {
         for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
@@ -83,7 +83,7 @@ void explode(int BombPositionY, int BombPositionX)
             for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
             {
                 move(y, x);
-                addch('*');
+                addch(' ');
             }
         }
     }
