@@ -196,8 +196,10 @@ int main()
             }
             else if(ReadBytes == 0)
             {
+                close(sd);
+                endwin();
                 printf( "novogo goda ne bydet, idi nahyi\n");
-                return 0;
+                return(1);
             }
             Object = MessangeFrom;
             Object.Hide();
@@ -217,6 +219,8 @@ int main()
                             {
                                 if(position.y < Object.GetY() + AffectedArea)
                                 {
+                                    close(sd);
+                                    endwin();
                                     return(1);
                                 }
                             }
