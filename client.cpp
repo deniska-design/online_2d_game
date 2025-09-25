@@ -76,10 +76,7 @@ void explode2Part(int BombPositionY, int BombPositionX)
     bool readyTodeleate = false;
     float waitingTime = 1;
     
-    while(readyTodeleate == false)
-    {
-        readyTodeleate = stopwatch(waitingTime, time(NULL));
-    }
+    sleep(1);
 
     for(int i = 0; i < AffectedArea; i++)
     {
