@@ -76,7 +76,7 @@ void explode2Part(int BombPositionY, int BombPositionX)
     bool readyTodeleate = false;
     float waitingTime = 1;
     
-    sleep(1);
+    sleep(1000);
 
     for(int i = 0; i < AffectedArea; i++)
     {
