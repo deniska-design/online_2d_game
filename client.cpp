@@ -93,8 +93,7 @@ void explode2Part(int BombPositionY, int BombPositionX)
 
 void explode(int BombPositionY, int BombPositionX)
 {
-    explode1Part(BombPositionY, BombPositionX);
-    explode2Part(BombPositionY, BombPositionX);
+    
 }
 
 int SetFdss(int fd, fd_set &readfds)
@@ -229,7 +228,8 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    explode(Object.GetY(), Object.GetX());
+                    explode1Part(Object.GetY(), Object.GetX());
+                    explode2Part(Object.GetY(), Object.GetX());
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
