@@ -10,6 +10,8 @@
 #include "vector.h"
 #include "player.h"
 #include "bomb.h"
+#include "time.h"
+
 
 using namespace std;
 
@@ -53,14 +55,18 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 
 void explode(int BombPositionY, int BombPositionX)
 {
+    float waitingTime = 0.5;
     for(int i = 0; i < AffectedArea; i++)
     {
-        for(int x = BombPositionX-i; x < BombPositionX+i; x++)
+        while(stopwatch(waitingTime, time(NULL)) != false)
         {
-            for(int y = BombPositionY-i; y < BombPositionY+i; y++)
+            for(int x = BombPositionX-i; x < BombPositionX+i; x++)
             {
-                move(y, x);
-                addch('*');
+                for(int y = BombPositionY-i; y < BombPositionY+i; y++)
+                {
+                    move(y, x);
+                    addch('*');
+                }
             }
         }
     }
