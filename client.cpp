@@ -68,7 +68,7 @@ void explode(int BombPositionY, int BombPositionX)
             }
         }
         refresh();
-        sleep(1);
+        sleep(1/10); 
     }
     for(int i = 0; i < AffectedArea; i++)
     {
@@ -81,7 +81,7 @@ void explode(int BombPositionY, int BombPositionX)
             }
         }
         refresh();
-        sleep(1);
+        sleep(1/10); 
     }
 }
 
