@@ -18,6 +18,8 @@ using namespace std;
 enum
 {
     AffectedArea = 10,
+    AffectedAreaXCoefficient = 2,
+    AffectedAreaYCoefficient = 1
 };
 
 const char *ServerIp = "192.168.1.120";
@@ -58,9 +60,9 @@ void explode(int BombPositionY, int BombPositionX)
     float waitingTime = 0.5;
     for(int i = 0; i < AffectedArea; i++)
     {
-        for(int x = BombPositionX-i; x < BombPositionX+i; x++)
+        for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
         {
-            for(int y = BombPositionY-i; y < BombPositionY+i; y++)
+            for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
             {
                 move(y, x);
                 addch('*');
