@@ -213,13 +213,13 @@ int main()
                 if (Object.getStatue() == exploded) 
                 {
                     explode(Object.GetY(), Object.GetX());
-                    if(position.x > Object.GetX() - AffectedArea)
+                    if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
-                        if(position.x < Object.GetX() + AffectedArea)
+                        if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
                         {
-                            if(position.y > Object.GetY() - AffectedArea)
+                            if(position.y > Object.GetY() - AffectedArea*AffectedAreaYCoefficient)
                             {
-                                if(position.y < Object.GetY() + AffectedArea)
+                                if(position.y < Object.GetY() + AffectedArea*AffectedAreaXCoefficient)
                                 {
                                     close(sd);
                                     endwin();
