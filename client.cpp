@@ -58,17 +58,19 @@ void explode(int BombPositionY, int BombPositionX)
     float waitingTime = 0.5;
     for(int i = 0; i < AffectedArea; i++)
     {
-        while(stopwatch(waitingTime, time(NULL)) == true)
+        while(stopwatch(waitingTime, time(NULL)) != true)
         {
-            for(int x = BombPositionX-i; x < BombPositionX+i; x++)
+            
+        }
+        for(int x = BombPositionX-i; x < BombPositionX+i; x++)
+        {
+            for(int y = BombPositionY-i; y < BombPositionY+i; y++)
             {
-                for(int y = BombPositionY-i; y < BombPositionY+i; y++)
-                {
-                    move(y, x);
-                    addch('*');
-                }
+                move(y, x);
+                addch('*');
             }
         }
+        
     }
 
     for(int i = 0; i < AffectedArea; i++)
