@@ -19,7 +19,7 @@ bool stopwatch(time_t WaitingTime, time_t CurrentTime)
     }
     if (!firstExecution)
     {
-        if (time(NULL) >= EndTime)
+        if (CurrentTime >= EndTime)
         {
             firstExecution = true;
             return true;

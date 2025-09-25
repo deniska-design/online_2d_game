@@ -71,7 +71,10 @@ void explode(int BombPositionY, int BombPositionX)
         }
     }
 
-    sleep(1);
+    while(readyTodeleate == false)
+    {
+        readyTodeleate = stopwatch(waitingTime, time(NULL));
+    }
 
     for(int i = 0; i < AffectedArea; i++)
     {
