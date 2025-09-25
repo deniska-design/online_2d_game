@@ -55,7 +55,7 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-void explode1Part(int BombPositionY, int BombPositionX)
+void explode(int BombPositionY, int BombPositionX)
 {
     for(int i = 0; i < AffectedArea; i++)
     {
@@ -67,17 +67,9 @@ void explode1Part(int BombPositionY, int BombPositionX)
                 addch('*');
             }
         }
+        refresh();
+        sleep(1);
     }
-
-}
-
-void explode2Part(int BombPositionY, int BombPositionX)
-{
-    bool readyTodeleate = false;
-    float waitingTime = 1;
-    
-    sleep(1000);
-
     for(int i = 0; i < AffectedArea; i++)
     {
         for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
@@ -88,12 +80,9 @@ void explode2Part(int BombPositionY, int BombPositionX)
                 addch(' ');
             }
         }
+        refresh();
+        sleep(1);
     }
-}
-
-void explode(int BombPositionY, int BombPositionX)
-{
-    
 }
 
 int SetFdss(int fd, fd_set &readfds)
@@ -228,8 +217,7 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    explode1Part(Object.GetY(), Object.GetX());
-                    explode2Part(Object.GetY(), Object.GetX());
+                    explode(Object.GetY(), Object.GetX());
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
