@@ -69,7 +69,7 @@ void explode(int BombPositionY, int BombPositionX)
                 addch('*');
             }
         }
-        while(readyTodeleate != false)
+        while(readyTodeleate == false)
         {
             readyTodeleate = stopwatch(waitingTime, time(NULL));
         }
