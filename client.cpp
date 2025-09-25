@@ -69,6 +69,7 @@ void explode(int BombPositionY, int BombPositionX)
                 addch('*');
             }
         }
+        
         sleep(1);
         /*while(readyTodeleate == false)
         {
