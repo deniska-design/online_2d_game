@@ -55,10 +55,8 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-void explode(int BombPositionY, int BombPositionX)
+void explode1Part(int BombPositionY, int BombPositionX)
 {
-    bool readyTodeleate = false;
-    float waitingTime = 1;
     for(int i = 0; i < AffectedArea; i++)
     {
         for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
@@ -71,6 +69,13 @@ void explode(int BombPositionY, int BombPositionX)
         }
     }
 
+}
+
+void explode2Part(int BombPositionY, int BombPositionX)
+{
+    bool readyTodeleate = false;
+    float waitingTime = 1;
+    
     while(readyTodeleate == false)
     {
         readyTodeleate = stopwatch(waitingTime, time(NULL));
@@ -87,6 +92,12 @@ void explode(int BombPositionY, int BombPositionX)
             }
         }
     }
+}
+
+void explode(int BombPositionY, int BombPositionX)
+{
+    explode1Part(BombPositionY, BombPositionX);
+    explode2Part(BombPositionY, BombPositionX);
 }
 
 int SetFdss(int fd, fd_set &readfds)
