@@ -57,6 +57,7 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 
 void explode(int BombPositionY, int BombPositionX)
 {
+    bool readyTodeleate = false;
     float waitingTime = 0.5;
     for(int i = 0; i < AffectedArea; i++)
     {
@@ -68,7 +69,10 @@ void explode(int BombPositionY, int BombPositionX)
                 addch('*');
             }
         }
-        while(stopwatch(waitingTime, time(NULL)) != true)
+        while(readyTodeleate != false)
+        {
+            readyTodeleate = stopwatch(waitingTime, time(NULL));
+        }
         for(int x = BombPositionX-i; x < BombPositionX+i; x++)
         {
             for(int y = BombPositionY-i; y < BombPositionY+i; y++)
@@ -219,7 +223,7 @@ int main()
                         {
                             if(position.y > Object.GetY() - AffectedArea*AffectedAreaYCoefficient)
                             {
-                                if(position.y < Object.GetY() + AffectedArea*AffectedAreaXCoefficient)
+                                if(position.y < Object.GetY() + AffectedArea*AffectedAreaYCoefficient)
                                 {
                                     close(sd);
                                     endwin();
