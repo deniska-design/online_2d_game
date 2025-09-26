@@ -55,16 +55,22 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-void explode(int BombPositionY, int BombPositionX)
+void explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
 {
     for(int i = 0; i < AffectedArea; i++)
     {
         for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
         {
-            for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
+            if((x>0) && (x<PositionBorders.x))
             {
-                move(y, x);
-                addch('*');
+                for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
+                {
+                    if( (y>0) && (y<PositionBorders.y))
+                    {
+                        move(y, x);
+                        addch('*');
+                    }
+                }
             }
         }
         refresh();
@@ -74,10 +80,16 @@ void explode(int BombPositionY, int BombPositionX)
     {
         for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
         {
-            for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
+            if((x>0) && (x<PositionBorders.x))
             {
-                move(y, x);
-                addch(' ');
+                for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
+                {
+                    if((y>0) && (y<PositionBorders.y))
+                    {
+                        move(y, x);
+                        addch(' ');
+                    }
+                }
             }
         }
         refresh();
@@ -216,7 +228,7 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    explode(Object.GetY(), Object.GetX());
+                    explode(Object.GetY(), Object.GetX(), PositionBorders);
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
