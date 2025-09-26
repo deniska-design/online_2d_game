@@ -17,7 +17,7 @@ using namespace std;
 
 enum
 {
-    AffectedArea = 20,
+    AffectedArea = 15,
     AffectedAreaXCoefficient = 2,
     AffectedAreaYCoefficient = 1
 };
