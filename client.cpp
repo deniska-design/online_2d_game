@@ -157,7 +157,7 @@ void StartWindow()
 
 int main()
 {    
-    struct timeval timeout;
+    struct timeval *timeout;
     object MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
@@ -199,9 +199,9 @@ int main()
     {
         SetFdss(sd, readfds);
         FD_SET(STDIN_FILENO, &readfds);
-        timeout.tv_sec = 1;
-        timeout.tv_usec = 1;
-        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 1)
+        timeout->tv_sec = 1;
+        timeout->tv_usec = 1;
+        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, timeout)) < 1)
         {
             if (errno != EINTR)
             {
