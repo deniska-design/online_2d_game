@@ -61,6 +61,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
     static int y;
     static int i = 0;
     static bool firstExecution = true;
+    static float waitingTime = 2;
     if(firstExecution)
     {
         x = BombPositionX-i*AffectedAreaXCoefficient; 
@@ -98,8 +99,9 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
             i++;
             return firstExecution;
         }
-        while(false == stopwatch(2, time(NULL)))
+        while(false == stopwatch(waitingTime, time(NULL)))
         {
+            waitingTime -=0.1;
             return firstExecution;
         }
         while(i < AffectedArea)
