@@ -55,45 +55,82 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-void explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
 {
-    for(int i = 0; i < AffectedArea; i++)
+    static int x; 
+    static int y;
+    static int i = 0;
+    static bool firstExecution = true;
+    if(firstExecution)
     {
-        for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
+        x = BombPositionX-i*AffectedAreaXCoefficient; 
+        y = BombPositionY-i*AffectedAreaYCoefficient;
+        i = 0;
+        firstExecution = false;
+    }
+    if(!firstExecution)
+    {
+        while(i < AffectedArea)
         {
-            if((x>0) && (x<PositionBorders.x))
+            while(x != BombPositionX+i*AffectedAreaXCoefficient)
             {
-                for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
+                if((x>0) && (x<PositionBorders.x))
                 {
-                    if( (y>0) && (y<PositionBorders.y))
+                    while(y != BombPositionY+i*AffectedAreaYCoefficient )
                     {
-                        move(y, x);
-                        addch('*');
+                        if( (y>0) && (y<PositionBorders.y))
+                        {
+                            move(y, x);
+                            addch('*');
+                            
+                        }
+                        y++;
                     }
                 }
+                x++;
             }
-        }
-        refresh();
-    }
-    sleep(1);
-    for(int i = 0; i < AffectedArea; i++)
-    {
-        for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
-        {
-            if((x>0) && (x<PositionBorders.x))
+            refresh();
+            if(x == BombPositionX+i*AffectedAreaXCoefficient)
             {
-                for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
+                x = BombPositionX-i*AffectedAreaXCoefficient; 
+                y = BombPositionY-i*AffectedAreaYCoefficient;
+            }
+            i++;
+            return firstExecution;
+        }
+        while(false == stopwatch(2, time(NULL)))
+        {
+            return firstExecution;
+        }
+        while(i < AffectedArea)
+        {
+            while(x != BombPositionX+i*AffectedAreaXCoefficient)
+            {
+                if((x>0) && (x<PositionBorders.x))
                 {
-                    if((y>0) && (y<PositionBorders.y))
+                    while(y != BombPositionY+i*AffectedAreaYCoefficient )
                     {
-                        move(y, x);
-                        addch(' ');
+                        if( (y>0) && (y<PositionBorders.y))
+                        {
+                            move(y, x);
+                            addch(' ');
+                            
+                        }
+                        y++;
                     }
                 }
+                x++;
             }
+            refresh();
+            if(x == BombPositionX+i*AffectedAreaXCoefficient)
+            {
+                firstExecution = true;                
+            }
+            i++;
+            return firstExecution;
         }
-        refresh();
-    }
+    }  
+    return firstExecution;
 }
 
 int SetFdss(int fd, fd_set &readfds)
@@ -114,11 +151,12 @@ void StartWindow()
 
 int main()
 {    
+    struct timeval timeout;
     object MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
     object Object(5, 2, position);
-    bool MustSend = false;
+    bool MustSend = false, bombExploding;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
     fd_set readfds;
@@ -155,8 +193,8 @@ int main()
     {
         SetFdss(sd, readfds);
         FD_SET(STDIN_FILENO, &readfds);
-
-        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, NULL)) < 1)
+        timeout.tv_usec = 500000;
+        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 1)
         {
             if (errno != EINTR)
             {
@@ -168,6 +206,12 @@ int main()
                 return(-1);
             }
             continue;
+        }else if (SelRes == 0)
+        {
+            if(bombExploding)
+            {
+                bombExploding = explode(Object.GetY(), Object.GetX(), PositionBorders);
+            }
         }
 
         //общение с клиентом:
@@ -228,7 +272,7 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    explode(Object.GetY(), Object.GetX(), PositionBorders);
+                    bombExploding = true;
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
@@ -244,7 +288,6 @@ int main()
                             }
                         }
                     }
-
                 }
             }
         }
@@ -258,7 +301,6 @@ int main()
             }
             MustSend = false;
         } 
-
         //конец
         refresh();
     }
