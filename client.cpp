@@ -67,18 +67,18 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
         x = BombPositionX-i*AffectedAreaXCoefficient; 
         y = BombPositionY-i*AffectedAreaYCoefficient;
         i = 0;
+        waitingTime = 1;
         firstExecution = false;
-        waitingTime = 2;
     }
     if(!firstExecution)
     {
         while(i < AffectedArea)
         {
-            while(x != BombPositionX+i*AffectedAreaXCoefficient)
+            while(x <= BombPositionX+i*AffectedAreaXCoefficient)
             {
                 if((x>0) && (x<PositionBorders.x))
                 {
-                    while(y != BombPositionY+i*AffectedAreaYCoefficient )
+                    while(y <= BombPositionY+i*AffectedAreaYCoefficient )
                     {
                         if( (y>0) && (y<PositionBorders.y))
                         {
@@ -92,26 +92,26 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
                 x++;
             }
             refresh();
-            if(x == BombPositionX+i*AffectedAreaXCoefficient)
+            if(x >= BombPositionX+i*AffectedAreaXCoefficient)
             {
+                i++;
                 x = BombPositionX-i*AffectedAreaXCoefficient; 
                 y = BombPositionY-i*AffectedAreaYCoefficient;
             }
-            i++;
             return firstExecution;
         }
         while(false == stopwatch(waitingTime, time(NULL)))
         {
-            waitingTime -=0.1;
+            waitingTime -=0.5;
             return firstExecution;
         }
         while(i < AffectedArea)
         {
-            while(x != BombPositionX+i*AffectedAreaXCoefficient)
+            while(x <= BombPositionX+i*AffectedAreaXCoefficient)
             {
                 if((x>0) && (x<PositionBorders.x))
                 {
-                    while(y != BombPositionY+i*AffectedAreaYCoefficient )
+                    while(y <= BombPositionY+i*AffectedAreaYCoefficient)
                     {
                         if( (y>0) && (y<PositionBorders.y))
                         {
@@ -125,14 +125,16 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
                 x++;
             }
             refresh();
-            if(x == BombPositionX+i*AffectedAreaXCoefficient)
+            if(x >= BombPositionX+i*AffectedAreaXCoefficient)
             {
-                firstExecution = true;                
+                i++;
+                x = BombPositionX-i*AffectedAreaXCoefficient; 
+                y = BombPositionY-i*AffectedAreaYCoefficient;
             }
-            i++;
             return firstExecution;
         }
-    }  
+    }
+    firstExecution = true;                  
     return firstExecution;
 }
 
@@ -159,7 +161,7 @@ int main()
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
     object Object(5, 2, position);
-    bool MustSend = false, bombExploding;
+    bool MustSend = false, bombExploding = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
     fd_set readfds;
@@ -196,7 +198,7 @@ int main()
     {
         SetFdss(sd, readfds);
         FD_SET(STDIN_FILENO, &readfds);
-        timeout.tv_usec = 500000;
+        timeout.tv_usec = 1;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 1)
         {
             if (errno != EINTR)
@@ -213,7 +215,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = explode(Object.GetY(), Object.GetX(), PositionBorders);
+                bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders);
             }
         }
 
