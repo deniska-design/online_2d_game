@@ -59,15 +59,16 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
 {
     static int x; 
     static int y;
-    static int i = 0;
+    static int i;
     static bool firstExecution = true;
-    static float waitingTime = 2;
+    static float waitingTime;
     if(firstExecution)
     {
         x = BombPositionX-i*AffectedAreaXCoefficient; 
         y = BombPositionY-i*AffectedAreaYCoefficient;
         i = 0;
         firstExecution = false;
+        waitingTime = 2;
     }
     if(!firstExecution)
     {
