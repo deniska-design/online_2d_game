@@ -94,12 +94,11 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
         BombExploded = false;
         break;
     case SecondStation: 
-        while(false == stopwatch(waitingTime, CurrentTime))
+        if(true == stopwatch(waitingTime, CurrentTime))
         {
-            return BombExploded;
+            station = ThirdStation;
+            BombExploded = false;
         }
-        station = ThirdStation;
-        BombExploded = false;
         break;
     case ThirdStation: 
         for(int i = 0; i < AffectedArea; i++)
@@ -271,7 +270,7 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    bombExploding = true;
+                    bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders, timeout.tv_sec, 2);
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
