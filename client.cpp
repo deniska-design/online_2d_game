@@ -102,7 +102,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
         }
         while(false == stopwatch(waitingTime, time(NULL)))
         {
-            waitingTime -=0.5;
+            waitingTime -=0.00001;
             return firstExecution;
         }
         while(i < AffectedArea)
