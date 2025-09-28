@@ -164,7 +164,7 @@ int main()
     {
 	SetFdss(sd, playerCount, pd, readfds);
 
-		timeout.tv_usec = 1;
+		timeout.tv_sec = 0.000001;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 0)
         {
             if (errno != EINTR)

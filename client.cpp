@@ -63,7 +63,7 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float timeInterval, int waitingTime)
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float waitingTime)
 {
     static bool BombExploded;
     static float CurrentTime;
@@ -71,6 +71,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
     switch (station)
     {
     case firstStation: 
+        mvprintw(0, 0, "firstStation");
         for(int i = 0; i < AffectedArea; i++)
         {
             for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
@@ -83,7 +84,6 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
                         {
                             move(y, x);
                             addch('*');
-                            
                         }
                     }
                 }
@@ -94,6 +94,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
         BombExploded = false;
         break;
     case SecondStation: 
+        mvprintw(1, 0, "SecondStation");
         /*if(true == stopwatch(waitingTime, CurrentTime))
         {
             station = ThirdStation;
@@ -104,6 +105,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
         BombExploded = false;
         break;
     case ThirdStation: 
+        mvprintw(2, 0, "ThirdStation");
         for(int i = 0; i < AffectedArea; i++)
         {
             for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
@@ -212,7 +214,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders, timeout.tv_sec, 2);
+                bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders, 0.5);
             }
         }
 
@@ -273,7 +275,7 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders, timeout.tv_sec, 2);
+                    bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders, 0.5);
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
