@@ -95,7 +95,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
         break;
     case SecondStation: 
         mvprintw(1, 0, "SecondStation");
-        /*if(true == stopwatch(waitingTime, CurrentTime))
+        /*if(true == stopwatch(waitingTime, CurrentTime))       //непривильно рабоатет
         {
             station = ThirdStation;
             BombExploded = false;
@@ -104,7 +104,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
         station = ThirdStation;
         BombExploded = false;
         break;
-    case ThirdStation: 
+    case ThirdStation:          //стирает не в той позиции
         mvprintw(2, 0, "ThirdStation");
         for(int i = 0; i < AffectedArea; i++)
         {
@@ -117,7 +117,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
                         if( (y>0) && (y<PositionBorders.y))
                         {
                             move(y, x);
-                            addch(' ');  
+                            addch(' ');
                         }
                     }
                 }
