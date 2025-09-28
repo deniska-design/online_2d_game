@@ -199,7 +199,7 @@ int main()
     {
         SetFdss(sd, readfds);
         FD_SET(STDIN_FILENO, &readfds);
-        timeout.tv_usec = 1;
+        timeout.tv_sec = 1;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) == -1)
         {
             mvprintw(0, 0, "%d", SelRes);
