@@ -73,11 +73,11 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
     case firstStation: 
         for(int i = 0; i < AffectedArea; i++)
         {
-            for(int x = BombPositionX-i*AffectedAreaXCoefficient; x <= BombPositionX+i*AffectedAreaXCoefficient; x++)
+            for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
             {
                 if((x>0) && (x<PositionBorders.x))
                 {
-                    for(int y = BombPositionY-i*AffectedAreaYCoefficient; y <= BombPositionY+i*AffectedAreaYCoefficient; y++)
+                    for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
                     {
                         if( (y>0) && (y<PositionBorders.y))
                         {
@@ -104,11 +104,11 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
     case ThirdStation: 
         for(int i = 0; i < AffectedArea; i++)
         {
-            for(int x = BombPositionX-i*AffectedAreaXCoefficient; x <= BombPositionX+i*AffectedAreaXCoefficient; x++)
+            for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
             {
                 if((x>0) && (x<PositionBorders.x))
                 {
-                    for(int y = BombPositionY-i*AffectedAreaYCoefficient; y <= BombPositionY+i*AffectedAreaYCoefficient; y++)
+                    for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
                     {
                         if( (y>0) && (y<PositionBorders.y))
                         {
