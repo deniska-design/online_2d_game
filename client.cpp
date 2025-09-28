@@ -100,12 +100,11 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
             }
             return firstExecution;
         }
-        /*while(false == stopwatch(waitingTime, time(NULL)))
+        while(false == stopwatch(waitingTime, time(NULL)))
         {
             waitingTime -=0.5;
             return firstExecution;
-        }*/
-        sleep(1);
+        }
         while(i < AffectedArea)
         {
             while(x <= BombPositionX+i*AffectedAreaXCoefficient)
