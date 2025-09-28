@@ -94,11 +94,14 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
         BombExploded = false;
         break;
     case SecondStation: 
-        if(true == stopwatch(waitingTime, CurrentTime))
+        /*if(true == stopwatch(waitingTime, CurrentTime))
         {
             station = ThirdStation;
             BombExploded = false;
-        }
+        }*/
+        sleep(1);
+        station = ThirdStation;
+        BombExploded = false;
         break;
     case ThirdStation: 
         for(int i = 0; i < AffectedArea; i++)
