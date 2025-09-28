@@ -202,6 +202,7 @@ int main()
         timeout.tv_usec = 1;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) == -1)
         {
+            mvprintw(0, 0, "%d", SelRes);
             if (errno != EINTR)
             {
                 printf("ошибка select: %d\n", errno);
@@ -222,7 +223,7 @@ int main()
         }
 
         //общение с клиентом:
-
+        mvprintw(0, 0, "%d", SelRes);
         if(FD_ISSET(STDIN_FILENO, &readfds))
         {
             if (10 != (key = getch()))
