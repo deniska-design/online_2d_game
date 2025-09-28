@@ -22,6 +22,14 @@ enum
     AffectedAreaYCoefficient = 1
 };
 
+typedef enum 
+{
+    firstStation = 1,
+    SecondStation = 2,
+    ThirdStation = 3,
+    lastStation = 4,
+}stations;
+
 const char *ServerIp = "192.168.1.120";
 int ServPort = 10;
 
@@ -55,30 +63,21 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float timeInterval, int waitingTime)
 {
-    static int x; 
-    static int y;
-    static int i;
-    static bool firstExecution = true;
-    static float waitingTime;
-    if(firstExecution)
+    static bool BombExploded;
+    static float CurrentTime;
+    static stations station = firstStation;
+    switch (station)
     {
-        x = BombPositionX-i*AffectedAreaXCoefficient; 
-        y = BombPositionY-i*AffectedAreaYCoefficient;
-        i = 0;
-        waitingTime = 1;
-        firstExecution = false;
-    }
-    if(!firstExecution)
-    {
-        while(i < AffectedArea)
+    case firstStation: 
+        for(int i = 0; i < AffectedArea; i++)
         {
-            while(x <= BombPositionX+i*AffectedAreaXCoefficient)
+            for(int x = BombPositionX-i*AffectedAreaXCoefficient; x <= BombPositionX+i*AffectedAreaXCoefficient; x++)
             {
                 if((x>0) && (x<PositionBorders.x))
                 {
-                    while(y <= BombPositionY+i*AffectedAreaYCoefficient )
+                    for(int y = BombPositionY-i*AffectedAreaYCoefficient; y <= BombPositionY+i*AffectedAreaYCoefficient; y++)
                     {
                         if( (y>0) && (y<PositionBorders.y))
                         {
@@ -86,56 +85,52 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders)
                             addch('*');
                             
                         }
-                        y++;
                     }
                 }
-                x++;
             }
-            refresh();
-            if(x >= BombPositionX+i*AffectedAreaXCoefficient)
-            {
-                i++;
-                x = BombPositionX-i*AffectedAreaXCoefficient; 
-                y = BombPositionY-i*AffectedAreaYCoefficient;
-            }
-            return firstExecution;
         }
-        while(false == stopwatch(waitingTime, time(NULL)))
+        station = SecondStation;
+        CurrentTime = time(NULL);
+        BombExploded = false;
+        break;
+    case SecondStation: 
+        while(false == stopwatch(waitingTime, CurrentTime))
         {
-            waitingTime -=0.00001;
-            return firstExecution;
+            return BombExploded;
         }
-        while(i < AffectedArea)
+        station = ThirdStation;
+        BombExploded = false;
+        break;
+    case ThirdStation: 
+        for(int i = 0; i < AffectedArea; i++)
         {
-            while(x <= BombPositionX+i*AffectedAreaXCoefficient)
+            for(int x = BombPositionX-i*AffectedAreaXCoefficient; x <= BombPositionX+i*AffectedAreaXCoefficient; x++)
             {
                 if((x>0) && (x<PositionBorders.x))
                 {
-                    while(y <= BombPositionY+i*AffectedAreaYCoefficient)
+                    for(int y = BombPositionY-i*AffectedAreaYCoefficient; y <= BombPositionY+i*AffectedAreaYCoefficient; y++)
                     {
                         if( (y>0) && (y<PositionBorders.y))
                         {
                             move(y, x);
-                            addch(' ');
-                            
+                            addch(' ');  
                         }
-                        y++;
                     }
                 }
-                x++;
             }
-            refresh();
-            if(x >= BombPositionX+i*AffectedAreaXCoefficient)
-            {
-                i++;
-                x = BombPositionX-i*AffectedAreaXCoefficient; 
-                y = BombPositionY-i*AffectedAreaYCoefficient;
-            }
-            return firstExecution;
         }
+        BombExploded = false;
+        station = lastStation;
+        break;
+    case lastStation: 
+        BombExploded = true;
+        station = firstStation;
+        break;
+    default:
+        break;
     }
-    firstExecution = true;                  
-    return firstExecution;
+    refresh();
+    return BombExploded;
 }
 
 int SetFdss(int fd, fd_set &readfds)
@@ -201,7 +196,6 @@ int main()
         timeout.tv_sec = 0.000001;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) == -1)
         {
-            mvprintw(0, 0, "%d", SelRes);
             if (errno != EINTR)
             {
                 printf("ошибка select: %d\n", errno);
@@ -214,15 +208,13 @@ int main()
             continue;
         }else if (SelRes == 0)
         {
-            mvprintw(0, 0, "timeout");
             if(bombExploding)
             {
-                bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders);
+                bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders, timeout.tv_sec, 2);
             }
         }
 
         //общение с клиентом:
-        mvprintw(0, 0, "%d", SelRes);
         if(FD_ISSET(STDIN_FILENO, &readfds))
         {
             if (10 != (key = getch()))
