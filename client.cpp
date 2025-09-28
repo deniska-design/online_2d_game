@@ -160,6 +160,7 @@ int main()
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
     object Object(5, 2, position);
+    object Bomb(2, 2, position);
     bool MustSend = false, bombExploding = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
@@ -214,7 +215,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders, 0.5);
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5);
             }
         }
 
@@ -275,7 +276,9 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
-                    bombExploding = !explode(Object.GetY(), Object.GetX(), PositionBorders, 0.5);
+                    Bomb.GetY() = Object.GetY();
+                    Bomb.GetX() = Object.GetX();
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5);
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
