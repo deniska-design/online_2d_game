@@ -164,7 +164,7 @@ int main()
     {
 	SetFdss(sd, playerCount, pd, readfds);
 
-		timeout.tv_sec = 0.000001;
+		timeout.tv_sec = 0.0001;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 0)
         {
             if (errno != EINTR)
@@ -198,6 +198,14 @@ int main()
 						BombCount--;
 					}
 				}
+			}
+			for(int i = 0; i < playerCount; i++)
+			{
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i));
+			}
+			for(int i = 0; i < BombCount; i++)
+			{
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(i));
 			}
 		}
 
