@@ -97,7 +97,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
         mvprintw(1, 0, "SecondStation");
         sleep(timeInterval);
         WT =- timeInterval;
-        if(WT <= 0)       
+        if(WT < 0)       
         {
             station = ThirdStation;
             BombExploded = false;
