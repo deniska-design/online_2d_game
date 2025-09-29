@@ -63,9 +63,9 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float waitingTime, float timeInterval)
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime, int timeInterval)
 {
-    static float WT;
+    static int WT;
     static bool BombExploded;
     static stations station = firstStation;
     switch (station)
@@ -94,7 +94,10 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
         WT = waitingTime;
         break;
     case SecondStation: 
+
         mvprintw(1, 0, "SecondStation");
+        mvprintw(0, 10, "timeInterval:%d", timeInterval);
+        mvprintw(0, 20, "waitingTime:%d", WT);
         usleep(timeInterval);
         WT =- timeInterval;
         if(WT <= 0)       
