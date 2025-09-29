@@ -107,6 +107,8 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
             BombExploded = false;
         }
             */
+        station = ThirdStation;
+        BombExploded = false;
         break;
     case ThirdStation:         
         mvprintw(2, 0, "ThirdStation");
