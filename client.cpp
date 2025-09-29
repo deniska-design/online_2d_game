@@ -63,10 +63,10 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float waitingTime)
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float waitingTime, float timeInterval)
 {
+    static float WT;
     static bool BombExploded;
-    static float CurrentTime;
     static stations station = firstStation;
     switch (station)
     {
@@ -90,21 +90,20 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, float
             }
         }
         station = SecondStation;
-        CurrentTime = time(NULL);
         BombExploded = false;
+        WT = waitingTime;
         break;
     case SecondStation: 
         mvprintw(1, 0, "SecondStation");
-        /*if(true == stopwatch(waitingTime, CurrentTime))       //непривильно рабоатет
+        sleep(timeInterval);
+        WT =- timeInterval;
+        if(WT <= 0)       
         {
             station = ThirdStation;
             BombExploded = false;
-        }*/
-        sleep(1);
-        station = ThirdStation;
-        BombExploded = false;
+        }
         break;
-    case ThirdStation:          //стирает не в той позиции
+    case ThirdStation:         
         mvprintw(2, 0, "ThirdStation");
         for(int i = 0; i < AffectedArea; i++)
         {
@@ -198,7 +197,7 @@ int main()
     {
         SetFdss(sd, readfds);
         FD_SET(STDIN_FILENO, &readfds);
-        timeout.tv_sec = 0.000001;
+        timeout.tv_sec = 0.0001;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) == -1)
         {
             if (errno != EINTR)
@@ -215,7 +214,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5);
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5, timeout.tv_sec);
             }
         }
 
@@ -278,7 +277,7 @@ int main()
                 {
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5);
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5, timeout.tv_sec);
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
