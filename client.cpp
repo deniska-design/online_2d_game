@@ -214,7 +214,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, timeout.tv_sec);
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, 3);
             }
         }
 
