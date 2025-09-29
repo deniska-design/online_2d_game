@@ -197,7 +197,7 @@ int main()
     {
         SetFdss(sd, readfds);
         FD_SET(STDIN_FILENO, &readfds);
-        timeout.tv_sec = 0.0001;
+        timeout.tv_sec = 1;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) == -1)
         {
             if (errno != EINTR)
@@ -277,7 +277,7 @@ int main()
                 {
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, timeout.tv_sec);
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 3, timeout.tv_sec);
                     if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
