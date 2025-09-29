@@ -215,10 +215,10 @@ int main()
             continue;
         }else if (SelRes == 0)
         {
-            if(bombExploding)
+            /*if(bombExploding)
             {
                 bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1000000, 100000);
-            }
+            }*/
         }
 
         //общение с клиентом:
@@ -280,14 +280,14 @@ int main()
                 {
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1000000, 100000);
-                    if(position.x > Object.GetX() - AffectedArea*AffectedAreaXCoefficient)
+                    //bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1000000, 100000);
+                    if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
-                        if(position.x < Object.GetX() + AffectedArea*AffectedAreaXCoefficient)
+                        if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
                         {
-                            if(position.y > Object.GetY() - AffectedArea*AffectedAreaYCoefficient)
+                            if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
                             {
-                                if(position.y < Object.GetY() + AffectedArea*AffectedAreaYCoefficient)
+                                if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                                 {
                                     close(sd);
                                     endwin();
