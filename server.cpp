@@ -120,12 +120,12 @@ void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMus
 
 void SetMessange(object messange[4], object *newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
 {
-	for (int n = 0; n <= newMessangeLength; n++)		
+	for (int n = 0; n < newMessangeLength; n++)		
 	{
 		messange[n] = newValue[n];
 	}
 	mustSendMessangeto[WhowMustSend] = true;
-	messangeLenght = newMessangeLength;
+	messangeLenght = newMessangeLength-1;
 }
 
 int main()
@@ -137,7 +137,7 @@ int main()
 	object messange[MaxPlayerCount]; 
 	Vector PositionBorders[MaxPlayerCount];
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount], positionChanged = false, BombGenerated = false;
-    int sd, MaxD, ReadBytes, key, SelRes = 0, RandomTime = 0, messangeLenght = 0, WhowMustSend = 0, playerCount = 0;
+    int sd, MaxD, ReadBytes, key, SelRes = 0, RandomTime = 0, messangeLenght = 0, WhowMustSend = 0, playerCount = 0, BombCount = 0;
     int pd[MaxPlayerCount];
 	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
@@ -185,15 +185,17 @@ int main()
 					Game.GetBomb(MaxBombCount - 1).setStatue(active);
 					RandomTime = Random(2, 4);
 					stopwatch(RandomTime, time(NULL));
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount - 1));
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount));
 					BombGenerated = true;
+					BombCount++;
 				}else
 				{
 					if(true == stopwatch(RandomTime, time(NULL)))
 					{
 						Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
-						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(MaxBombCount - 1));
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
 						BombGenerated = false;
+						BombCount--;
 					}
 				}
 			}
@@ -213,7 +215,8 @@ int main()
 			Game.GetPlayer(playerCount-1).setPosition(0, 0);
 			Game.GetPlayer(playerCount-1).setStatue(alive);
 			SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
-			SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount-1);
+			SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
+			SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
 		}
 
 	//начало работы с игроками на прямую:
