@@ -98,7 +98,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
         mvprintw(1, 0, "SecondStation");
         mvprintw(0, 15, "timeInterval:%d", timeInterval);
         mvprintw(0, 40, "waitingTime:%d", WT);
-        usleep(1);
+        usleep(waitingTime);
         /*
         WT =- timeInterval;
         if(WT <= 0)       
@@ -223,7 +223,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 500000, 100000);
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1000000, 100000);
             }
         }
 
@@ -286,7 +286,7 @@ int main()
                 {
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 500000, 100000);
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1000000, 100000);
                     if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
