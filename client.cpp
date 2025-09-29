@@ -143,10 +143,13 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
     return BombExploded;
 }
 
-int SetFdss(int fd, fd_set &readfds)
+int SetFdss(int fd1, int fd2, fd_set &readfds, fd_set &writefds)
 {
 	FD_ZERO(&readfds);
-	FD_SET(fd, &readfds);
+	FD_SET(fd1, &readfds);
+    FD_SET(fd2, &readfds);
+    FD_SET(fd1, &writefds);
+    FD_SET(fd2, &writefds);
 	return 0;
 }
 
@@ -161,7 +164,6 @@ void StartWindow()
 
 int main()
 {    
-    struct timeval timeout;
     object MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
@@ -170,7 +172,7 @@ int main()
     bool MustSend = false, bombExploding = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
-    fd_set readfds;
+    fd_set readfds, writefds;
     FD_ZERO(&readfds);
     
     ServAddr = FillAddr(ServAddr, ServerIp, ServPort);
@@ -202,10 +204,8 @@ int main()
 
     while (true)
     {
-        SetFdss(sd, readfds);
-        FD_SET(STDIN_FILENO, &readfds);
-        timeout.tv_usec = 10000;
-        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) == -1)
+        SetFdss(sd, STDIN_FILENO, readfds, writefds);
+        if ((SelRes = select(MaxD+1, &readfds, &writefds, NULL, NULL)) == -1)
         {
             if (errno != EINTR)
             {
@@ -217,7 +217,9 @@ int main()
                 return(-1);
             }
             continue;
-        }else if (SelRes == 0)
+        }
+         
+        if (FD_ISSET(STDIN_FILENO, &writefds))
         {
             if(bombExploding)
             {
