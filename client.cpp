@@ -63,7 +63,7 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime, int timeInterval)       //если timeInterval сделать слишком коротким будет работатьт не праивльно
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime)       //если timeInterval сделать слишком коротким будет работатьт не праивльно
 {
     static int WT;
     static bool BombExploded;
@@ -94,13 +94,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
         WT = waitingTime;
         break;
     case SecondStation: 
-
-        mvprintw(1, 0, "SecondStation");
-        mvprintw(0, 15, "timeInterval:%d", timeInterval);
-        usleep(timeInterval);
-        mvprintw(0, 40, "waitingTime:%d", WT);
-        WT =- timeInterval;
-        if(WT <= 0)       
+        if(true == stopwatch(waitingTime, time(NULL)))       
         {
             station = ThirdStation;
         }
@@ -219,7 +213,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1000000, 500000);
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
             }
         }
 
@@ -282,7 +276,7 @@ int main()
                 {
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 10000000, 10000);  
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
                     if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
