@@ -97,8 +97,8 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
 
         mvprintw(1, 0, "SecondStation");
         mvprintw(0, 15, "timeInterval:%d", timeInterval);
-        mvprintw(0, 40, "waitingTime:%d", WT);
         usleep(timeInterval);
+        mvprintw(0, 40, "waitingTime:%d", WT);
         WT =- timeInterval;
         if(WT <= 0)       
         {
