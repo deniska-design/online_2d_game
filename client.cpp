@@ -95,7 +95,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
         break;
     case SecondStation: 
 
-        mvprintw(1, 0, "SecondStation");
+        /*mvprintw(1, 0, "SecondStation");
         mvprintw(0, 15, "timeInterval:%d", timeInterval);
         usleep(timeInterval);
         mvprintw(0, 40, "waitingTime:%d", WT);
@@ -104,7 +104,10 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
         {
             station = ThirdStation;
             BombExploded = false;
-        }
+        }*/
+        sleep(1);
+        station = ThirdStation;
+            BombExploded = false;
         break;
     case ThirdStation:         
         mvprintw(2, 0, "ThirdStation");

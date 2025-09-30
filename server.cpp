@@ -157,26 +157,117 @@ int main()
 
     MaxD = sd;
     socklen_t addrlen = sizeof(PlayerAddr[0]);
-
+    srand(time(NULL));
     keypad(stdscr, 1);
 
     while (true)
     {
-	SetFdss(sd, playerCount, pd, readfds);
-
-		timeout.tv_usec = 1;
+		SetFdss(sd, playerCount, pd, readfds);
+		timeout.tv_usec = 500000;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 0)
         {
             if (errno != EINTR)
             {
                 printf("ошибка select: %d\n", errno);
-                return(-1);
+                break;
             }else
             {
                 printf("пришёл неигнорируемый сигнал: %d\n", errno);
             }
-        }else if (SelRes == 0)
+        }else if(SelRes > 0)
 		{
+			if(FD_ISSET(sd, &readfds))
+			{
+				if ((AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen)) == -1)
+				{
+					break;
+				}
+				if(write(pd[playerCount-1], &firstMessange, sizeof(firstMessange)) == -1)
+				{
+					printf("ошибка отправки первого сообщения:%d", errno);
+					break;
+				}
+				Game.GetPlayer(playerCount-1).setPosition(0, 0);
+				Game.GetPlayer(playerCount-1).setStatue(alive);
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
+				SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
+				SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
+			}
+
+		//начало работы с игроками на прямую:
+
+			for (int i = 0; i < playerCount; i++)
+			{
+				if(FD_ISSET(pd[i], &readfds))
+				{
+					printf("пришло сообщение от игрока\n");
+					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))	//оптимизация: пусть игрок который сделал шаг сам себя ресует и мы не будем ему отпрявлять его нувую позицию
+					{																				//оптимизация: лучше не отпрявлять игроку каждый пиксель взрыва бомбы лучше просто отправить что ещё больше нет и он сам нарисует
+						printf("ошибка чтения данных:%d\n", errno);
+						break;
+					}else if(ReadBytes > 0)
+					{
+						if(std::holds_alternative<int>(messangeFrom[i]))
+						{
+							key = std::get<int>(std::move(messangeFrom[i]));
+							printf("key:%d\n", key);
+							switch (key)
+							{
+							case up:
+								if (Game.GetPlayer(i).GetY() > 0)	
+								{						
+									Game.GetPlayer(i).GetY()--;	
+								}
+								positionChanged = true;
+								break;
+							case right:
+								if(Game.GetPlayer(i).GetX() < PositionBorders[i].x)
+								{
+									Game.GetPlayer(i).GetX()++;
+								}
+								positionChanged = true;
+								break;
+							case left:
+								if (Game.GetPlayer(i).GetX() > 0)
+								{
+									Game.GetPlayer(i).GetX()--;
+								}
+								positionChanged = true;
+								break;
+							case down:
+								if(Game.GetPlayer(i).GetY() < PositionBorders[i].y)
+								{
+									Game.GetPlayer(i).GetY()++;
+								}
+								positionChanged = true;
+								break;
+							default:
+								positionChanged = false;
+								break;	
+							}
+							if(positionChanged)
+							{
+								Game.GetPlayer(i).setStatue(alive);
+								SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i));
+								printf("position changed\n");
+							}
+						}else if (std::holds_alternative<Vector>(messangeFrom[i]))
+						{
+							PositionBorders[i] = std::get<Vector>((messangeFrom[i]));
+							printf("position border x:%d\n", PositionBorders[i].x);
+							messangeFrom[i] = 0;
+						}
+					}else	
+					{ 
+						Game.GetPlayer(i).setStatue(dead);
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game.GetPlayer(i));	
+						PlayerLeaved(playerCount, pd, readfds, i, Game);
+					}
+				}
+			}
+		}else
+		{
+			printf("timeout\n");
 			if(playerCount > 0)
 			{
 				if(!BombGenerated)
@@ -199,98 +290,9 @@ int main()
 					}
 				}
 			}
+			
 		}
-
-		if(FD_ISSET(sd, &readfds))
-		{
-			if ((AcceptNewPlayer(sd, pd, PlayerAddr, playerCount, MaxD, addrlen)) == -1)
-			{
-				return -1;
-			}
-			if(write(pd[playerCount-1], &firstMessange, sizeof(firstMessange)) == -1)
-			{
-				printf("ошибка отправки первого сообщения:%d", errno);
-				return -1;
-			}
-			Game.GetPlayer(playerCount-1).setPosition(0, 0);
-			Game.GetPlayer(playerCount-1).setStatue(alive);
-			SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
-			SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
-			SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
-		}
-
-	//начало работы с игроками на прямую:
-
-        for (int i = 0; i < playerCount; i++)
-        {
-            if(FD_ISSET(pd[i], &readfds))
-            {
-		    	printf("пришло сообщение от игрока\n");
-				if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))	//оптимизация: пусть игрок который сделал шаг сам себя ресует и мы не будем ему отпрявлять его нувую позицию
-				{																				//оптимизация: лучше не отпрявлять игроку каждый пиксель взрыва бомбы лучше просто отправить что ещё больше нет и он сам нарисует
-					printf("ошибка чтения данных:%d\n", errno);
-					return -1;
-				}else if(ReadBytes > 0)
-				{
-					if(std::holds_alternative<int>(messangeFrom[i]))
-					{
-						key = std::get<int>(std::move(messangeFrom[i]));
-						printf("key:%d\n", key);
-						switch (key)
-						{
-						case up:
-							if (Game.GetPlayer(i).GetY() > 0)	
-							{						
-								Game.GetPlayer(i).GetY()--;	
-							}
-							positionChanged = true;
-							break;
-						case right:
-							if(Game.GetPlayer(i).GetX() < PositionBorders[i].x)
-							{
-								Game.GetPlayer(i).GetX()++;
-							}
-							positionChanged = true;
-							break;
-						case left:
-							if (Game.GetPlayer(i).GetX() > 0)
-							{
-								Game.GetPlayer(i).GetX()--;
-							}
-							positionChanged = true;
-							break;
-						case down:
-							if(Game.GetPlayer(i).GetY() < PositionBorders[i].y)
-							{
-								Game.GetPlayer(i).GetY()++;
-							}
-							positionChanged = true;
-							break;
-						default:
-							positionChanged = false;
-							break;	
-						}
-						if(positionChanged)
-						{
-							Game.GetPlayer(i).setStatue(alive);
-							SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i));
-							printf("position changed\n");
-						}
-					}else if (std::holds_alternative<Vector>(messangeFrom[i]))
-					{
-						PositionBorders[i] = std::get<Vector>((messangeFrom[i]));
-						printf("position border x:%d\n", PositionBorders[i].x);
-						messangeFrom[i] = 0;
-					}
-				}else	
-				{ 
-					Game.GetPlayer(i).setStatue(dead);
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game.GetPlayer(i));	
-					PlayerLeaved(playerCount, pd, readfds, i, Game);
-				}
-			}
-        }
-		
+		printf("select resul: %d\n", SelRes);
 		for (int i = 0; i < WhowMustSend; i++)  
 		{
 			if (mustSendAll[i])
@@ -299,7 +301,7 @@ int main()
 				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 				{
 					printf("ошибка отправки сообщения:%d", errno);
-					return -1;
+					break;
 				}else printf("messange was sent\n");
 				mustSendAll[i] = false;
 			}
@@ -315,21 +317,20 @@ int main()
 					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
-						return -1;
+						break;
 					}else printf("messange was sent\n");
 					messangeLenght--;
 				}
 				mustSendMessangeto[i] = false;
 			}
 		}
-	//конец
-		}
-    
+	}
+    //конец
     for (int i = 0; i < playerCount; i++)
     {
 		shutdown(pd[i], SHUT_RDWR);
         close(pd[i]);
     }
     close(sd);
-    return 0;
+    return -1;
 }
