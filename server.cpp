@@ -200,7 +200,7 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &readfds))
 				{
-					printf("пришло сообщение от игрока\n");
+					//printf("пришло сообщение от игрока\n");
 					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))	//оптимизация: пусть игрок который сделал шаг сам себя ресует и мы не будем ему отпрявлять его нувую позицию
 					{																				//оптимизация: лучше не отпрявлять игроку каждый пиксель взрыва бомбы лучше просто отправить что ещё больше нет и он сам нарисует
 						printf("ошибка чтения данных:%d\n", errno);
@@ -210,7 +210,7 @@ int main()
 						if(std::holds_alternative<int>(messangeFrom[i]))
 						{
 							key = std::get<int>(std::move(messangeFrom[i]));
-							printf("key:%d\n", key);
+							//printf("key:%d\n", key);
 							switch (key)
 							{
 							case up:
@@ -249,12 +249,12 @@ int main()
 							{
 								Game.GetPlayer(i).setStatue(alive);
 								SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i));
-								printf("position changed\n");
+								//printf("position changed\n");
 							}
 						}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 						{
 							PositionBorders[i] = std::get<Vector>((messangeFrom[i]));
-							printf("position border x:%d\n", PositionBorders[i].x);
+							//printf("position border x:%d\n", PositionBorders[i].x);
 							messangeFrom[i] = 0;
 						}
 					}else	
@@ -267,18 +267,18 @@ int main()
 			}
 		}else
 		{
-			printf("timeout\n");
+			//printf("timeout\n");
 		}
 		for (int i = 0; i < WhowMustSend; i++)  
 		{
 			if (mustSendAll[i])
 			{
-				printf("пришло время отправить сообщение игроку\n");
+				//printf("пришло время отправить сообщение игроку\n");
 				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 				{
-					printf("ошибка отправки сообщения:%d", errno);
+					//printf("ошибка отправки сообщения:%d", errno);
 					break;
-				}else printf("messange was sent\n");
+				}//else printf("messange was sent\n");
 				mustSendAll[i] = false;
 			}
 		}
@@ -287,14 +287,14 @@ int main()
 		{
 			if (mustSendMessangeto[i])
 			{
-				printf("пришло время отправить длиное сообщение одному игроку\n");
+				//printf("пришло время отправить длиное сообщение одному игроку\n");
 				while(messangeLenght >= 0)	
 				{
 					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						break;
-					}else printf("messange was sent\n");
+					}//else printf("messange was sent\n");
 					messangeLenght--;
 				}
 				mustSendMessangeto[i] = false;
