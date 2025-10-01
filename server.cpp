@@ -269,7 +269,7 @@ int main()
 		{
 			printf("timeout\n");
 		}
-		for (int i = 0; i < WhowMustSend; i++)  		//после того как бомба взорвалась игрок ходит и значение сообщения перезписовается и игрок не получает сообщение о положении бомбы
+		for (int i = 0; i < WhowMustSend; i++)  		
 		{
 			if (mustSendAll[i])
 			{
