@@ -65,7 +65,6 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 
 bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime)       //если timeInterval сделать слишком коротким будет работатьт не праивльно
 {
-    static int WT;
     static bool BombExploded;
     static stations station = firstStation;
     switch (station)
@@ -91,7 +90,6 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
         }
         station = SecondStation;
         BombExploded = false;
-        WT = waitingTime;
         break;
     case SecondStation: 
         if(true == stopwatch(waitingTime, time(NULL)))       
