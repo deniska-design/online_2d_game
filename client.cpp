@@ -9,8 +9,26 @@
 
 #include "vector.h"
 #include "player.h"
+#include "bomb.h"
+#include "time.h"
+
 
 using namespace std;
+
+enum
+{
+    AffectedArea = 15,
+    AffectedAreaXCoefficient = 2,
+    AffectedAreaYCoefficient = 1
+};
+
+typedef enum 
+{
+    firstStation = 1,
+    SecondStation = 2,
+    ThirdStation = 3,
+    lastStation = 4,
+}stations;
 
 const char *ServerIp = "192.168.1.120";
 int ServPort = 10;
@@ -45,15 +63,79 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
 	return sd;
 }
 
-int SetFdss(int fd, fd_set &readfds, fd_set &writefds, fd_set &exceptfds)
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime)       //если timeInterval сделать слишком коротким будет работатьт не праивльно
+{
+    static bool BombExploded;
+    static stations station = firstStation;
+    switch (station)
+    {
+    case firstStation: 
+        for(int i = 0; i < AffectedArea; i++)
+        {
+            for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
+            {
+                if((x>0) && (x<PositionBorders.x))
+                {
+                    for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
+                    {
+                        if( (y>0) && (y<PositionBorders.y))
+                        {
+                            move(y, x);
+                            addch('*');
+                        }
+                    }
+                }
+            }
+        }
+        station = SecondStation;
+        BombExploded = false;
+        break;
+    case SecondStation: 
+        if(true == stopwatch(waitingTime, time(NULL)))       
+        {
+            station = ThirdStation;
+        }
+        BombExploded = false;
+        break;
+    case ThirdStation:         
+        for(int i = 0; i < AffectedArea; i++)
+        {
+            for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
+            {
+                if((x>0) && (x<PositionBorders.x))
+                {
+                    for(int y = BombPositionY-i*AffectedAreaYCoefficient; y < BombPositionY+i*AffectedAreaYCoefficient; y++)
+                    {
+                        if( (y>0) && (y<PositionBorders.y))
+                        {
+                            move(y, x);
+                            addch(' ');
+                        }
+                    }
+                }
+            }
+        }
+        BombExploded = false;
+        station = lastStation;
+        break;
+    case lastStation: 
+        BombExploded = true;
+        station = firstStation;
+        break;
+    default:
+        break;
+    }
+    refresh();
+    return BombExploded;
+}
+
+int SetFdss(int fd1, int fd2, fd_set &readfds, fd_set &writefds)
 {
 	FD_ZERO(&readfds);
-    FD_ZERO(&writefds);
-    FD_ZERO(&exceptfds);
-
-	FD_SET(fd, &readfds);
-    FD_SET(fd, &exceptfds);
-    FD_SET(fd, &writefds);
+	FD_SET(fd1, &readfds);
+    FD_SET(fd2, &readfds);
+    FD_SET(fd1, &writefds);
+    FD_SET(fd2, &writefds);
 	return 0;
 }
 
@@ -68,17 +150,16 @@ void StartWindow()
 
 int main()
 {    
-    player MessangeFrom; 
+    object MessangeFrom; 
     std::variant<Vector, int> messangeFor; 
     Vector PositionBorders, position;
-    player Player(5, 2);
-    bool send = false;
+    object Object(5, 2, position);
+    object Bomb(2, 2, position);
+    bool MustSend = false, bombExploding = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
-    fd_set readfds, writefds, exceptfds;
+    fd_set readfds, writefds;
     FD_ZERO(&readfds);
-    FD_ZERO(&writefds);
-    FD_ZERO(&exceptfds);
     
     ServAddr = FillAddr(ServAddr, ServerIp, ServPort);
     if (errno == -1)
@@ -103,16 +184,14 @@ int main()
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
     messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
-    send = true;
+    MustSend = true;
 
     //начало бесконечного цыкла
 
     while (true)
     {
-        SetFdss(sd, readfds, writefds, exceptfds);
-        FD_SET(STDIN_FILENO, &readfds);
-
-        if ((SelRes = select(MaxD+1, &readfds, &writefds, &exceptfds, NULL)) < 1)
+        SetFdss(sd, STDIN_FILENO, readfds, writefds);
+        if ((SelRes = select(MaxD+1, &readfds, &writefds, NULL, NULL)) == -1)
         {
             if (errno != EINTR)
             {
@@ -125,31 +204,43 @@ int main()
             }
             continue;
         }
+         
+        if (FD_ISSET(STDIN_FILENO, &writefds))
+        {
+            if(bombExploding)
+            {
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
+            }
+        }
 
         //общение с клиентом:
-
         if(FD_ISSET(STDIN_FILENO, &readfds))
         {
+
             if (10 != (key = getch()))
             {   
                 switch (key)
                 {
                 case KEY_UP:
                     messangeFor = KEY_UP;
+                    position.y--;
                     break;
                 case KEY_RIGHT:
                     messangeFor = KEY_RIGHT;
+                    position.x++;
                     break;
                 case KEY_LEFT:
                     messangeFor = KEY_LEFT;
+                    position.x--;
                     break;
                 case KEY_DOWN:
                     messangeFor = KEY_DOWN;
+                    position.y++;
                     break;
                 default:
                     break;
                 } 
-                send = true;
+                MustSend = true;
             }else return(-1);
         }
 
@@ -159,6 +250,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
+            mvprintw(0, 0, "сообщение от сервера");
             if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);
@@ -166,38 +258,52 @@ int main()
             }
             else if(ReadBytes == 0)
             {
+                close(sd);
+                endwin();
                 printf( "novogo goda ne bydet, idi nahyi\n");
-                return 0;
+                return(1);
             }
-            position = MessangeFrom.GetPosition();
-            Player.setPosition(position.y, position.x);
-            Player.hidePlayer();
-            if (MessangeFrom.getStatue() == alive) 
+            Object = MessangeFrom;
+            Object.Hide();
+            if (Object.getStatue() == active) 
             {
-                Player.showPlayer();
-            }
-        }
-
-        if(FD_ISSET(sd, &writefds))
-        {
-            if (send)
+                Object.Show();
+            }else if (Object.getType() == BombType)
             {
-                if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
+                if (Object.getStatue() == exploded) 
                 {
-                    printf("ошибка: %d", errno);
-                    return -1;
+                    Bomb.GetY() = Object.GetY();
+                    Bomb.GetX() = Object.GetX();
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
+                    if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
+                    {
+                        if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
+                        {
+                            if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
+                            {
+                                if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
+                                {
+                                    close(sd);
+                                    endwin();
+                                    return(1);
+                                }
+                            }
+                        }
+                    }
                 }
-                send = false;
-            } 
+            }
         }
 
-        //конец
-
-        if(FD_ISSET(sd, &exceptfds))
+        if (MustSend)
         {
-            printf("произошла исключительная ситуация\n");
-            return -1;
-        }
+            if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
+            {
+                printf("ошибка: %d", errno);
+                return -1;
+            }
+            MustSend = false;
+        } 
+        //конец
         refresh();
     }
     close(sd);
