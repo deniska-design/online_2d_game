@@ -267,7 +267,7 @@ int main()
 			}
 		}else
 		{
-			//printf("timeout\n");
+			printf("timeout\n");
 		}
 		for (int i = 0; i < WhowMustSend; i++)  
 		{
