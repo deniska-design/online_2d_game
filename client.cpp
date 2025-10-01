@@ -209,7 +209,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5);
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
             }
         }
 
@@ -274,7 +274,7 @@ int main()
                 {
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5);  
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
                     if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
