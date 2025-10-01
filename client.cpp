@@ -70,7 +70,6 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
     switch (station)
     {
     case firstStation: 
-        mvprintw(0, 0, "firstStation");
         for(int i = 0; i < AffectedArea; i++)
         {
             for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
@@ -99,7 +98,6 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
         BombExploded = false;
         break;
     case ThirdStation:         
-        mvprintw(2, 0, "ThirdStation");
         for(int i = 0; i < AffectedArea; i++)
         {
             for(int x = BombPositionX-i*AffectedAreaXCoefficient; x < BombPositionX+i*AffectedAreaXCoefficient; x++)
@@ -218,6 +216,7 @@ int main()
         //общение с клиентом:
         if(FD_ISSET(STDIN_FILENO, &readfds))
         {
+
             if (10 != (key = getch()))
             {   
                 switch (key)
@@ -251,6 +250,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
+            mvprintw(0, 0, "сообщение от сервера");
             if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);

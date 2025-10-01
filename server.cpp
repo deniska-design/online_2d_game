@@ -302,8 +302,10 @@ int main()
 		}
 		if(playerCount > 0)
 		{
+			printf("щас будем хуярить\n");
 			if(!BombGenerated)
 			{
+				printf("создём пукалку\n");
 				Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
 				Game.GetBomb(MaxBombCount - 1).setStatue(active);
 				RandomTime = Random(2, 4);
@@ -313,6 +315,7 @@ int main()
 				BombCount++;
 			}else
 			{
+				printf("бабах\n");
 				if(true == stopwatch(RandomTime, time(NULL)))
 				{
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
