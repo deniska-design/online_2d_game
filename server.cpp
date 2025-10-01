@@ -278,7 +278,7 @@ int main()
 				{
 					//printf("ошибка отправки сообщения:%d", errno);
 					break;
-				}//else printf("messange was sent\n");
+				}else printf("messange was sent\n");
 				mustSendAll[i] = false;
 			}
 		}
