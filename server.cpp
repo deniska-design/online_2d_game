@@ -164,7 +164,67 @@ int main()
     {
 		SetFdss(sd, playerCount, pd, readfds);
 		timeout.tv_usec = 500000;
-        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 0)
+		SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout);
+		for (int i = 0; i < WhowMustSend; i++)  
+		{
+			if (mustSendAll[i])
+			{
+				//printf("пришло время отправить сообщение игроку\n");
+				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
+				{
+					//printf("ошибка отправки сообщения:%d", errno);
+					break;
+				}else printf("messange was sent\n");
+				mustSendAll[i] = false;
+			}
+		}
+		WhowMustSend = 0;
+		for (int i = 0; i < playerCount; i++)
+		{
+			if (mustSendMessangeto[i])
+			{
+				//printf("пришло время отправить длиное сообщение одному игроку\n");
+				while(messangeLenght >= 0)	
+				{
+					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
+					{
+						printf("ошибка отправки сообщения:%d", errno);
+						break;
+					}//else printf("messange was sent\n");
+					messangeLenght--;
+				}
+				mustSendMessangeto[i] = false;
+			}
+		}
+		if(playerCount > 0)
+		{
+			printf("щас будем хуярить\n");
+			if(!BombGenerated)
+			{
+				printf("создём пукалку\n");
+				Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
+				Game.GetBomb(MaxBombCount - 1).setStatue(active);
+				RandomTime = Random(2, 4);
+				stopwatch(RandomTime, time(NULL));
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount));
+				BombGenerated = true;
+				BombCount++;
+				continue;
+			}else
+			{
+				printf("ща ещё чуть чуть\n");
+				if(true == stopwatch(RandomTime, time(NULL)))
+				{
+					printf("бабах\n");
+					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
+					BombGenerated = false;
+					BombCount--;
+					continue;
+				}
+			}
+		}
+        if (SelRes < 0)
         {
             if (errno != EINTR)
             {
@@ -269,64 +329,6 @@ int main()
 		{
 			printf("timeout\n");
 		}
-		for (int i = 0; i < WhowMustSend; i++)  
-		{
-			if (mustSendAll[i])
-			{
-				//printf("пришло время отправить сообщение игроку\n");
-				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
-				{
-					//printf("ошибка отправки сообщения:%d", errno);
-					break;
-				}else printf("messange was sent\n");
-				mustSendAll[i] = false;
-			}
-		}
-		WhowMustSend = 0;
-		for (int i = 0; i < playerCount; i++)
-		{
-			if (mustSendMessangeto[i])
-			{
-				//printf("пришло время отправить длиное сообщение одному игроку\n");
-				while(messangeLenght >= 0)	
-				{
-					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
-					{
-						printf("ошибка отправки сообщения:%d", errno);
-						break;
-					}//else printf("messange was sent\n");
-					messangeLenght--;
-				}
-				mustSendMessangeto[i] = false;
-			}
-		}
-		if(playerCount > 0)
-		{
-			printf("щас будем хуярить\n");
-			if(!BombGenerated)
-			{
-				printf("создём пукалку\n");
-				Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
-				Game.GetBomb(MaxBombCount - 1).setStatue(active);
-				RandomTime = Random(2, 4);
-				stopwatch(RandomTime, time(NULL));
-				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount));
-				BombGenerated = true;
-				BombCount++;
-			}else
-			{
-				printf("ща ещё чуть чуть\n");
-				if(true == stopwatch(RandomTime, time(NULL)))
-				{
-					printf("бабах\n");
-					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
-					BombGenerated = false;
-					BombCount--;
-				}
-			}
-		}
-
 	}
     //конец
     for (int i = 0; i < playerCount; i++)
