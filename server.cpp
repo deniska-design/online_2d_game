@@ -315,9 +315,10 @@ int main()
 				BombCount++;
 			}else
 			{
-				printf("бабах\n");
+				printf("ща ещё чуть чуть\n");
 				if(true == stopwatch(RandomTime, time(NULL)))
 				{
+					printf("бабах\n");
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
 					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
 					BombGenerated = false;
