@@ -249,7 +249,7 @@ int main()
 							{
 								Game.GetPlayer(i).setStatue(alive);
 								SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i));
-								//printf("position changed\n");
+								printf("position changed\n");
 							}
 						}else if (std::holds_alternative<Vector>(messangeFrom[i]))
 						{
