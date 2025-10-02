@@ -196,11 +196,11 @@ int main()
             if (errno != EINTR)
             {
                 printf("ошибка select: %d\n", errno);
-                return(-1);
+                break;
             }else
             {
                 printf("пришёл неигнорируемый сигнал: %d\n", errno);
-                return(-1);
+                break;
             }
             continue;
         }
@@ -209,7 +209,7 @@ int main()
         {
             if(bombExploding)
             {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5);
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
             }
         }
 
@@ -241,7 +241,7 @@ int main()
                     break;
                 } 
                 MustSend = true;
-            }else return(-1);
+            }else break;
         }
 
         //конец
@@ -250,11 +250,10 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            mvprintw(0, 0, "сообщение от сервера");
             if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);
-                return(-1);
+                break;
             }
             else if(ReadBytes == 0)
             {
@@ -274,7 +273,7 @@ int main()
                 {
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 0.5);  
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
                     if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
                         if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
@@ -283,9 +282,7 @@ int main()
                             {
                                 if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                                 {
-                                    close(sd);
-                                    endwin();
-                                    return(1);
+                                    break;
                                 }
                             }
                         }
@@ -299,7 +296,7 @@ int main()
             if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
             {
                 printf("ошибка: %d", errno);
-                return -1;
+                break;
             }
             MustSend = false;
         } 
@@ -308,5 +305,5 @@ int main()
     }
     close(sd);
     endwin();
-    return 0;
+    return -1;
 }
