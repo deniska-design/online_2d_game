@@ -91,7 +91,7 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
         BombExploded = false;
         break;
     case SecondStation: 
-        if(true == stopwatch(waitingTime, time(NULL)))       
+        if(true == stopwatch(waitingTime, time(NULL), 0))       
         {
             station = ThirdStation;
         }

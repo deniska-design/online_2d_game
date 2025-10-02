@@ -7,21 +7,23 @@
 
 using namespace std;
 
-bool stopwatch(time_t WaitingTime, time_t CurrentTime)
+bool stopwatch(time_t WaitingTime, time_t CurrentTime, int Number)
 {
-    static time_t EndTime;
-    static bool firstExecution = true;
+    time_t EndTime[2];
+    static time_t Curtim[2];
+    static bool firstExecution[2] = {true, true};
 
-    if (firstExecution)
+    if (firstExecution[Number])
     {
-        EndTime = WaitingTime + CurrentTime;
-        firstExecution = false;
+        Curtim[Number] = CurrentTime;
+        firstExecution[Number]  = false;
     }
-    if (!firstExecution)
+    if (!firstExecution[Number])
     {
-        if (CurrentTime >= EndTime)
+        EndTime[Number] = WaitingTime + Curtim[Number];
+        if (CurrentTime >= EndTime[Number])
         {
-            firstExecution = true;
+            firstExecution[Number] = true;
             return true;
         }
     }

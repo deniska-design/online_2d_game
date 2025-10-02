@@ -136,8 +136,10 @@ int main()
 	object messangeForAll;
 	object messange[MaxPlayerCount]; 
 	Vector PositionBorders[MaxPlayerCount];
-	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount], positionChanged = false, BombGenerated = false;
-    int sd, MaxD, ReadBytes, key, SelRes = 0, RandomTime = 0, messangeLenght = 0, WhowMustSend = 0, playerCount = 0, BombCount = 0;
+	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
+		positionChanged = false, BombGenerated = false, MustGenerateBomb = true;
+    int sd, MaxD, ReadBytes, key, SelRes = 0, RandomTime = 0, messangeLenght = 0,
+		WhowMustSend = 0, playerCount = 0, BombCount = 0;
     int pd[MaxPlayerCount];
 	const int firstMessange = 1;
     struct sockaddr_in PlayerAddr[4];
@@ -199,30 +201,37 @@ int main()
 		if(playerCount > 0)
 		{
 			printf("щас будем хуярить\n");
-			if(!BombGenerated)
+			if(MustGenerateBomb)
 			{
 				printf("создём пукалку\n");
 				Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
 				Game.GetBomb(MaxBombCount - 1).setStatue(active);
 				RandomTime = Random(2, 4);
-				stopwatch(RandomTime, time(NULL));
+				stopwatch(RandomTime, time(NULL), 0);
 				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount));
 				BombGenerated = true;
+				MustGenerateBomb = false;
 				BombCount++;
 				continue;
-			}else
+			}
+			if(BombGenerated)
 			{
 				printf("ща ещё чуть чуть\n");
-				if(true == stopwatch(RandomTime, time(NULL)))
+				if(true == stopwatch(RandomTime, time(NULL), 0))
 				{
 					printf("бабах\n");
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
 					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
 					BombGenerated = false;
+					stopwatch(1, time(NULL), 1);
 					BombCount--;
 					continue;
 				}
 			}
+			if (!BombGenerated)
+				if (!MustGenerateBomb)
+					if(true == stopwatch(1, time(NULL), 1))
+					MustGenerateBomb = true;
 		}
         if (SelRes < 0)
         {
