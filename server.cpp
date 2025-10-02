@@ -329,8 +329,6 @@ int main()
 		{
 			printf("timeout\n");
 		}
-<<<<<<< HEAD
-=======
 		for (int i = 0; i < WhowMustSend; i++)  		
 		{
 			if (mustSendAll[i])
@@ -389,7 +387,6 @@ int main()
 			}
 		}
 
->>>>>>> 21ca6464eb4e96da15ec2a6928433651262d5f55
 	}
     //конец
     for (int i = 0; i < playerCount; i++)
