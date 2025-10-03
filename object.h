@@ -35,6 +35,8 @@ public:
     void Hide() const;
     int &GetY();
     int &GetX();
+    int &GetHigh();
+    int &GetWidth();
     void setPosition(int NewY, int NewX);
     void setStatue(bool newStatue);
     bool getStatue() const;
@@ -118,6 +120,14 @@ objectType object::getType() const
     return ObjectType;
 }
 
+int &object::GetHigh()
+{
+    return const_cast<int &>(High);
+}
 
+int &object::GetWidth()
+{
+    return const_cast<int &>(Width);
+}
 
 #endif

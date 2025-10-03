@@ -242,6 +242,8 @@ int main()
                 } 
                 
                 MustSend = true;
+                Object.GetHigh() = 5;
+                Object.GetWidth() = 2;
                 Object.setType(PlayerType);
                 Object.setPosition(position.y, position.x);
                 Object.Hide();
