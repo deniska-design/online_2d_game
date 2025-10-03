@@ -240,11 +240,13 @@ int main()
                 default:
                     break;
                 } 
+                
                 MustSend = true;
+                /*
                 Object.setType(PlayerType);
                 Object.setPosition(position.y, position.x);
                 Object.Hide();
-                Object.Show();
+                Object.Show();*/
             }else break;
         }
 
