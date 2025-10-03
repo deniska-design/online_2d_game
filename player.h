@@ -22,6 +22,7 @@ class player : public object
 public:
     player();
     player(int objectH, int objectW, Vector NewPosition, int NewHP);
+    int &GetHP();
 };
 
 player::player()
@@ -41,5 +42,12 @@ player::player(int PlayerH, int PlayerW, Vector NewPosition, int NewHP)
     statue = disactiv;
     HP = NewHP;
 }
+
+
+int &player::GetHP()
+{   
+    return (int &)HP;
+}
+
 
 #endif

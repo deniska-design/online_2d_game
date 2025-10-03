@@ -241,6 +241,9 @@ int main()
                     break;
                 } 
                 MustSend = true;
+                Object.setPosition(position.y, position.x);
+                Object.Hide();
+                Object.Show();
             }else break;
         }
 

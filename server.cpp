@@ -272,8 +272,8 @@ int main()
 				if(FD_ISSET(pd[i], &readfds))
 				{
 					//printf("пришло сообщение от игрока\n");
-					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))	//оптимизация: пусть игрок который сделал шаг сам себя ресует и мы не будем ему отпрявлять его нувую позицию
-					{																				//оптимизация: лучше не отпрявлять игроку каждый пиксель взрыва бомбы лучше просто отправить что ещё больше нет и он сам нарисует
+					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))
+					{
 						printf("ошибка чтения данных:%d\n", errno);
 						break;
 					}else if(ReadBytes > 0)
@@ -319,7 +319,15 @@ int main()
 							if(positionChanged)
 							{
 								Game.GetPlayer(i).setStatue(alive);
-								SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i));
+								messangeForAll = Game.GetPlayer(i);
+								WhowMustSend = playerCount;
+								for (int n = 0; n < WhowMustSend; n++)	
+								{
+									if(n!=i)
+									{
+										mustSendAll[n] = true;
+									}
+								}
 								printf("position changed\n");
 							}
 						}else if (std::holds_alternative<Vector>(messangeFrom[i]))
