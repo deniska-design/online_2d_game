@@ -6,7 +6,12 @@
 enum 
 {
 	active	    =	true,     
-    disactiv	=	false,      
+    disactiv	=	false,  
+    
+    DefaultPositionX= 0,
+    DefaultPositionY= 0,
+    DefaultHigh     = 5,
+    DefaultWidth    = 2,
 };
 
 typedef enum 
@@ -14,7 +19,6 @@ typedef enum
 	PlayerType,
     BombType
 }objectType;
-
 
 class object
 {
@@ -40,9 +44,9 @@ public:
 
 object::object()
 {
-    position = Vector{0, 0};
-    High = 5;
-    Width = 2;
+    position = Vector{DefaultPositionX, DefaultPositionY};
+    High = DefaultHigh;
+    Width = DefaultWidth;
     statue = disactiv;
 }
 

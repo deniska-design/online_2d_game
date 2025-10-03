@@ -242,11 +242,10 @@ int main()
                 } 
                 
                 MustSend = true;
-                /*
                 Object.setType(PlayerType);
                 Object.setPosition(position.y, position.x);
                 Object.Hide();
-                Object.Show();*/
+                Object.Show();
             }else break;
         }
 

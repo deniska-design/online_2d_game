@@ -17,6 +17,12 @@ int SizeOfArray(TYPE **Array)
     return ArraySize;
 }
 
+enum
+{
+    DefaultPlayerCount = 5,
+    DefaultBombCount = 1,
+};
+
 class game
 {
     player *Player;
@@ -32,8 +38,8 @@ public:
 
 game::game()
 {
-    Player = new player[5];
-    Bomb = new bomb[1];
+    Player = new player[DefaultPlayerCount];
+    Bomb = new bomb[DefaultBombCount];
 }
 
 game::game(int MaxPlayerCount, int MaxBombCount)

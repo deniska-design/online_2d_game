@@ -6,14 +6,10 @@
 
 enum 
 {
-	alive	=	active,      
-    dead	=	disactiv,      
+	alive	    =	active,      
+    dead	    =	disactiv,      
 
-    DefaultPositionX= 0,
-    DefaultPositionY= 0,
-    DefaultHigh     = 5,
-    DefaultWidth    = 2,
-    DefaultHP       = 3,  
+    DefaultHP   = 3,  
 };
 
 class player : public object 
