@@ -32,6 +32,8 @@ enum
     MaxBombXPos	= 	80,      
     MinBombXPos	=	1,      
     MinBombYPos =	1,	
+
+	BombExplodingTime = 1,
 };
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
@@ -223,14 +225,14 @@ int main()
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
 					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
 					BombGenerated = false;
-					stopwatch(1, time(NULL), 1);
+					stopwatch(BombExplodingTime, time(NULL), BombExplodingTime);
 					BombCount--;
 					continue;
 				}
 			}
 			if (!BombGenerated)
 				if (!MustGenerateBomb)
-					if(true == stopwatch(1, time(NULL), 1))
+					if(true == stopwatch(BombExplodingTime, time(NULL), BombExplodingTime))
 					MustGenerateBomb = true;
 		}
         if (SelRes < 0)

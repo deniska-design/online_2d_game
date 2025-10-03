@@ -6,6 +6,17 @@
 #include "player.h"
 #include "bomb.h"
 
+template<typename TYPE>
+int SizeOfArray(TYPE *Array)
+{
+    int ArraySize = 0;
+    while(&Array[ArraySize] != 0)
+    {
+        ArraySize++;
+    }
+    return ArraySize;
+}
+
 class game
 {
     player *Player;
@@ -45,7 +56,7 @@ bomb &game::GetBomb(int BombNum)
 
 player *game::GetPlayerArray()
 {
-    for(int i = 0; i < sizeof(Player); i++)
+    for(int i = 0; i < SizeOfArray(Player); i++)
     {
         Player[i].setType(PlayerType);
     }
@@ -54,7 +65,7 @@ player *game::GetPlayerArray()
 
 bomb *game::GetBombArray()
 {
-    for(int i = 0; i < sizeof(Bomb); i++)
+    for(int i = 0; i < SizeOfArray(Bomb); i++)
     {
         Bomb[i].setType(BombType);
     }
