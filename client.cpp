@@ -222,25 +222,36 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                    messangeFor = KEY_UP;
-                    position.y--;
+                    if(position.y > 0)
+                    {
+                        messangeFor = KEY_UP;
+                        position.y--;
+                    }
                     break;
                 case KEY_RIGHT:
-                    messangeFor = KEY_RIGHT;
-                    position.x++;
+                    if(position.x+2 < PositionBorders.x)
+                    {
+                        messangeFor = KEY_RIGHT;
+                        position.x++;
+                    }
                     break;
                 case KEY_LEFT:
-                    messangeFor = KEY_LEFT;
-                    position.x--;
+                    if(position.x > 0)
+                    {
+                        messangeFor = KEY_LEFT;
+                        position.x--;
+                    }
                     break;
                 case KEY_DOWN:
-                    messangeFor = KEY_DOWN;
-                    position.y++;
+                    if(position.y+4 < PositionBorders.y)
+                    {
+                        messangeFor = KEY_DOWN;
+                        position.y++;
+                    }
                     break;
                 default:
                     break;
                 } 
-                
                 MustSend = true;
                 Object.GetHigh() = 5;
                 Object.GetWidth() = 2;
