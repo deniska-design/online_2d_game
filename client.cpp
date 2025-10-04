@@ -151,7 +151,7 @@ void StartWindow()
 int main()
 {    
     object MessangeFrom; 
-    std::variant<Vector, int> messangeFor; 
+    int messangeFor; 
     Vector PositionBorders, position;
     object Object(5, 2, position);
     object Bomb(2, 2, position);
@@ -183,8 +183,6 @@ int main()
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
-    messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
-    MustSend = true;
 
     //начало бесконечного цыкла
 
@@ -243,7 +241,7 @@ int main()
                     }
                     break;
                 case KEY_DOWN:
-                    if(position.y+4 < PositionBorders.y)
+                    if(position.y+5 < PositionBorders.y)
                     {
                         messangeFor = KEY_DOWN;
                         position.y++;
@@ -311,7 +309,7 @@ int main()
 
         if (MustSend)
         {
-            if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
+            if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
             {
                 printf("ошибка: %d", errno);
                 break;

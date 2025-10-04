@@ -134,10 +134,9 @@ int main()
 {   
 	struct timeval timeout;
 	game Game(MaxPlayerCount, MaxBombCount);
-    std::variant<Vector, int> messangeFrom[MaxPlayerCount];
+    int messangeFrom[MaxPlayerCount];
 	object messangeForAll;
 	object messange[MaxPlayerCount]; 
-	Vector PositionBorders[MaxPlayerCount];
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
 		positionChanged = false, BombGenerated = false, MustGenerateBomb = true;
     int sd, MaxD, ReadBytes, key, SelRes = 0, RandomTime = 0, messangeLenght = 0,
@@ -278,63 +277,43 @@ int main()
 						break;
 					}else if(ReadBytes > 0)
 					{
-						if(std::holds_alternative<int>(messangeFrom[i]))
+						key = messangeFrom[i];
+						//printf("key:%d\n", key);
+						switch (key)
 						{
-							key = std::get<int>(std::move(messangeFrom[i]));
-							//printf("key:%d\n", key);
-							switch (key)
-							{
-							case up:
-								if (Game.GetPlayer(i).GetY() > 0)	
-								{						
-									Game.GetPlayer(i).GetY()--;	
-								}
-								positionChanged = true;
-								break;
-							case right:
-								if(Game.GetPlayer(i).GetX() < PositionBorders[i].x)
-								{
-									Game.GetPlayer(i).GetX()++;
-								}
-								positionChanged = true;
-								break;
-							case left:
-								if (Game.GetPlayer(i).GetX() > 0)
-								{
-									Game.GetPlayer(i).GetX()--;
-								}
-								positionChanged = true;
-								break;
-							case down:
-								if(Game.GetPlayer(i).GetY() < PositionBorders[i].y)
-								{
-									Game.GetPlayer(i).GetY()++;
-								}
-								positionChanged = true;
-								break;
-							default:
-								positionChanged = false;
-								break;	
-							}
-							if(positionChanged)
-							{
-								Game.GetPlayer(i).setStatue(alive);
-								messangeForAll = Game.GetPlayer(i);
-								WhowMustSend = playerCount;
-								for (int n = 0; n < WhowMustSend; n++)	
-								{
-									if(n!=i)
-									{
-										mustSendAll[n] = true;
-									}
-								}
-								printf("position changed\n");
-							}
-						}else if (std::holds_alternative<Vector>(messangeFrom[i]))
+						case up:
+							Game.GetPlayer(i).GetY()--;	
+							positionChanged = true;
+							break;
+						case right:
+							Game.GetPlayer(i).GetX()++;
+							positionChanged = true;
+							break;
+						case left:
+							Game.GetPlayer(i).GetX()--;
+							positionChanged = true;
+							break;
+						case down:
+							Game.GetPlayer(i).GetY()++;
+							positionChanged = true;
+							break;
+						default:
+							positionChanged = false;
+							break;	
+						}
+						if(positionChanged)
 						{
-							PositionBorders[i] = std::get<Vector>((messangeFrom[i]));
-							//printf("position border x:%d\n", PositionBorders[i].x);
-							messangeFrom[i] = 0;
+							Game.GetPlayer(i).setStatue(alive);
+							messangeForAll = Game.GetPlayer(i);
+							WhowMustSend = playerCount;
+							for (int n = 0; n < WhowMustSend; n++)	
+							{
+								if(n!=i)
+								{
+									mustSendAll[n] = true;
+								}
+							}
+							printf("position changed\n");
 						}
 					}else	
 					{ 
