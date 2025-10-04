@@ -19,7 +19,7 @@ enum
 {
     AffectedArea = 15,
     AffectedAreaXCoefficient = 2,
-    AffectedAreaYCoefficient = 1
+    AffectedAreaYCoefficient = 1,
 };
 
 typedef enum 
@@ -153,8 +153,8 @@ int main()
     object MessangeFrom; 
     Vector messangeFor; 
     Vector PositionBorders, position;
-    object Object(5, 2, position);
-    object Bomb(2, 2, position);
+    object Object(DefaultHigh, DefaultWidth, position);
+    object Bomb(DefaultBombHigh, DefaultBombWidth, position);
     bool MustSend = false, bombExploding = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
@@ -223,37 +223,44 @@ int main()
                     if(position.y > 0)
                     {
                         position.y--;
+                        MustSend = true;
                     }
                     break;
                 case KEY_RIGHT:
-                    if(position.x+2 < PositionBorders.x)
+                    if(position.x+DefaultWidth < PositionBorders.x)
                     {
                         position.x++;
+                        MustSend = true;
                     }
                     break;
                 case KEY_LEFT:
                     if(position.x > 0)
                     {
                         position.x--;
+                        MustSend = true;
                     }
                     break;
                 case KEY_DOWN:
-                    if(position.y+5 < PositionBorders.y)
+                    if(position.y+DefaultHigh < PositionBorders.y)
                     {
                         position.y++;
+                        MustSend = true;
                     }
                     break;
                 default:
                     break;
                 } 
-                messangeFor = position;
-                MustSend = true;
-                Object.GetHigh() = 5;
-                Object.GetWidth() = 2;
-                Object.setType(PlayerType);
-                Object.setPosition(position.y, position.x);
-                Object.Hide();
-                Object.Show();
+                if(MustSend)
+                {
+                    messangeFor = position;
+                    Object.GetHigh() = DefaultHigh;
+                    Object.GetWidth() = DefaultWidth;
+                    Object.setType(PlayerType);
+                    Object.setPosition(position.y, position.x);
+                    Object.Hide();
+                    Object.Show();
+                }
+                
             }else break;
         }
 
