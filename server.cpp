@@ -199,6 +199,7 @@ int main()
 				mustSendMessangeto[i] = false;
 			}
 		}
+		/*
 		if(playerCount > 0)
 		{
 			printf("щас будем хуярить\n");
@@ -234,6 +235,7 @@ int main()
 					if(true == stopwatch(BombExplodingTime, time(NULL), BombExplodingTime))
 					MustGenerateBomb = true;
 		}
+					*/
         if (SelRes < 0)
         {
             if (errno != EINTR)
@@ -261,7 +263,7 @@ int main()
 				Game.GetPlayer(playerCount-1).setStatue(alive);
 				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
 				SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
-				SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
+				//SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
 			}
 
 		//начало работы с игроками на прямую:
