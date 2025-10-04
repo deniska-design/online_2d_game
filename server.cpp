@@ -134,7 +134,7 @@ int main()
 {   
 	struct timeval timeout;
 	game Game(MaxPlayerCount, MaxBombCount);
-    int messangeFrom[MaxPlayerCount];
+    Vector messangeFrom[MaxPlayerCount];
 	object messangeForAll;
 	object messange[MaxPlayerCount]; 
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
@@ -279,44 +279,19 @@ int main()
 						break;
 					}else if(ReadBytes > 0)
 					{
-						key = messangeFrom[i];
-						//printf("key:%d\n", key);
-						switch (key)
+						Game.GetPlayer(i).setPosition(messangeFrom[i].y, messangeFrom[i].x);
+						Game.GetPlayer(i).setStatue(alive);
+						messangeForAll = Game.GetPlayer(i);
+						WhowMustSend = playerCount;
+						for (int n = 0; n < WhowMustSend; n++)	
 						{
-						case up:
-							Game.GetPlayer(i).GetY()--;	
-							positionChanged = true;
-							break;
-						case right:
-							Game.GetPlayer(i).GetX()++;
-							positionChanged = true;
-							break;
-						case left:
-							Game.GetPlayer(i).GetX()--;
-							positionChanged = true;
-							break;
-						case down:
-							Game.GetPlayer(i).GetY()++;
-							positionChanged = true;
-							break;
-						default:
-							positionChanged = false;
-							break;	
-						}
-						if(positionChanged)
-						{
-							Game.GetPlayer(i).setStatue(alive);
-							messangeForAll = Game.GetPlayer(i);
-							WhowMustSend = playerCount;
-							for (int n = 0; n < WhowMustSend; n++)	
+							if(n!=i)
 							{
-								if(n!=i)
-								{
-									mustSendAll[n] = true;
-								}
+								mustSendAll[n] = true;
 							}
-							printf("position changed\n");
 						}
+						positionChanged = true;
+						printf("position changed\n");
 					}else	
 					{ 
 						Game.GetPlayer(i).setStatue(dead);

@@ -151,7 +151,7 @@ void StartWindow()
 int main()
 {    
     object MessangeFrom; 
-    int messangeFor; 
+    Vector messangeFor; 
     Vector PositionBorders, position;
     object Object(5, 2, position);
     object Bomb(2, 2, position);
@@ -222,34 +222,31 @@ int main()
                 case KEY_UP:
                     if(position.y > 0)
                     {
-                        messangeFor = KEY_UP;
                         position.y--;
                     }
                     break;
                 case KEY_RIGHT:
                     if(position.x+2 < PositionBorders.x)
                     {
-                        messangeFor = KEY_RIGHT;
                         position.x++;
                     }
                     break;
                 case KEY_LEFT:
                     if(position.x > 0)
                     {
-                        messangeFor = KEY_LEFT;
                         position.x--;
                     }
                     break;
                 case KEY_DOWN:
                     if(position.y+5 < PositionBorders.y)
                     {
-                        messangeFor = KEY_DOWN;
                         position.y++;
                     }
                     break;
                 default:
                     break;
                 } 
+                messangeFor = position;
                 MustSend = true;
                 Object.GetHigh() = 5;
                 Object.GetWidth() = 2;
