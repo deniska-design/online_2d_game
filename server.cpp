@@ -193,7 +193,7 @@ int main()
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						break;
-					}else printf("messange was sent\n");
+					}else printf("X: %d, Y: %d\n", messange[messangeLenght].GetX(), messange[messangeLenght].GetY());
 					messangeLenght--;
 				}
 				mustSendMessangeto[i] = false;
