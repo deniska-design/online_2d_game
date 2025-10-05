@@ -286,7 +286,7 @@ int main()
             Object.Hide();
             if (Object.getStatue() == active) 
             {
-                mvprintw(0, 0, "printing of player\n");
+                mvprintw(Object.GetY(), Object.GetX(), "printing of player\n");
                 Object.Show();
             }/*else if (Object.getType() == BombType)
             {
