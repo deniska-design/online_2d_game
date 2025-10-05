@@ -287,7 +287,7 @@ int main()
             if (Object.getStatue() == active) 
             {
                 Object.Show();
-            }else if (Object.getType() == BombType)
+            }/*else if (Object.getType() == BombType)
             {
                 if (Object.getStatue() == exploded) 
                 {
@@ -308,7 +308,7 @@ int main()
                         }
                     }
                 }
-            }
+            }*/
         }
 
         if (MustSend)

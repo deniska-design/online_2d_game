@@ -138,8 +138,8 @@ int main()
 	object messangeForAll;
 	object messange[MaxPlayerCount]; 
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
-		positionChanged = false, BombGenerated = false, MustGenerateBomb = true;
-    int sd, MaxD, ReadBytes, key, SelRes = 0, RandomTime = 0, messangeLenght = 0,
+		BombGenerated = false, MustGenerateBomb = true;
+    int sd, MaxD, ReadBytes, SelRes = 0, RandomTime = 0, messangeLenght = 0,
 		WhowMustSend = 0, playerCount = 0, BombCount = 0;
     int pd[MaxPlayerCount];
 	const int firstMessange = 1;
@@ -177,7 +177,7 @@ int main()
 				{
 					//printf("ошибка отправки сообщения:%d", errno);
 					break;
-				}else printf("messange was sent\n");
+				}else //printf("messange was sent\n");
 				mustSendAll[i] = false;
 			}
 		}
@@ -186,14 +186,14 @@ int main()
 		{
 			if (mustSendMessangeto[i])
 			{
-				//printf("пришло время отправить длиное сообщение одному игроку\n");
+				printf("пришло время отправить длиное сообщение одному игроку\n");
 				while(messangeLenght >= 0)	
 				{
 					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						break;
-					}//else printf("messange was sent\n");
+					}else printf("messange was sent\n");
 					messangeLenght--;
 				}
 				mustSendMessangeto[i] = false;
@@ -263,7 +263,7 @@ int main()
 				Game.GetPlayer(playerCount-1).setStatue(alive);
 				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
 				SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
-				//SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
+				//SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);        перехаписовает сообщение которое содержало позиции игроков
 			}
 
 		//начало работы с игроками на прямую:
@@ -290,7 +290,6 @@ int main()
 								mustSendAll[n] = true;
 							}
 						}
-						positionChanged = true;
 						printf("position changed\n");
 					}else	
 					{ 
