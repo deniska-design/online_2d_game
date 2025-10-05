@@ -285,10 +285,10 @@ int main()
 						WhowMustSend = playerCount;
 						for (int n = 0; n < WhowMustSend; n++)	
 						{
-							if(n!=i)
-							{
+							//if(n!=i)
+							//{
 								mustSendAll[n] = true;
-							}
+							//}
 						}
 						printf("position changed\n");
 					}else	

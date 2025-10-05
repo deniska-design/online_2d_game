@@ -288,7 +288,7 @@ int main()
             {
                 Object.Show();
             }
-            mvprintw(Object.GetY(), Object.GetX(), "printing of player\n");
+            //mvprintw(Object.GetY(), Object.GetX(), "printing of player\n");
             /*else if (Object.getType() == BombType)
             {
                 if (Object.getStatue() == exploded) 
