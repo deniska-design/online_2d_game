@@ -283,10 +283,10 @@ int main()
                 return(1);
             }
             Object = MessangeFrom;
+            mvprintw(Object.GetY(), Object.GetX(), "printing of player\n");
             Object.Hide();
             if (Object.getStatue() == active) 
             {
-                mvprintw(Object.GetY(), Object.GetX(), "printing of player\n");
                 Object.Show();
             }/*else if (Object.getType() == BombType)
             {
