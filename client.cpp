@@ -270,7 +270,7 @@ int main()
 
         if(FD_ISSET(sd, &readfds))
         {
-            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
+            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(&MessangeFrom))))
             {   
                 printf( "read error:%d\n", errno);
                 break;
@@ -315,7 +315,7 @@ int main()
 
         if (MustSend)
         {
-            if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
+            if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
             {
                 printf("ошибка: %d", errno);
                 break;
