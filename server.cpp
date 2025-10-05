@@ -125,6 +125,7 @@ void SetMessange(object messange[4], object *newValue, bool mustSendMessangeto[4
 	for (int n = 0; n < newMessangeLength; n++)		
 	{
 		messange[n] = newValue[n];
+		printf("newValue X: %d, newValue Y: %d\n", newValue[n].GetX(), newValue[n].GetY());
 	}
 	mustSendMessangeto[WhowMustSend] = true;
 	messangeLenght = newMessangeLength-1;
