@@ -173,7 +173,7 @@ int main()
 			if (mustSendAll[i])
 			{
 				//printf("пришло время отправить сообщение игроку\n");
-				if(write(pd[i], &messangeForAll, sizeof(&messangeForAll)) == -1)
+				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 				{
 					//printf("ошибка отправки сообщения:%d", errno);
 					break;
@@ -189,7 +189,7 @@ int main()
 				printf("пришло время отправить длиное сообщение одному игроку\n");
 				while(messangeLenght >= 0)	
 				{
-					if(write(pd[i], &messange[messangeLenght], sizeof(&messange[messangeLenght])) == -1)
+					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						break;

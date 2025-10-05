@@ -315,7 +315,7 @@ int main()
 
         if (MustSend)
         {
-            if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
+            if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
             {
                 printf("ошибка: %d", errno);
                 break;
