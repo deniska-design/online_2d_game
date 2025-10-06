@@ -120,12 +120,16 @@ void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMus
 	}
 }
 
-void SetMessange(object messange[4], object *newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
+template<typename parent, typename kid>
+void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
 {
 	for (int n = 0; n < newMessangeLength; n++)		
 	{
-		messange[n] = newValue[n];
 		printf("newValue X: %d, newValue Y: %d\n", newValue[n].GetX(), newValue[n].GetY());
+	}
+	for (int n = 0; n < newMessangeLength; n++)		
+	{
+		messange[n] = newValue[n];
 	}
 	mustSendMessangeto[WhowMustSend] = true;
 	messangeLenght = newMessangeLength-1;
@@ -200,7 +204,7 @@ int main()
 				mustSendMessangeto[i] = false;
 			}
 		}
-		/*
+		
 		if(playerCount > 0)
 		{
 			printf("щас будем хуярить\n");
@@ -236,7 +240,6 @@ int main()
 					if(true == stopwatch(BombExplodingTime, time(NULL), BombExplodingTime))
 					MustGenerateBomb = true;
 		}
-					*/
         if (SelRes < 0)
         {
             if (errno != EINTR)
@@ -263,8 +266,12 @@ int main()
 				Game.GetPlayer(playerCount-1).setPosition(0, 0);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
 				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
-				SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
-				//SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);        перехаписовает сообщение которое содержало позиции игроков
+				for (int n = 0; n < playerCount; n++)		
+				{
+					printf("newVGame.GetPlayer(n).GetX: %d, Game.GetPlayer(n).GetY: %d\n", Game.GetPlayer(n).GetX(), Game.GetPlayer(n).GetY());
+				}
+				SetMessange<object, player>(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
+				SetMessange<object, bomb>(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);        //перехаписовает сообщение которое содержало позиции игроков
 			}
 
 		//начало работы с игроками на прямую:
