@@ -50,21 +50,33 @@ game::game(int MaxPlayerCount, int MaxBombCount)
 
 player &game::GetPlayer(int PlayerNum)
 {
+    Player[PlayerNum].setType(PlayerType);
     return (player&) Player[PlayerNum];
 }
 
 bomb &game::GetBomb(int BombNum)
 {
+    Bomb[BombNum].setType(BombType);
     return (bomb&) Bomb[BombNum];
 }
 
 player *game::GetPlayerArray()
 {
+    int ArraySize = SizeOfArray<player>(&Player);
+    for(int i = 0; i < ArraySize; i++)
+    {
+        Player[i].setType(PlayerType);
+    }
     return Player;
 }
 
 bomb *game::GetBombArray()
 {
+    int ArraySize = SizeOfArray<bomb>(&Bomb);
+    for(int i = 0; i < ArraySize; i++)
+    {
+        Bomb[i].setType(BombType);
+    }
     return Bomb;
 }
 

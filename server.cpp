@@ -199,12 +199,12 @@ int main()
 		{
 			if (mustSendAll[i])
 			{
-				//printf("пришло время отправить сообщение игроку\n");
+				printf("пришло время отправить сообщение игроку\n");
 				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 				{
 					//printf("ошибка отправки сообщения:%d", errno);
 					break;
-				}else //printf("messange was sent\n");
+				}else printf("X: %d, Y: %d\n", messangeForAll.GetX(), messangeForAll.GetY());
 				mustSendAll[i] = false;
 			}
 		}
