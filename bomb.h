@@ -24,6 +24,7 @@ bomb::bomb()
     High = DefaultBombHigh;
     Width = DefaultBombWidth;
     statue = disactiv;
+    ObjectType = BombType;
 }
 
 bomb::bomb(bool state, Vector NewPosition, int BombHigh, int BombWidth)
@@ -32,6 +33,7 @@ bomb::bomb(bool state, Vector NewPosition, int BombHigh, int BombWidth)
     High = BombHigh;
     Width = BombWidth;
     statue = state;
+    ObjectType = BombType;
 }
 
 #endif

@@ -28,6 +28,7 @@ player::player()
     Width = DefaultWidth;
     HP = DefaultHP;
     statue = disactiv;
+    ObjectType = PlayerType;
 }
 
 player::player(int PlayerH, int PlayerW, Vector NewPosition, int NewHP)
@@ -37,6 +38,7 @@ player::player(int PlayerH, int PlayerW, Vector NewPosition, int NewHP)
     Width = PlayerW;
     statue = disactiv;
     HP = NewHP;
+    ObjectType = PlayerType;
 }
 
 
