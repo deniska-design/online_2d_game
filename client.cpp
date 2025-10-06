@@ -290,9 +290,9 @@ int main()
             }
             else if (Object.getType() == BombType)
             {
+                mvprintw(Object.GetY(), Object.GetX(), "Babah\n");
                 if (Object.getStatue() == exploded) 
                 {
-                    mvprintw(Object.GetY(), Object.GetX(), "Babah\n");
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
                     bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
