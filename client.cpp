@@ -292,6 +292,7 @@ int main()
             {
                 if (Object.getStatue() == exploded) 
                 {
+                    mvprintw(Object.GetY(), Object.GetX(), "бабах\n");
                     Bomb.GetY() = Object.GetY();
                     Bomb.GetX() = Object.GetX();
                     bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  

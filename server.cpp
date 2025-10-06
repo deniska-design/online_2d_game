@@ -125,14 +125,36 @@ void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], in
 {
 	for (int n = 0; n < newMessangeLength; n++)		
 	{
-		printf("newValue X: %d, newValue Y: %d\n", newValue[n].GetX(), newValue[n].GetY());
-	}
-	for (int n = 0; n < newMessangeLength; n++)		
-	{
+		printf("newValue[n].GetX:%d\n", newValue[n].GetX());
+		printf("newValue[n].GetY:%d\n", newValue[n].GetX());
 		messange[n] = newValue[n];
 	}
 	mustSendMessangeto[WhowMustSend] = true;
 	messangeLenght = newMessangeLength-1;
+}
+
+template<typename parent, typename kid1, typename kid2>
+object *SetGeneralObjectArray(parent *GeneralObjectArray, kid1 *A1, kid2 *A2, int GeneralObjectArraySize)
+{
+	if(GeneralObjectArraySize >= SizeOfArray<kid1>(&A1)+SizeOfArray<kid2>(&A2))
+	{
+		int i = 0;
+		while(i < GeneralObjectArraySize)
+		{
+			for(int n = 0; n < SizeOfArray<kid1>(&A1); n++)
+			{
+				GeneralObjectArray[i] =  A1[n];
+				i++;
+			}
+			for(int n = 0; n < SizeOfArray<kid2>(&A2); n++)
+			{
+				GeneralObjectArray[i] =  A1[n];
+				i++;
+			}
+		}
+		return GeneralObjectArray;
+	}
+	return GeneralObjectArray;
 }
 
 int main()
@@ -141,7 +163,7 @@ int main()
 	game Game(MaxPlayerCount, MaxBombCount);
     Vector messangeFrom[MaxPlayerCount];
 	object messangeForAll;
-	object messange[MaxPlayerCount]; 
+	object messange[MaxPlayerCount+MaxBombCount], *GeneralObjectArray = new object[MaxPlayerCount+MaxBombCount]; 
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
 		BombGenerated = false, MustGenerateBomb = true;
     int sd, MaxD, ReadBytes, SelRes = 0, RandomTime = 0, messangeLenght = 0,
@@ -204,13 +226,13 @@ int main()
 				mustSendMessangeto[i] = false;
 			}
 		}
-		
+
 		if(playerCount > 0)
 		{
-			printf("щас будем хуярить\n");
+			//printf("щас будем хуярить\n");
 			if(MustGenerateBomb)
 			{
-				printf("создём пукалку\n");
+				//printf("создём пукалку\n");
 				Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
 				Game.GetBomb(MaxBombCount - 1).setStatue(active);
 				RandomTime = Random(2, 4);
@@ -223,10 +245,10 @@ int main()
 			}
 			if(BombGenerated)
 			{
-				printf("ща ещё чуть чуть\n");
+				//printf("ща ещё чуть чуть\n");
 				if(true == stopwatch(RandomTime, time(NULL), 0))
 				{
-					printf("бабах\n");
+					//printf("бабах\n");
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
 					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
 					BombGenerated = false;
@@ -266,12 +288,13 @@ int main()
 				Game.GetPlayer(playerCount-1).setPosition(0, 0);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
 				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
-				for (int n = 0; n < playerCount; n++)		
+				SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, Game.GetPlayerArray(), Game.GetBombArray(), SizeOfArray<object>(&GeneralObjectArray));	
+				for (int n = 0; n < SizeOfArray<object>(&GeneralObjectArray); n++)		
 				{
-					printf("newVGame.GetPlayer(n).GetX: %d, Game.GetPlayer(n).GetY: %d\n", Game.GetPlayer(n).GetX(), Game.GetPlayer(n).GetY());
+					printf("GeneralObjectArray[n].GetX:%d\n", GeneralObjectArray[n].GetX());
+					printf("GeneralObjectArray[n].GetY:%d\n", GeneralObjectArray[n].GetY());
 				}
-				SetMessange<object, player>(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
-				SetMessange<object, bomb>(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);        //перехаписовает сообщение которое содержало позиции игроков
+				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
 			}
 
 		//начало работы с игроками на прямую:
@@ -298,7 +321,7 @@ int main()
 								mustSendAll[n] = true;
 							//}
 						}
-						printf("position changed\n");
+						//printf("position changed\n");
 					}else	
 					{ 
 						Game.GetPlayer(i).setStatue(dead);
@@ -309,7 +332,7 @@ int main()
 			}
 		}else
 		{
-			printf("timeout\n");
+			//printf("timeout\n");
 		}
 	}
     //конец
