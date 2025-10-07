@@ -110,14 +110,28 @@ void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, game Gam
 	playerCount--;
 }
 
-void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], object newValue)
+void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], object newValue, int exception)
 {
 	messangeForAll = newValue;
 	WhowMustSend = NewWhomMustSend;
-	for (int n = 0; n < WhowMustSend; n++)	
+	if(exception > -1)
 	{
-		mustSendAll[n] = true;
+		for (int n = 0; n < WhowMustSend; n++)	
+		{
+			if(n != exception)
+			{
+				mustSendAll[n] = true;
+			}
+		}
+	}else
+	{
+		for (int n = 0; n < WhowMustSend; n++)	
+		{
+
+			mustSendAll[n] = true;
+		}
 	}
+	
 }
 
 template<typename parent, typename kid>
@@ -125,8 +139,6 @@ void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], in
 {
 	for (int n = 0; n < newMessangeLength; n++)		
 	{
-		printf("newValue[n].GetX:%d\n", newValue[n].GetX());
-		printf("newValue[n].GetY:%d\n", newValue[n].GetX());
 		messange[n] = newValue[n];
 	}
 	mustSendMessangeto[WhowMustSend] = true;
@@ -136,25 +148,21 @@ void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], in
 template<typename parent, typename kid1, typename kid2>
 object *SetGeneralObjectArray(parent *GeneralObjectArray, kid1 *A1, kid2 *A2, int GeneralObjectArraySize)
 {
-	//if(GeneralObjectArraySize >= SizeOfArray<kid1>(&A1)+SizeOfArray<kid2>(&A2))
-	//{
-		printf("jopa\n");
-		int i = 0;
-		while(i < GeneralObjectArraySize)
+	printf("jopa\n");
+	int i = 0;
+	while(i < GeneralObjectArraySize)
+	{
+		for(int n = 0; n < SizeOfArray<kid1>(&A1); n++)
 		{
-			for(int n = 0; n < SizeOfArray<kid1>(&A1); n++)
-			{
-				GeneralObjectArray[i] =  A1[n];
-				i++;
-			}
-			for(int n = 0; n < SizeOfArray<kid2>(&A2); n++)
-			{
-				GeneralObjectArray[i] =  A1[n];
-				i++;
-			}
+			GeneralObjectArray[i] =  A1[n];
+			i++;
 		}
-		return GeneralObjectArray;
-	//}
+		for(int n = 0; n < SizeOfArray<kid2>(&A2); n++)
+		{
+			GeneralObjectArray[i] =  A1[n];
+			i++;
+		}
+	}
 	return GeneralObjectArray;
 }
 
@@ -238,7 +246,7 @@ int main()
 				Game.GetBomb(MaxBombCount - 1).setStatue(active);
 				RandomTime = Random(2, 4);
 				stopwatch(RandomTime, time(NULL), 0);
-				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount));
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount), -1);
 				BombGenerated = true;
 				MustGenerateBomb = false;
 				BombCount++;
@@ -251,7 +259,7 @@ int main()
 				{
 					//printf("бабах\n");
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1), -1);
 					BombGenerated = false;
 					stopwatch(BombExplodingTime, time(NULL), BombExplodingTime);
 					BombCount--;
@@ -288,7 +296,7 @@ int main()
 				}
 				Game.GetPlayer(playerCount-1).setPosition(0, 0);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
-				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
 				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, Game.GetPlayerArray(), Game.GetBombArray(), SizeOfArray<object>(&GeneralObjectArray));	
 				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
 			}
@@ -308,20 +316,12 @@ int main()
 					{
 						Game.GetPlayer(i).setPosition(messangeFrom[i].y, messangeFrom[i].x);
 						Game.GetPlayer(i).setStatue(alive);
-						messangeForAll = Game.GetPlayer(i);
-						WhowMustSend = playerCount;
-						for (int n = 0; n < WhowMustSend; n++)	
-						{
-							//if(n!=i)
-							//{
-								mustSendAll[n] = true;
-							//}
-						}
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i), i);	
 						//printf("position changed\n");
 					}else	
 					{ 
 						Game.GetPlayer(i).setStatue(dead);
-						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game.GetPlayer(i));	
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game.GetPlayer(i), -1);	
 						PlayerLeaved(playerCount, pd, readfds, i, Game);
 					}
 				}
