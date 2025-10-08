@@ -6,7 +6,12 @@
 enum 
 {
 	active	    =	true,     
-    disactiv	=	false,      
+    disactiv	=	false,  
+    
+    DefaultPositionX= 0,
+    DefaultPositionY= 0,
+    DefaultHigh     = 5,
+    DefaultWidth    = 2,
 };
 
 typedef enum 
@@ -14,7 +19,6 @@ typedef enum
 	PlayerType,
     BombType
 }objectType;
-
 
 class object
 {
@@ -31,6 +35,8 @@ public:
     void Hide() const;
     int &GetY();
     int &GetX();
+    int &GetHigh();
+    int &GetWidth();
     void setPosition(int NewY, int NewX);
     void setStatue(bool newStatue);
     bool getStatue() const;
@@ -40,9 +46,9 @@ public:
 
 object::object()
 {
-    position = Vector{0, 0};
-    High = 5;
-    Width = 2;
+    position = Vector{DefaultPositionX, DefaultPositionY};
+    High = DefaultHigh;
+    Width = DefaultWidth;
     statue = disactiv;
 }
 
@@ -114,6 +120,14 @@ objectType object::getType() const
     return ObjectType;
 }
 
+int &object::GetHigh()
+{
+    return const_cast<int &>(High);
+}
 
+int &object::GetWidth()
+{
+    return const_cast<int &>(Width);
+}
 
 #endif

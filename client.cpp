@@ -19,7 +19,7 @@ enum
 {
     AffectedArea = 15,
     AffectedAreaXCoefficient = 2,
-    AffectedAreaYCoefficient = 1
+    AffectedAreaYCoefficient = 1,
 };
 
 typedef enum 
@@ -151,10 +151,10 @@ void StartWindow()
 int main()
 {    
     object MessangeFrom; 
-    std::variant<Vector, int> messangeFor; 
+    Vector messangeFor; 
     Vector PositionBorders, position;
-    object Object(5, 2, position);
-    object Bomb(2, 2, position);
+    object Object(DefaultHigh, DefaultWidth, position);
+    object Bomb(DefaultBombHigh, DefaultBombWidth, position);
     bool MustSend = false, bombExploding = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
@@ -183,8 +183,6 @@ int main()
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
-    messangeFor = (Vector){PositionBorders.x - 2, PositionBorders.y - 5}; 
-    MustSend = true;
 
     //начало бесконечного цыкла
 
@@ -222,25 +220,47 @@ int main()
                 switch (key)
                 {
                 case KEY_UP:
-                    messangeFor = KEY_UP;
-                    position.y--;
+                    if(position.y > 0)
+                    {
+                        position.y--;
+                        MustSend = true;
+                    }
                     break;
                 case KEY_RIGHT:
-                    messangeFor = KEY_RIGHT;
-                    position.x++;
+                    if(position.x+DefaultWidth < PositionBorders.x)
+                    {
+                        position.x++;
+                        MustSend = true;
+                    }
                     break;
                 case KEY_LEFT:
-                    messangeFor = KEY_LEFT;
-                    position.x--;
+                    if(position.x > 0)
+                    {
+                        position.x--;
+                        MustSend = true;
+                    }
                     break;
                 case KEY_DOWN:
-                    messangeFor = KEY_DOWN;
-                    position.y++;
+                    if(position.y+DefaultHigh < PositionBorders.y)
+                    {
+                        position.y++;
+                        MustSend = true;
+                    }
                     break;
                 default:
                     break;
                 } 
-                MustSend = true;
+                if(MustSend)
+                {
+                    messangeFor = position;
+                    Object.GetHigh() = DefaultHigh;
+                    Object.GetWidth() = DefaultWidth;
+                    Object.setType(PlayerType);
+                    Object.setPosition(position.y, position.x);
+                    Object.Hide();
+                    Object.Show();
+                }
+                
             }else break;
         }
 
@@ -267,7 +287,8 @@ int main()
             if (Object.getStatue() == active) 
             {
                 Object.Show();
-            }else if (Object.getType() == BombType)
+            }
+            else if (Object.getType() == BombType)
             {
                 if (Object.getStatue() == exploded) 
                 {
@@ -293,7 +314,7 @@ int main()
 
         if (MustSend)
         {
-            if(write(sd, &messangeFor, sizeof(&messangeFor)) == -1)
+            if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
             {
                 printf("ошибка: %d", errno);
                 break;

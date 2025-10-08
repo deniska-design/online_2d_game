@@ -5,7 +5,10 @@
 
 enum 
 {
-    exploded	=	disactiv,      
+    exploded	=	disactiv,     
+
+    DefaultBombHigh     = 2,
+    DefaultBombWidth    = 2, 
 };
 
 class bomb : public object
@@ -17,10 +20,11 @@ public:
 
 bomb::bomb()
 {
-    position = Vector{0, 0};
-    High = 2;
-    Width = 2;
+    position = Vector{DefaultPositionX, DefaultPositionY};
+    High = DefaultBombHigh;
+    Width = DefaultBombWidth;
     statue = disactiv;
+    ObjectType = BombType;
 }
 
 bomb::bomb(bool state, Vector NewPosition, int BombHigh, int BombWidth)
@@ -29,6 +33,7 @@ bomb::bomb(bool state, Vector NewPosition, int BombHigh, int BombWidth)
     High = BombHigh;
     Width = BombWidth;
     statue = state;
+    ObjectType = BombType;
 }
 
 #endif

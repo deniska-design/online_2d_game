@@ -32,6 +32,8 @@ enum
     MaxBombXPos	= 	80,      
     MinBombXPos	=	1,      
     MinBombYPos =	1,	
+
+	BombExplodingTime = 1,
 };
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
@@ -108,17 +110,21 @@ void PlayerLeaved(int &playerCount, int *pd, fd_set fds, int playerNum, game Gam
 	playerCount--;
 }
 
-void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], object newValue)
+void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMustSend, bool mustSendAll[4], object newValue, int exception)
 {
 	messangeForAll = newValue;
 	WhowMustSend = NewWhomMustSend;
 	for (int n = 0; n < WhowMustSend; n++)	
 	{
-		mustSendAll[n] = true;
-	}
+		if(n != exception)
+		{
+			mustSendAll[n] = true;
+		}
+	}	
 }
 
-void SetMessange(object messange[4], object *newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
+template<typename parent, typename kid>
+void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
 {
 	for (int n = 0; n < newMessangeLength; n++)		
 	{
@@ -128,17 +134,43 @@ void SetMessange(object messange[4], object *newValue, bool mustSendMessangeto[4
 	messangeLenght = newMessangeLength-1;
 }
 
+template<typename parent, typename kid1, typename kid2>
+object *SetGeneralObjectArray(parent *GeneralObjectArray, int GeneralObjectArraySize,kid1 *A1, int A1Size,kid2 *A2, int A2Size)
+{
+	printf("GeneralObjectArraySize:%d\n", GeneralObjectArraySize);
+	int i = 0;
+	while(i < GeneralObjectArraySize)
+	{
+		for(int n = 0; n < A1Size; n++)
+		{
+			if(i < GeneralObjectArraySize)
+			{
+				GeneralObjectArray[i] =  A1[n];
+				i++;
+			}
+		}
+		for(int n = 0; n < A2Size; n++)
+		{
+			if(i < GeneralObjectArraySize)
+			{
+				GeneralObjectArray[i] =  A2[n];
+				i++;
+			}
+		}
+	}
+	return GeneralObjectArray;
+}
+
 int main()
 {   
 	struct timeval timeout;
 	game Game(MaxPlayerCount, MaxBombCount);
-    std::variant<Vector, int> messangeFrom[MaxPlayerCount];
+    Vector messangeFrom[MaxPlayerCount];
 	object messangeForAll;
-	object messange[MaxPlayerCount]; 
-	Vector PositionBorders[MaxPlayerCount];
+	object messange[MaxPlayerCount+MaxBombCount], *GeneralObjectArray = new object[MaxPlayerCount+MaxBombCount]; 
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
-		positionChanged = false, BombGenerated = false, MustGenerateBomb = true;
-    int sd, MaxD, ReadBytes, key, SelRes = 0, RandomTime = 0, messangeLenght = 0,
+		BombGenerated = false, MustGenerateBomb = true;
+    int sd, MaxD, ReadBytes, SelRes = 0, RandomTime = 0, messangeLenght = 0,
 		WhowMustSend = 0, playerCount = 0, BombCount = 0;
     int pd[MaxPlayerCount];
 	const int firstMessange = 1;
@@ -176,7 +208,7 @@ int main()
 				{
 					//printf("ошибка отправки сообщения:%d", errno);
 					break;
-				}else printf("messange was sent\n");
+				}//else printf("X: %d, Y: %d\n", messangeForAll.GetX(), messangeForAll.GetY());
 				mustSendAll[i] = false;
 			}
 		}
@@ -192,23 +224,24 @@ int main()
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						break;
-					}//else printf("messange was sent\n");
+					}//else printf("X: %d, Y: %d\n", messange[messangeLenght].GetX(), messange[messangeLenght].GetY());
 					messangeLenght--;
 				}
 				mustSendMessangeto[i] = false;
 			}
 		}
+
 		if(playerCount > 0)
 		{
-			printf("щас будем хуярить\n");
+			//printf("щас будем хуярить\n");
 			if(MustGenerateBomb)
 			{
-				printf("создём пукалку\n");
+				//printf("создём пукалку\n");
 				Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
 				Game.GetBomb(MaxBombCount - 1).setStatue(active);
 				RandomTime = Random(2, 4);
 				stopwatch(RandomTime, time(NULL), 0);
-				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount));
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount), -1);
 				BombGenerated = true;
 				MustGenerateBomb = false;
 				BombCount++;
@@ -216,21 +249,21 @@ int main()
 			}
 			if(BombGenerated)
 			{
-				printf("ща ещё чуть чуть\n");
-				if(true == stopwatch(RandomTime, time(NULL), 0))
+				//printf("ща ещё чуть чуть\n");
+				if(stopwatch(RandomTime, time(NULL), 0))
 				{
-					printf("бабах\n");
+					//printf("бабах\n");
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
-					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1));
+					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1), -1);
 					BombGenerated = false;
-					stopwatch(1, time(NULL), 1);
+					stopwatch(BombExplodingTime, time(NULL), BombExplodingTime);
 					BombCount--;
 					continue;
 				}
 			}
 			if (!BombGenerated)
 				if (!MustGenerateBomb)
-					if(true == stopwatch(1, time(NULL), 1))
+					if(true == stopwatch(BombExplodingTime, time(NULL), BombExplodingTime))
 					MustGenerateBomb = true;
 		}
         if (SelRes < 0)
@@ -258,9 +291,9 @@ int main()
 				}
 				Game.GetPlayer(playerCount-1).setPosition(0, 0);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
-				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1));
-				SetMessange(messange, Game.GetPlayerArray(), mustSendMessangeto, playerCount-1, messangeLenght, playerCount);
-				SetMessange(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
+				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
+				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);
+				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
 			}
 
 		//начало работы с игроками на прямую:
@@ -270,73 +303,27 @@ int main()
 				if(FD_ISSET(pd[i], &readfds))
 				{
 					//printf("пришло сообщение от игрока\n");
-					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))	//оптимизация: пусть игрок который сделал шаг сам себя ресует и мы не будем ему отпрявлять его нувую позицию
-					{																				//оптимизация: лучше не отпрявлять игроку каждый пиксель взрыва бомбы лучше просто отправить что ещё больше нет и он сам нарисует
+					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(messangeFrom[i]))))
+					{
 						printf("ошибка чтения данных:%d\n", errno);
 						break;
 					}else if(ReadBytes > 0)
 					{
-						if(std::holds_alternative<int>(messangeFrom[i]))
-						{
-							key = std::get<int>(std::move(messangeFrom[i]));
-							//printf("key:%d\n", key);
-							switch (key)
-							{
-							case up:
-								if (Game.GetPlayer(i).GetY() > 0)	
-								{						
-									Game.GetPlayer(i).GetY()--;	
-								}
-								positionChanged = true;
-								break;
-							case right:
-								if(Game.GetPlayer(i).GetX() < PositionBorders[i].x)
-								{
-									Game.GetPlayer(i).GetX()++;
-								}
-								positionChanged = true;
-								break;
-							case left:
-								if (Game.GetPlayer(i).GetX() > 0)
-								{
-									Game.GetPlayer(i).GetX()--;
-								}
-								positionChanged = true;
-								break;
-							case down:
-								if(Game.GetPlayer(i).GetY() < PositionBorders[i].y)
-								{
-									Game.GetPlayer(i).GetY()++;
-								}
-								positionChanged = true;
-								break;
-							default:
-								positionChanged = false;
-								break;	
-							}
-							if(positionChanged)
-							{
-								Game.GetPlayer(i).setStatue(alive);
-								SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i));
-								printf("position changed\n");
-							}
-						}else if (std::holds_alternative<Vector>(messangeFrom[i]))
-						{
-							PositionBorders[i] = std::get<Vector>((messangeFrom[i]));
-							//printf("position border x:%d\n", PositionBorders[i].x);
-							messangeFrom[i] = 0;
-						}
+						Game.GetPlayer(i).setPosition(messangeFrom[i].y, messangeFrom[i].x);
+						Game.GetPlayer(i).setStatue(alive);
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i), i);	
+						//printf("position changed\n");
 					}else	
 					{ 
 						Game.GetPlayer(i).setStatue(dead);
-						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game.GetPlayer(i));	
+						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount - 1, mustSendAll, Game.GetPlayer(i), -1);	
 						PlayerLeaved(playerCount, pd, readfds, i, Game);
 					}
 				}
 			}
 		}else
 		{
-			printf("timeout\n");
+			//printf("timeout\n");
 		}
 	}
     //конец

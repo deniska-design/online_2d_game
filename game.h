@@ -6,6 +6,23 @@
 #include "player.h"
 #include "bomb.h"
 
+template<typename TYPE>
+int SizeOfArray(TYPE **Array)
+{
+    int ArraySize = 0;
+    while((Array[ArraySize]))
+    {
+        ArraySize++;
+    }
+    return ArraySize;
+}
+
+enum
+{
+    DefaultPlayerCount = 5,
+    DefaultBombCount = 1,
+};
+
 class game
 {
     player *Player;
@@ -21,8 +38,8 @@ public:
 
 game::game()
 {
-    Player = new player[5];
-    Bomb = new bomb[1];
+    Player = new player[DefaultPlayerCount];
+    Bomb = new bomb[DefaultBombCount];
 }
 
 game::game(int MaxPlayerCount, int MaxBombCount)
@@ -45,7 +62,8 @@ bomb &game::GetBomb(int BombNum)
 
 player *game::GetPlayerArray()
 {
-    for(int i = 0; i < sizeof(Player); i++)
+    int ArraySize = SizeOfArray<player>(&Player);
+    for(int i = 0; i < ArraySize; i++)
     {
         Player[i].setType(PlayerType);
     }
@@ -54,7 +72,8 @@ player *game::GetPlayerArray()
 
 bomb *game::GetBombArray()
 {
-    for(int i = 0; i < sizeof(Bomb); i++)
+    int ArraySize = SizeOfArray<bomb>(&Bomb);
+    for(int i = 0; i < ArraySize; i++)
     {
         Bomb[i].setType(BombType);
     }
