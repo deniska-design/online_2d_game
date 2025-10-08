@@ -310,7 +310,6 @@ int main()
                     }
                 }
             }
-            mvprintw(Object.GetY(), Object.GetX(), "X: %d, Y: %d\n", Object.GetX(), Object.GetY());
         }
 
         if (MustSend)

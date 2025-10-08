@@ -114,24 +114,13 @@ void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMus
 {
 	messangeForAll = newValue;
 	WhowMustSend = NewWhomMustSend;
-	if(exception > -1)
+	for (int n = 0; n < WhowMustSend; n++)	
 	{
-		for (int n = 0; n < WhowMustSend; n++)	
+		if(n != exception)
 		{
-			if(n != exception)
-			{
-				mustSendAll[n] = true;
-			}
-		}
-	}else
-	{
-		for (int n = 0; n < WhowMustSend; n++)	
-		{
-
 			mustSendAll[n] = true;
 		}
-	}
-	
+	}	
 }
 
 template<typename parent, typename kid>
@@ -148,7 +137,7 @@ void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], in
 template<typename parent, typename kid1, typename kid2>
 object *SetGeneralObjectArray(parent *GeneralObjectArray, kid1 *A1, kid2 *A2, int GeneralObjectArraySize)
 {
-	printf("jopa\n");
+	printf("GeneralObjectArraySize:%d\n", GeneralObjectArraySize);
 	int i = 0;
 	while(i < GeneralObjectArraySize)
 	{
@@ -159,7 +148,8 @@ object *SetGeneralObjectArray(parent *GeneralObjectArray, kid1 *A1, kid2 *A2, in
 		}
 		for(int n = 0; n < SizeOfArray<kid2>(&A2); n++)
 		{
-			GeneralObjectArray[i] =  A1[n];
+			GeneralObjectArray[i] =  A2[n];
+			printf("GeneralObjectArray[i].GetY:%d, GeneralObjectArray[i].GetX:%d\n", GeneralObjectArray[i].GetY(), GeneralObjectArray[i].GetX());
 			i++;
 		}
 	}
@@ -255,7 +245,7 @@ int main()
 			if(BombGenerated)
 			{
 				//printf("ща ещё чуть чуть\n");
-				if(true == stopwatch(RandomTime, time(NULL), 0))
+				if(stopwatch(RandomTime, time(NULL), 0))
 				{
 					//printf("бабах\n");
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
@@ -297,7 +287,18 @@ int main()
 				Game.GetPlayer(playerCount-1).setPosition(0, 0);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
 				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
-				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, Game.GetPlayerArray(), Game.GetBombArray(), SizeOfArray<object>(&GeneralObjectArray));	
+				printf("bombCount:%d\n", BombCount);
+				printf("PlayerCount:%d\n", playerCount);
+				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, Game.GetPlayerArray(), Game.GetBombArray(), playerCount+BombCount);
+				for (int i = 0; i < BombCount; i++)
+				{
+					printf("Bomb X:%d,Bomb Y:%d\n", Game.GetBomb(i).GetX(), Game.GetBomb(i).GetY());
+				}
+				for (int i = 0; i < playerCount+BombCount; i++)
+				{
+					printf("X:%d, Y:%d\n", GeneralObjectArray[i].GetX(), GeneralObjectArray[i].GetY());
+				}
+				printf("SizeOfArray:%d\n", playerCount+BombCount);
 				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
 			}
 
