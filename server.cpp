@@ -135,22 +135,27 @@ void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], in
 }
 
 template<typename parent, typename kid1, typename kid2>
-object *SetGeneralObjectArray(parent *GeneralObjectArray, kid1 *A1, kid2 *A2, int GeneralObjectArraySize)
+object *SetGeneralObjectArray(parent *GeneralObjectArray, int GeneralObjectArraySize,kid1 *A1, int A1Size,kid2 *A2, int A2Size)
 {
 	printf("GeneralObjectArraySize:%d\n", GeneralObjectArraySize);
 	int i = 0;
 	while(i < GeneralObjectArraySize)
 	{
-		for(int n = 0; n < SizeOfArray<kid1>(&A1); n++)
+		for(int n = 0; n < A1Size; n++)
 		{
-			GeneralObjectArray[i] =  A1[n];
-			i++;
+			if(i < GeneralObjectArraySize)
+			{
+				GeneralObjectArray[i] =  A1[n];
+				i++;
+			}
 		}
-		for(int n = 0; n < SizeOfArray<kid2>(&A2); n++)
+		for(int n = 0; n < A2Size; n++)
 		{
-			GeneralObjectArray[i] =  A2[n];
-			printf("GeneralObjectArray[i].GetY:%d, GeneralObjectArray[i].GetX:%d\n", GeneralObjectArray[i].GetY(), GeneralObjectArray[i].GetX());
-			i++;
+			if(i < GeneralObjectArraySize)
+			{
+				GeneralObjectArray[i] =  A2[n];
+				i++;
+			}
 		}
 	}
 	return GeneralObjectArray;
@@ -287,18 +292,7 @@ int main()
 				Game.GetPlayer(playerCount-1).setPosition(0, 0);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
 				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
-				printf("bombCount:%d\n", BombCount);
-				printf("PlayerCount:%d\n", playerCount);
-				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, Game.GetPlayerArray(), Game.GetBombArray(), playerCount+BombCount);
-				for (int i = 0; i < BombCount; i++)
-				{
-					printf("Bomb X:%d,Bomb Y:%d\n", Game.GetBomb(i).GetX(), Game.GetBomb(i).GetY());
-				}
-				for (int i = 0; i < playerCount+BombCount; i++)
-				{
-					printf("X:%d, Y:%d\n", GeneralObjectArray[i].GetX(), GeneralObjectArray[i].GetY());
-				}
-				printf("SizeOfArray:%d\n", playerCount+BombCount);
+				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);
 				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
 			}
 
