@@ -151,10 +151,10 @@ void StartWindow()
 int main()
 {    
     object MessangeFrom; 
-    Vector messangeFor; 
     Vector PositionBorders, position;
-    object Object(DefaultHigh, DefaultWidth, position);
-    object Bomb(DefaultBombHigh, DefaultBombWidth, position);
+    object Object;
+    player Player;
+    bomb Bomb;
     bool MustSend = false, bombExploding = false;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
@@ -252,15 +252,9 @@ int main()
                 } 
                 if(MustSend)
                 {
-                    messangeFor = position;
-                    Object.GetHigh() = DefaultHigh;
-                    Object.GetWidth() = DefaultWidth;
-                    Object.setType(PlayerType);
-                    Object.setPosition(position.y, position.x);
-                    Object.Hide();
-                    Object.Show();
+                    Player.setPosition(position.y, position.x);
+                    Object = Player;
                 }
-                
             }else break;
         }
 
@@ -277,50 +271,50 @@ int main()
             }
             else if(ReadBytes == 0)
             {
-                close(sd);
-                endwin();
-                printf( "novogo goda ne bydet, idi nahyi\n");
-                return(1);
+                printf("novogo goda ne bydet, idi nahyi\n");
+                break;
             }
             Object = MessangeFrom;
-            Object.Hide();
-            if (Object.getStatue() == active) 
-            {
-                Object.Show();
-            }
-            else if (Object.getType() == BombType)
-            {
-                if (Object.getStatue() == exploded) 
-                {
-                    Bomb.GetY() = Object.GetY();
-                    Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
-                    if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
-                    {
-                        if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
-                        {
-                            if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
-                            {
-                                if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
-
         if (MustSend)
         {
-            if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
+            if(write(sd, &Player, sizeof(Player)) == -1)
             {
                 printf("ошибка: %d", errno);
                 break;
             }
             MustSend = false;
         } 
+        Object.Hide();
+        if (Object.getStatue() == active) 
+        {
+            Object.Show();
+        }
+        else if (Object.getType() == BombType)
+        {
+            if (Object.getStatue() == exploded) 
+            {
+                Bomb.setPosition(Object.GetY(), Object.GetX());
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
+                if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
+                {
+                    if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
+                    {
+                        if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
+                        {
+                            if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
+                            {
+                                Player.GetHP()--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(Player.GetHP() == 0)
+        {
+            break;
+        }
         //конец
         refresh();
     }

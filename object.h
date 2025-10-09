@@ -10,6 +10,7 @@ enum
     
     DefaultPositionX= 0,
     DefaultPositionY= 0,
+    
     DefaultHigh     = 5,
     DefaultWidth    = 2,
 };
