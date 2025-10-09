@@ -321,8 +321,8 @@ int main()
         //конец
         refresh();
     }
-    printf( "Player.GetHP():%d\n", Player.GetHP());
     close(sd);
     endwin();
+    printf( "Player.GetHP():%d\n", Player.GetHP());
     return -1;
 }
