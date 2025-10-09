@@ -252,6 +252,7 @@ int main()
                 } 
                 if(MustSend)
                 {
+                    Player.setStatue(alive);
                     Player.setPosition(position.y, position.x);
                     Object = Player;
                 }
