@@ -255,6 +255,7 @@ int main()
                     Player.setStatue(alive);
                     Player.setPosition(position.y, position.x);
                     Object = Player;
+                mvprintw(Player.GetY(), Player.GetX(), "Player.GetHP():%d\n", Player.GetHP());
                 }
             }else break;
         }
@@ -305,7 +306,6 @@ int main()
                         {
                             if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                             {
-                                mvprintw(Player.GetY(), Player.GetX(), "Player.GetHP():%d\n", Player.GetHP());
                                 Player.GetHP()--;
                             }
                         }
@@ -313,6 +313,7 @@ int main()
                 }
             }
         }
+        mvprintw(Player.GetY(), Player.GetX(), "Player.GetHP():%d\n", Player.GetHP());
         if(Player.GetHP() == 0)
         {
             break;
