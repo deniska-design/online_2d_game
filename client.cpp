@@ -292,6 +292,7 @@ int main()
             } 
         }else         
         {
+            mvprintw(Player.GetY(), Player.GetX(),"timeout\n");
             Player.setStatue(alive);
             Object = Player;
             MustShowObject = true;
