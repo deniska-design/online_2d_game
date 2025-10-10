@@ -150,6 +150,7 @@ void StartWindow()
 
 int main()
 {    
+    bool positionChanged = false;
     object MessangeFrom; 
     Vector PositionBorders, position;
     object Object;
@@ -255,7 +256,7 @@ int main()
                     Player.setStatue(alive);
                     Player.setPosition(position.y, position.x);
                     Object = Player;
-                mvprintw(Player.GetY(), Player.GetX(), "Player.GetHP():%d\n", Player.GetHP());
+                    positionChanged = true;
                 }
             }else break;
         }
@@ -277,6 +278,7 @@ int main()
                 break;
             }
             Object = MessangeFrom;
+            positionChanged = true;
         }
         if (MustSend)
         {
@@ -287,32 +289,35 @@ int main()
             }
             MustSend = false;
         } 
-        Object.Hide();
-        if (Object.getStatue() == active) 
+        if(positionChanged)
         {
-            Object.Show();
-        }
-        else if (Object.getType() == BombType)
-        {
-            if (Object.getStatue() == exploded) 
+            Object.Hide();
+            if (Object.getStatue() == active) 
             {
-                Bomb.setPosition(Object.GetY(), Object.GetX());
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
-                if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
+                Object.Show();
+            }
+            else if (Object.getType() == BombType)
+            {
+                if (Object.getStatue() == exploded) 
                 {
-                    if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
+                    Bomb.setPosition(Object.GetY(), Object.GetX());
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
+                    if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                     {
-                        if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
+                        if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
                         {
-                            if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
+                            if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
                             {
-                                Player.GetHP()--;
-                                mvprintw(Player.GetY(), Player.GetX(), "Player.GetHP():%d\n", Player.GetHP());
+                                if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
+                                {
+                                    Player.GetHP()--;
+                                }
                             }
                         }
                     }
                 }
             }
+            positionChanged = false;
         }
         mvprintw(Player.GetY(), Player.GetX(), "Player.GetHP():%d\n", Player.GetHP());
         if(Player.GetHP() == 0)
