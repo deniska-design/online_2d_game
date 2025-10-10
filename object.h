@@ -75,9 +75,9 @@ void object::Show() const
 
 void object::Hide() const
 {
-    for (int i = position.y-3; i < position.y + High+1; i++)
+    for (int i = position.y-3; i < position.y + High+3; i++)
     {
-        for (int n = position.x-1; n < position.x + Width+1; n++)
+        for (int n = position.x-3; n < position.x + Width+3; n++)
         {
             move(i, n);
             addch(' ');
