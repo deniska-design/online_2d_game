@@ -287,7 +287,7 @@ int main()
             }
             if(Object.getType() == PlayerType)
             {
-                Player.showHP(Object.GetY(), Object.GetX());
+                Player.showHP(Object.GetY()-2, Object.GetX()-1);
             }else if (Object.getType() == BombType)
             {
                 if (Object.getStatue() == exploded) 
