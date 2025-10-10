@@ -288,7 +288,7 @@ int main()
 					printf("ошибка отправки первого сообщения:%d", errno);
 					break;
 				}
-				Game.GetPlayer(playerCount-1).setPosition(0, 0);
+				Game.GetPlayer(playerCount-1).setPosition(DefaultPositionY+1, DefaultPositionX);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
 				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
 				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);

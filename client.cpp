@@ -212,7 +212,7 @@ int main()
                     switch (key)
                     {
                     case KEY_UP:
-                        if(position.y > 0)
+                        if(position.y > 0+Player.GetHP())
                         {
                             position.y--;
                             MustSend = true;
@@ -226,7 +226,7 @@ int main()
                         }
                         break;
                     case KEY_LEFT:
-                        if(position.x > 0)
+                        if(position.x > 0+Player.GetHP())
                         {
                             position.x--;
                             MustSend = true;
@@ -287,7 +287,7 @@ int main()
             }
             if(Object.getType() == PlayerType)
             {
-                Player.showHP(Object.GetY()-2, Object.GetX()-1);
+                Player.showHP(Object.GetY()-1, Object.GetX()-1);
             }else if (Object.getType() == BombType)
             {
                 if (Object.getStatue() == exploded) 
