@@ -129,13 +129,11 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
     return BombExploded;
 }
 
-int SetFdss(int fd1, int fd2, fd_set &readfds, fd_set &writefds)
+int SetFdss(int fd1, int fd2, fd_set &readfds)
 {
 	FD_ZERO(&readfds);
 	FD_SET(fd1, &readfds);
     FD_SET(fd2, &readfds);
-    FD_SET(fd1, &writefds);
-    FD_SET(fd2, &writefds);
 	return 0;
 }
 
@@ -159,7 +157,7 @@ int main()
     bool MustSend = false, bombExploding = false, MustShowObject;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
-    fd_set readfds, writefds;
+    fd_set readfds;
     FD_ZERO(&readfds);
     
     ServAddr = FillAddr(ServAddr, ServerIp, ServPort);
@@ -189,9 +187,9 @@ int main()
 
     while (true)
     {
-        SetFdss(sd, STDIN_FILENO, readfds, writefds);
+        SetFdss(sd, STDIN_FILENO, readfds);
         timeout.tv_usec = 500000;
-        if ((SelRes = select(MaxD+1, &readfds, &writefds, NULL, &timeout)) < 0)
+        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 0)
         {
             if (errno != EINTR)
             {
@@ -205,12 +203,9 @@ int main()
             continue;
         }else if (SelRes > 0)
         {
-            if (FD_ISSET(STDIN_FILENO, &writefds))
+            if(bombExploding)
             {
-                if(bombExploding)
-                {
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
-                }
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
             }
 
             //общение с клиентом:
@@ -283,11 +278,8 @@ int main()
             }
             if (MustSend)
             {
-                if(write(sd, &Player, sizeof(Player)) == -1)
-                {
-                    printf("ошибка: %d", errno);
-                    break;
-                }
+                printf("ошибка: %d", errno);
+                break;
                 MustSend = false;
             } 
         }else if(SelRes == 0)
@@ -298,6 +290,7 @@ int main()
             MustShowObject = true;
             timeout.tv_usec = 500000;
         } 
+        mvprintw(Player.GetY(), Player.GetX(),"timeout\n");
         if(MustShowObject)
         {
             Object.Hide();
