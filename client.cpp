@@ -290,7 +290,7 @@ int main()
                 }
                 MustSend = false;
             } 
-        }else         
+        }else if(SelRes == 0)
         {
             mvprintw(Player.GetY(), Player.GetX(),"timeout\n");
             Player.setStatue(alive);
