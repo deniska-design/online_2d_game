@@ -278,9 +278,12 @@ int main()
             }
             if (MustSend)
             {
-                printf("ошибка: %d", errno);
-                break;
-                MustSend = false;
+                if(write(sd, &Player, sizeof(Player)) == -1)
+                {
+                    printf("ошибка: %d", errno);
+                    break;
+                    MustSend = false;
+                }
             } 
         }else if(SelRes == 0)
         {
