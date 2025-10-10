@@ -203,11 +203,6 @@ int main()
             continue;
         }else if (SelRes > 0)
         {
-            if(bombExploding)
-            {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
-            }
-
             //общение с клиентом:
             if(FD_ISSET(STDIN_FILENO, &readfds))
             {
@@ -276,24 +271,13 @@ int main()
                 Object = MessangeFrom;
                 MustShowObject = true;
             }
-            if (MustSend)
-            {
-                if(write(sd, &Player, sizeof(Player)) == -1)
-                {
-                    printf("ошибка: %d", errno);
-                    break;
-                    MustSend = false;
-                }
-            } 
         }else if(SelRes == 0)
         {
-            mvprintw(Player.GetY(), Player.GetX(),"timeout\n");
             Player.setStatue(alive);
             Object = Player;
             MustShowObject = true;
-            timeout.tv_usec = 500000;
+            timeout.tv_usec = 333333;
         } 
-        mvprintw(Player.GetY(), Player.GetX(),"timeout\n");
         if(MustShowObject)
         {
             Object.Hide();
@@ -324,10 +308,26 @@ int main()
             }
             MustShowObject = false;
         }
+
         if(Player.GetHP() == 0)
         {
             break;
         }
+
+        if(bombExploding)
+        {
+            bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
+        }
+
+        if (MustSend)
+        {
+            if(write(sd, &Player, sizeof(Player)) == -1)
+            {
+                printf("ошибка: %d", errno);
+                break;
+                MustSend = false;
+            }
+        } 
         //конец
         refresh();
     }
