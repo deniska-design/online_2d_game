@@ -150,6 +150,7 @@ void StartWindow()
 
 int main()
 {    
+    struct timeval timeout;
     bool positionChanged = false;
     object MessangeFrom; 
     Vector PositionBorders, position;
@@ -190,7 +191,8 @@ int main()
     while (true)
     {
         SetFdss(sd, STDIN_FILENO, readfds, writefds);
-        if ((SelRes = select(MaxD+1, &readfds, &writefds, NULL, NULL)) == -1)
+        timeout.tv_usec = 500000;
+        if ((SelRes = select(MaxD+1, &readfds, &writefds, NULL, &timeout)) == -1)
         {
             if (errno != EINTR)
             {
