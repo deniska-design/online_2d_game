@@ -256,7 +256,6 @@ int main()
                     } 
                     if(MustSend)
                     {
-                        Player.setStatue(alive);
                         Player.setPosition(position.y, position.x);
                         Object = Player;
                         positionChanged = true;
@@ -292,8 +291,11 @@ int main()
                 }
                 MustSend = false;
             } 
-        }else positionChanged = true;
-        
+        }else         
+        {
+            Object = Player;
+            positionChanged = true;
+        } 
         if(positionChanged)
         {
             Object.Hide();
