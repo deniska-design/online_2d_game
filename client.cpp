@@ -256,6 +256,7 @@ int main()
                     } 
                     if(MustSend)
                     {
+                        Player.setStatue(alive);
                         Player.setPosition(position.y, position.x);
                         Object = Player;
                         positionChanged = true;
@@ -293,6 +294,7 @@ int main()
             } 
         }else         
         {
+            Player.setStatue(alive);
             Object = Player;
             positionChanged = true;
         } 
@@ -335,6 +337,5 @@ int main()
     }
     close(sd);
     endwin();
-    printf( "Player.GetHP():%d\n", Player.GetHP());
     return -1;
 }
