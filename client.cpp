@@ -188,7 +188,7 @@ int main()
     while (true)
     {
         SetFdss(sd, STDIN_FILENO, readfds);
-        timeout.tv_usec = 500000;
+        timeout.tv_usec = 333333;
         if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 0)
         {
             if (errno != EINTR)
