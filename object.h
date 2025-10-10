@@ -75,7 +75,7 @@ void object::Show() const
 
 void object::Hide() const
 {
-    for (int i = position.y-1; i < position.y + High+1; i++)
+    for (int i = position.y-3; i < position.y + High+1; i++)
     {
         for (int n = position.x-1; n < position.x + Width+1; n++)
         {
