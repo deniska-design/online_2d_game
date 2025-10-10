@@ -307,6 +307,7 @@ int main()
                             if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                             {
                                 Player.GetHP()--;
+                                mvprintw(Player.GetY(), Player.GetX(), "Player.GetHP():%d\n", Player.GetHP());
                             }
                         }
                     }
