@@ -137,7 +137,6 @@ void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], in
 template<typename parent, typename kid1, typename kid2>
 object *SetGeneralObjectArray(parent *GeneralObjectArray, int GeneralObjectArraySize,kid1 *A1, int A1Size,kid2 *A2, int A2Size)
 {
-	printf("GeneralObjectArraySize:%d\n", GeneralObjectArraySize);
 	int i = 0;
 	while(i < GeneralObjectArraySize)
 	{
