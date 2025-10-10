@@ -46,7 +46,7 @@ int &player::GetHP()
     return (int &)HP;
 }
 
-void player::showHP(int X, int Y)
+void player::showHP(int Y, int X)
 {
     for (int i = 0; i < HP; i++)
     {
