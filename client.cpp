@@ -319,7 +319,6 @@ int main()
             }
             positionChanged = false;
         }
-        mvprintw(Player.GetY(), Player.GetX(), "Player.GetHP():%d\n", Player.GetHP());
         if(Player.GetHP() == 0)
         {
             break;
