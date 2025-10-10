@@ -151,13 +151,12 @@ void StartWindow()
 int main()
 {    
     struct timeval timeout;
-    bool positionChanged = false;
     object MessangeFrom; 
     Vector PositionBorders, position;
     object Object;
     player Player;
     bomb Bomb;
-    bool MustSend = false, bombExploding = false;
+    bool MustSend = false, bombExploding = false, MustShowObject;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
     fd_set readfds, writefds;
@@ -204,10 +203,9 @@ int main()
                 break;
             }
             continue;
-        }
-        else if (SelRes > 0)
+        }else if (SelRes > 0)
         {
-                if (FD_ISSET(STDIN_FILENO, &writefds))
+            if (FD_ISSET(STDIN_FILENO, &writefds))
             {
                 if(bombExploding)
                 {
@@ -259,7 +257,7 @@ int main()
                         Player.setStatue(alive);
                         Player.setPosition(position.y, position.x);
                         Object = Player;
-                        positionChanged = true;
+                        MustShowObject = true;
                     }
                 }else break;
             }
@@ -281,7 +279,7 @@ int main()
                     break;
                 }
                 Object = MessangeFrom;
-                positionChanged = true;
+                MustShowObject = true;
             }
             if (MustSend)
             {
@@ -296,9 +294,10 @@ int main()
         {
             Player.setStatue(alive);
             Object = Player;
-            positionChanged = true;
+            MustShowObject = true;
+            timeout.tv_usec = 500000;
         } 
-        if(positionChanged)
+        if(MustShowObject)
         {
             Object.Hide();
             if (Object.getStatue() == active) 
@@ -326,7 +325,7 @@ int main()
                     }
                 }
             }
-            positionChanged = false;
+            MustShowObject = false;
         }
         if(Player.GetHP() == 0)
         {
