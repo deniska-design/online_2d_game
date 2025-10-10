@@ -192,7 +192,7 @@ int main()
     {
         SetFdss(sd, STDIN_FILENO, readfds, writefds);
         timeout.tv_usec = 500000;
-        if ((SelRes = select(MaxD+1, &readfds, &writefds, NULL, &timeout)) == -1)
+        if ((SelRes = select(MaxD+1, &readfds, &writefds, NULL, &timeout)) < 0)
         {
             if (errno != EINTR)
             {
@@ -205,92 +205,95 @@ int main()
             }
             continue;
         }
-         
-        if (FD_ISSET(STDIN_FILENO, &writefds))
+        else if (SelRes > 0)
         {
-            if(bombExploding)
+                if (FD_ISSET(STDIN_FILENO, &writefds))
             {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
-            }
-        }
-
-        //общение с клиентом:
-        if(FD_ISSET(STDIN_FILENO, &readfds))
-        {
-
-            if (10 != (key = getch()))
-            {   
-                switch (key)
+                if(bombExploding)
                 {
-                case KEY_UP:
-                    if(position.y > 0)
-                    {
-                        position.y--;
-                        MustSend = true;
-                    }
-                    break;
-                case KEY_RIGHT:
-                    if(position.x+DefaultWidth < PositionBorders.x)
-                    {
-                        position.x++;
-                        MustSend = true;
-                    }
-                    break;
-                case KEY_LEFT:
-                    if(position.x > 0)
-                    {
-                        position.x--;
-                        MustSend = true;
-                    }
-                    break;
-                case KEY_DOWN:
-                    if(position.y+DefaultHigh < PositionBorders.y)
-                    {
-                        position.y++;
-                        MustSend = true;
-                    }
-                    break;
-                default:
-                    break;
-                } 
-                if(MustSend)
-                {
-                    Player.setStatue(alive);
-                    Player.setPosition(position.y, position.x);
-                    Object = Player;
-                    positionChanged = true;
+                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
                 }
-            }else break;
-        }
-
-        //конец
-
-        //начало прямого общения с сервиром:
-
-        if(FD_ISSET(sd, &readfds))
-        {
-            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
-            {   
-                printf( "read error:%d\n", errno);
-                break;
             }
-            else if(ReadBytes == 0)
+
+            //общение с клиентом:
+            if(FD_ISSET(STDIN_FILENO, &readfds))
             {
-                printf("novogo goda ne bydet, idi nahyi\n");
-                break;
+
+                if (10 != (key = getch()))
+                {   
+                    switch (key)
+                    {
+                    case KEY_UP:
+                        if(position.y > 0)
+                        {
+                            position.y--;
+                            MustSend = true;
+                        }
+                        break;
+                    case KEY_RIGHT:
+                        if(position.x+DefaultWidth < PositionBorders.x)
+                        {
+                            position.x++;
+                            MustSend = true;
+                        }
+                        break;
+                    case KEY_LEFT:
+                        if(position.x > 0)
+                        {
+                            position.x--;
+                            MustSend = true;
+                        }
+                        break;
+                    case KEY_DOWN:
+                        if(position.y+DefaultHigh < PositionBorders.y)
+                        {
+                            position.y++;
+                            MustSend = true;
+                        }
+                        break;
+                    default:
+                        break;
+                    } 
+                    if(MustSend)
+                    {
+                        Player.setStatue(alive);
+                        Player.setPosition(position.y, position.x);
+                        Object = Player;
+                        positionChanged = true;
+                    }
+                }else break;
             }
-            Object = MessangeFrom;
-            positionChanged = true;
-        }
-        if (MustSend)
-        {
-            if(write(sd, &Player, sizeof(Player)) == -1)
+
+            //конец
+
+            //начало прямого общения с сервиром:
+
+            if(FD_ISSET(sd, &readfds))
             {
-                printf("ошибка: %d", errno);
-                break;
+                if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
+                {   
+                    printf( "read error:%d\n", errno);
+                    break;
+                }
+                else if(ReadBytes == 0)
+                {
+                    printf("novogo goda ne bydet, idi nahyi\n");
+                    break;
+                }
+                Object = MessangeFrom;
+                positionChanged = true;
             }
-            MustSend = false;
-        } 
+            if (MustSend)
+            {
+                if(write(sd, &Player, sizeof(Player)) == -1)
+                {
+                    printf("ошибка: %d", errno);
+                    break;
+                }
+                MustSend = false;
+            } 
+        }else positionChanged = true;
+        
         if(positionChanged)
         {
             Object.Hide();
