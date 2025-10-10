@@ -3,7 +3,6 @@
 
 #include "object.h"
 
-
 enum 
 {
 	alive	    =	active,      
@@ -19,6 +18,7 @@ public:
     player();
     player(int objectH, int objectW, Vector NewPosition, int NewHP);
     int &GetHP();
+    void showHP(int Y, int X);
 };
 
 player::player()
@@ -41,11 +41,18 @@ player::player(int PlayerH, int PlayerW, Vector NewPosition, int NewHP)
     ObjectType = PlayerType;
 }
 
-
 int &player::GetHP()
 {   
     return (int &)HP;
 }
 
+void player::showHP(int X, int Y)
+{
+    for (int i = 0; i < HP; i++)
+    {
+        move(Y, X+i);
+        addch('*');
+    }
+}
 
 #endif
