@@ -219,7 +219,7 @@ int main()
                         }
                         break;
                     case KEY_RIGHT:
-                        if(position.x+DefaultWidth < PositionBorders.x)
+                        if(position.x+DefaultWidth+Player.GetHP() < PositionBorders.x)
                         {
                             position.x++;
                             MustSend = true;
@@ -233,7 +233,7 @@ int main()
                         }
                         break;
                     case KEY_DOWN:
-                        if(position.y+DefaultHigh < PositionBorders.y)
+                        if(position.y+DefaultHigh+Player.GetHP() < PositionBorders.y)
                         {
                             position.y++;
                             MustSend = true;
