@@ -307,7 +307,7 @@ int main()
                 if (Object.getType() == PlayerType)
                 {
                     Color = PlayerColor;
-                    Player.showHP(Object.GetY()-1, Object.GetX()-1, HPColor);
+                    Player.showHP(Player.GetY()-1, Player.GetX()-1, HPColor);
                 }else if (Object.getType() == BombType)
                 {
                     Color = BombColor;
