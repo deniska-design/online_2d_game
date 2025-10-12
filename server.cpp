@@ -202,12 +202,12 @@ int main()
 		{
 			if (mustSendAll[i])
 			{
-				//printf("пришло время отправить сообщение игроку\n");
+				printf("пришло время отправить сообщение игроку\n");
 				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 				{
 					//printf("ошибка отправки сообщения:%d", errno);
 					break;
-				}//else printf("X: %d, Y: %d\n", messangeForAll.GetX(), messangeForAll.GetY());
+				}else printf("X: %d, Y: %d\n", messangeForAll.GetX(), messangeForAll.GetY());
 				mustSendAll[i] = false;
 			}
 		}
@@ -216,14 +216,14 @@ int main()
 		{
 			if (mustSendMessangeto[i])
 			{
-				//printf("пришло время отправить длиное сообщение одному игроку\n");
+				printf("пришло время отправить длиное сообщение одному игроку\n");
 				while(messangeLenght >= 0)	
 				{
 					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						break;
-					}//else printf("X: %d, Y: %d\n", messange[messangeLenght].GetX(), messange[messangeLenght].GetY());
+					}else printf("X: %d, Y: %d\n", messange[messangeLenght].GetX(), messange[messangeLenght].GetY());
 					messangeLenght--;
 				}
 				mustSendMessangeto[i] = false;
@@ -298,7 +298,7 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &readfds))
 				{
-					//printf("пришло сообщение от игрока\n");
+					printf("пришло сообщение от игрока\n");
 					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(messangeFrom[i]))))
 					{
 						printf("ошибка чтения данных:%d\n", errno);
@@ -307,7 +307,7 @@ int main()
 					{
 						Game.GetPlayer(i) = messangeFrom[i];
 						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i), i);	
-						//printf("position changed\n");
+						printf("position changed\n");
 					}else	
 					{ 
 						Game.GetPlayer(i).setStatue(dead);
@@ -318,7 +318,7 @@ int main()
 			}
 		}else
 		{
-			//printf("timeout\n");
+			printf("timeout\n");
 		}
 	}
     //конец
