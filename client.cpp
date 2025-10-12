@@ -349,8 +349,8 @@ int main()
             {
                 printf("ошибка: %d", errno);
                 break;
-                MustSend = false;
             }
+            MustSend = false;
         } 
         //конец
         refresh();
