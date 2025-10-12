@@ -166,7 +166,7 @@ int main()
 	game Game(MaxPlayerCount, MaxBombCount);
     player messangeFrom[MaxPlayerCount];
 	object messangeForAll;
-	object messange[MaxPlayerCount+MaxBombCount], *GeneralObjectArray = new object[MaxPlayerCount+MaxBombCount]; 
+	object messange[MaxPlayerCount+MaxBombCount]; 
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
 		BombGenerated = false, MustGenerateBomb = true;
     int sd, MaxD, ReadBytes, SelRes = 0, RandomTime = 0, messangeLenght = 0,
@@ -288,10 +288,7 @@ int main()
 					printf("ошибка отправки первого сообщения:%d", errno);
 					break;
 				}
-				//Game.GetPlayer(playerCount-1).setPosition(DefaultPositionY+1, DefaultPositionX+DefaultHP);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
-				//SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
-				//GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);
 				SetMessange<object, bomb>(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
 			}
 

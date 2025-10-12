@@ -189,6 +189,7 @@ int main()
     MaxD = sd;
 
     StartWindow();
+    start_color();
 
     init_pair(NothingColor, COLOR_BLACK, COLOR_BLACK);
     init_pair(PlayerColor, COLOR_YELLOW, COLOR_BLACK);
@@ -233,28 +234,28 @@ int main()
                     switch (key)
                     {
                     case KEY_UP:
-                        if(position.y > 0)
+                        if(position.y-1 > 0)
                         {
                             position.y--;
                             MustSend = true;
                         }
                         break;
                     case KEY_RIGHT:
-                        if(position.x+DefaultWidth+Player.GetHP() < PositionBorders.x)
+                        if(position.x+DefaultWidth+1< PositionBorders.x)
                         {
                             position.x++;
                             MustSend = true;
                         }
                         break;
                     case KEY_LEFT:
-                        if(position.x > 0)
+                        if(position.x-1 > 0)
                         {
                             position.x--;
                             MustSend = true;
                         }
                         break;
                     case KEY_DOWN:
-                        if(position.y+DefaultHigh+Player.GetHP() < PositionBorders.y)
+                        if(position.y+DefaultHigh+1 < PositionBorders.y)
                         {
                             position.y++;
                             MustSend = true;
@@ -306,7 +307,7 @@ int main()
                 if (Object.getType() == PlayerType)
                 {
                     Color = PlayerColor;
-                    Player.showHP(Object.GetY()-2, Object.GetX()-1, HPColor);
+                    Player.showHP(Object.GetY()-1, Object.GetX()-1, HPColor);
                 }else if (Object.getType() == BombType)
                 {
                     Color = BombColor;
