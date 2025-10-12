@@ -197,7 +197,9 @@ int main()
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
 
+    Player.setStatue(alive);
     Player.setPosition(PositionBorders.y/2, PositionBorders.x/2);
+    Object = Player;
     MustShowObject = true;
     MustSend = true;
     //начало бесконечного цыкла

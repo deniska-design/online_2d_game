@@ -164,7 +164,7 @@ int main()
 {   
 	struct timeval timeout;
 	game Game(MaxPlayerCount, MaxBombCount);
-    Vector messangeFrom[MaxPlayerCount];
+    player messangeFrom[MaxPlayerCount];
 	object messangeForAll;
 	object messange[MaxPlayerCount+MaxBombCount], *GeneralObjectArray = new object[MaxPlayerCount+MaxBombCount]; 
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
@@ -308,8 +308,9 @@ int main()
 						break;
 					}else if(ReadBytes > 0)
 					{
-						Game.GetPlayer(i).setPosition(messangeFrom[i].y, messangeFrom[i].x);
-						Game.GetPlayer(i).setStatue(alive);
+						//Game.GetPlayer(i).setPosition(messangeFrom[i].y, messangeFrom[i].x);
+						//Game.GetPlayer(i).setStatue(alive);
+						Game.GetPlayer(i) = messangeFrom[i];
 						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i), i);	
 						//printf("position changed\n");
 					}else	
