@@ -13,7 +13,7 @@
 #include "time.h"
 
 const char *ip = "192.168.1.120";
-int ServPort = 11;
+int ServPort = 10;
 
 typedef enum 
 {
