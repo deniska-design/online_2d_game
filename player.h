@@ -18,7 +18,7 @@ public:
     player();
     player(int objectH, int objectW, Vector NewPosition, int NewHP);
     int &GetHP();
-    void showHP(int Y, int X);
+    void showHP(int Y, int X, int HPColor);
 };
 
 player::player()
@@ -46,8 +46,9 @@ int &player::GetHP()
     return (int &)HP;
 }
 
-void player::showHP(int Y, int X)
+void player::showHP(int Y, int X, int HPColor)
 {
+    attrset(COLOR_PAIR(HPColor));
     for (int i = 0; i < HP; i++)
     {
         move(Y, X+i);

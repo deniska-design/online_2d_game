@@ -288,9 +288,9 @@ int main()
 					printf("ошибка отправки первого сообщения:%d", errno);
 					break;
 				}
-				Game.GetPlayer(playerCount-1).setPosition(DefaultPositionY+1, DefaultPositionX+DefaultHP);
+				//Game.GetPlayer(playerCount-1).setPosition(DefaultPositionY+1, DefaultPositionX+DefaultHP);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
-				SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
+				//SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
 				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);
 				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
 			}

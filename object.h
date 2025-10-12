@@ -32,8 +32,8 @@ protected:
 public:
     object();
     object(int objectH, int objectW, Vector NewPosition);
-    void Show() const;
-    void Hide() const;
+    void Show(int color) const;
+    void Hide(int color) const;
     int &GetY();
     int &GetX();
     int &GetHigh();
@@ -61,8 +61,9 @@ object::object(int PlayerH, int PlayerW, Vector NewPosition)
     statue = disactiv;
 }
 
-void object::Show() const
+void object::Show(int color) const
 {
+    attrset(COLOR_PAIR(color));
     for(int i = position.y; i < position.y + High; i++)
     {
         for (int n = position.x; n < position.x + Width; n++)
@@ -73,8 +74,9 @@ void object::Show() const
     }
 }
 
-void object::Hide() const
+void object::Hide(int color) const
 {
+    attrset(COLOR_PAIR(color));
     for (int i = position.y-3; i < position.y + High+3; i++)
     {
         for (int n = position.x-3; n < position.x + Width+3; n++)

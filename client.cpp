@@ -30,41 +30,50 @@ typedef enum
     lastStation = 4,
 }stations;
 
+typedef enum
+{
+    NothingColor    = 1,
+    PlayerColor     = 2,
+    BombColor       = 3,
+    HPColor         = 4,
+}colors;
+
 const char *ServerIp = "192.168.1.120";
 int ServPort = 10;
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
-	ServAddr.sin_family = AF_INET;
-   	ServAddr.sin_port = htons(ServPort);
+  ServAddr.sin_family = AF_INET;
+     ServAddr.sin_port = htons(ServPort);
     if (!inet_aton(ip, &(ServAddr.sin_addr)))
-	{
+  {
         printf("ошибка: %d", errno);
         errno = -1;
-		return ServAddr;
-	}
-	return ServAddr;
+    return ServAddr;
+  }
+  return ServAddr;
 }
 
 int CreateAndConnectTo(struct sockaddr_in ServAddr)
 {
-	int sd;
-	if((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-	{
+  int sd;
+  if((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+  {
         printf("ошибка: %d", errno);
-		return -1;
-	}
+    return -1;
+  }
 
     if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
     {   
         printf("ошибка: %d", errno);
         return -1;
     }
-	return sd;
+  return sd;
 }
 
-bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime)       //если timeInterval сделать слишком коротким будет работатьт не праивльно
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime, int ExplodeColor)       //если timeInterval сделать слишком коротким будет работатьт не праивльно
 {
+    attrset(COLOR_PAIR(ExplodeColor));
     static bool BombExploded;
     static stations station = firstStation;
     switch (station)
@@ -131,10 +140,10 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
 
 int SetFdss(int fd1, int fd2, fd_set &readfds)
 {
-	FD_ZERO(&readfds);
-	FD_SET(fd1, &readfds);
+  FD_ZERO(&readfds);
+  FD_SET(fd1, &readfds);
     FD_SET(fd2, &readfds);
-	return 0;
+  return 0;
 }
 
 void StartWindow()
@@ -145,9 +154,9 @@ void StartWindow()
     noecho();
     curs_set(0);
 }
-
 int main()
 {    
+    colors Color;
     struct timeval timeout;
     object MessangeFrom; 
     Vector PositionBorders, position;
@@ -180,6 +189,11 @@ int main()
     MaxD = sd;
 
     StartWindow();
+
+    init_pair(NothingColor, COLOR_BLACK, COLOR_BLACK);
+    init_pair(PlayerColor, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(BombColor, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(HPColor, COLOR_RED, COLOR_BLACK);
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
 
@@ -215,7 +229,7 @@ int main()
                     switch (key)
                     {
                     case KEY_UP:
-                        if(position.y > 0+Player.GetHP())
+                        if(position.y > 0)
                         {
                             position.y--;
                             MustSend = true;
@@ -229,7 +243,7 @@ int main()
                         }
                         break;
                     case KEY_LEFT:
-                        if(position.x > 0+Player.GetHP())
+                        if(position.x > 0)
                         {
                             position.x--;
                             MustSend = true;
@@ -258,7 +272,6 @@ int main()
             //конец
 
             //начало прямого общения с сервиром:
-
             if(FD_ISSET(sd, &readfds))
             {
                 if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
@@ -283,30 +296,31 @@ int main()
         } 
         if(MustShowObject)
         {
-            Object.Hide();
+            Object.Hide(NothingColor);
             if (Object.getStatue() == active) 
             {
-                Object.Show();
-            }
-            if(Object.getType() == PlayerType)
-            {
-                Player.showHP(Object.GetY()-1, Object.GetX()-1);
+                if (Object.getType() == PlayerType)
+                {
+                    Color = PlayerColor;
+                    Player.showHP(Object.GetY()-2, Object.GetX()-1, HPColor);
+                }else if (Object.getType() == BombType)
+                {
+                    Color = BombColor;
+                }
+                Object.Show(Color);
             }else if (Object.getType() == BombType)
             {
-                if (Object.getStatue() == exploded) 
+                Bomb.setPosition(Object.GetY(), Object.GetX());
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);  
+                if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                 {
-                    Bomb.setPosition(Object.GetY(), Object.GetX());
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
-                    if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
+                    if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
                     {
-                        if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
+                        if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
                         {
-                            if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
+                            if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                             {
-                                if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
-                                {
-                                    Player.GetHP()--;
-                                }
+                                Player.GetHP()--;
                             }
                         }
                     }
@@ -322,7 +336,7 @@ int main()
 
         if(bombExploding)
         {
-            bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
+            bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);
         }
 
         if (MustSend)
