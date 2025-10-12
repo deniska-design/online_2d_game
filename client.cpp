@@ -311,7 +311,7 @@ int main()
                     Color = BombColor;
                 }
                 Object.Show(Color);
-                mvprintw(Object.GetY(), Object.GetX(),"X: %d, Y: %d\n", Object.GetX(), Object.GetY());
+                //mvprintw(Object.GetY(), Object.GetX(),"X: %d, Y: %d\n", Object.GetX(), Object.GetY());
             }else if (Object.getType() == BombType)
             {
                 Bomb.setPosition(Object.GetY(), Object.GetX());

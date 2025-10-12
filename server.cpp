@@ -166,7 +166,7 @@ int main()
 	game Game(MaxPlayerCount, MaxBombCount);
     player messangeFrom[MaxPlayerCount];
 	object messangeForAll;
-	object messange[MaxPlayerCount+MaxBombCount]; 
+	object messange[MaxPlayerCount+MaxBombCount], *GeneralObjectArray = new object[MaxPlayerCount+MaxBombCount]; 
 	bool mustSendMessangeto[MaxPlayerCount], mustSendAll[MaxPlayerCount],
 		BombGenerated = false, MustGenerateBomb = true;
     int sd, MaxD, ReadBytes, SelRes = 0, RandomTime = 0, messangeLenght = 0,
@@ -229,7 +229,7 @@ int main()
 				mustSendMessangeto[i] = false;
 			}
 		}
-
+		/*
 		if(playerCount > 0)
 		{
 			//printf("щас будем хуярить\n");
@@ -264,7 +264,7 @@ int main()
 				if (!MustGenerateBomb)
 					if(true == stopwatch(BombExplodingTime, time(NULL), BombExplodingTime))
 					MustGenerateBomb = true;
-		}
+		}*/
         if (SelRes < 0)
         {
             if (errno != EINTR)
@@ -289,7 +289,9 @@ int main()
 					break;
 				}
 				Game.GetPlayer(playerCount-1).setStatue(alive);
-				SetMessange<object, bomb>(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
+				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);
+				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
+
 			}
 
 		//начало работы с игроками на прямую:
