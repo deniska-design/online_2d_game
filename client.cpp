@@ -159,7 +159,7 @@ int main()
     colors Color;
     struct timeval timeout;
     object MessangeFrom; 
-    Vector PositionBorders, position;
+    Vector PositionBorders;
     object Object;
     player Player;
     bomb Bomb;
@@ -198,10 +198,10 @@ int main()
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
 
-    position = PositionBorders/2;
+    PositionBorders/2;
 
     Player.setStatue(alive);
-    Player.setPosition(position.y, position.x);
+    Player.setPosition(PositionBorders.y/2, PositionBorders.x/2);
     Object = Player;
     MustShowObject = true;
     MustSend = true;
@@ -234,30 +234,30 @@ int main()
                     switch (key)
                     {
                     case KEY_UP:
-                        if(position.y-1 > 0)
+                        if(Player.GetY()-1 > 0)
                         {
-                            position.y--;
+                            Player.GetY()--;
                             MustSend = true;
                         }
                         break;
                     case KEY_RIGHT:
-                        if(position.x+DefaultWidth+1< PositionBorders.x)
+                        if(Player.GetX()+DefaultWidth+1< PositionBorders.x)
                         {
-                            position.x++;
+                            Player.GetX()++;
                             MustSend = true;
                         }
                         break;
                     case KEY_LEFT:
-                        if(position.x-1 > 0)
+                        if(Player.GetX()-1 > 0)
                         {
-                            position.x--;
+                            Player.GetX()--;
                             MustSend = true;
                         }
                         break;
                     case KEY_DOWN:
-                        if(position.y+DefaultHigh+1 < PositionBorders.y)
+                        if(Player.GetY()+DefaultHigh+1 < PositionBorders.y)
                         {
-                            position.y++;
+                            Player.GetY()++;
                             MustSend = true;
                         }
                         break;
@@ -267,7 +267,6 @@ int main()
                     if(MustSend)
                     {
                         Player.setStatue(alive);
-                        Player.setPosition(position.y, position.x);
                         Object = Player;
                         MustShowObject = true;
                     }
@@ -317,13 +316,13 @@ int main()
             {
                 Bomb.setPosition(Object.GetY(), Object.GetX());
                 bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);  
-                if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
+                if(Player.GetX() > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                 {
-                    if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
+                    if(Player.GetX() < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
                     {
-                        if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
+                        if(Player.GetY() > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
                         {
-                            if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
+                            if(Player.GetY() < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                             {
                                 Player.GetHP()--;
                             }
