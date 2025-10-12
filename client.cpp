@@ -176,13 +176,16 @@ int main()
         printf( "while connect read error:%d\n", errno);
         return(-1);
     }
-
+    
     MaxD = sd;
 
     StartWindow();
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
 
+    Player.setPosition(PositionBorders.y/2, PositionBorders.x/2);
+    MustShowObject = true;
+    MustSend = true;
     //начало бесконечного цыкла
 
     while (true)

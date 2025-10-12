@@ -8,8 +8,8 @@ enum
 	active	    =	true,     
     disactiv	=	false,  
     
-    DefaultPositionX= 1,
-    DefaultPositionY= 1,
+    DefaultPositionX= 0,
+    DefaultPositionY= 0,
     
     DefaultHigh     = 5,
     DefaultWidth    = 2,
