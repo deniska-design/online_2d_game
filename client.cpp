@@ -197,8 +197,10 @@ int main()
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
 
+    position = PositionBorders/2;
+
     Player.setStatue(alive);
-    Player.setPosition(PositionBorders.y/2, PositionBorders.x/2);
+    Player.setPosition(position.y, position.x);
     Object = Player;
     MustShowObject = true;
     MustSend = true;

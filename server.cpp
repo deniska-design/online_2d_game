@@ -291,8 +291,8 @@ int main()
 				//Game.GetPlayer(playerCount-1).setPosition(DefaultPositionY+1, DefaultPositionX+DefaultHP);
 				Game.GetPlayer(playerCount-1).setStatue(alive);
 				//SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(playerCount-1), -1);
-				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);
-				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
+				//GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);
+				SetMessange<object, bomb>(messange, Game.GetBombArray(), mustSendMessangeto, playerCount-1, messangeLenght, BombCount);
 			}
 
 		//начало работы с игроками на прямую:
