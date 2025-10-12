@@ -71,7 +71,7 @@ int CreateAndConnectTo(struct sockaddr_in ServAddr)
   return sd;
 }
 
-bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime, int ExplodeColor)       //если timeInterval сделать слишком коротким будет работатьт не праивльно
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime, int ExplodeColor)       
 {
     attrset(COLOR_PAIR(ExplodeColor));
     static bool BombExploded;

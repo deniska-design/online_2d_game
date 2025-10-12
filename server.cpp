@@ -299,14 +299,12 @@ int main()
 				if(FD_ISSET(pd[i], &readfds))
 				{
 					//printf("пришло сообщение от игрока\n");
-					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(messangeFrom[i]))))
+					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(&messangeFrom[i]))))
 					{
 						printf("ошибка чтения данных:%d\n", errno);
 						break;
 					}else if(ReadBytes > 0)
 					{
-						//Game.GetPlayer(i).setPosition(messangeFrom[i].y, messangeFrom[i].x);
-						//Game.GetPlayer(i).setStatue(alive);
 						Game.GetPlayer(i) = messangeFrom[i];
 						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i), i);	
 						//printf("position changed\n");
