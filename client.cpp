@@ -311,8 +311,7 @@ int main()
                     Color = BombColor;
                 }
                 Object.Show(Color);
-                refresh();
-                //mvprintw(Object.GetY(), Object.GetX(),"X: %d, Y: %d\n", Object.GetX(), Object.GetY());      // с mvprintw всё работает но без него почему то всё ламается
+                mvprintw(Object.GetY(), Object.GetX(),"X: %d, Y: %d", Object.GetX(), Object.GetY());      // с mvprintw всё работает но без него почему то всё ламается
             }else if (Object.getType() == BombType)
             {
                 Bomb.setPosition(Object.GetY(), Object.GetX());
