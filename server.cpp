@@ -124,11 +124,14 @@ void SetMessangeForAll(object &messangeForAll, int &WhowMustSend, int NewWhomMus
 }
 
 template<typename parent, typename kid>
-void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength)
+void SetMessange(parent *messange, kid *newValue, bool mustSendMessangeto[4], int WhowMustSend, int &messangeLenght, int newMessangeLength, int exception)
 {
 	for (int n = 0; n < newMessangeLength; n++)		
 	{
-		messange[n] = newValue[n];
+		if(n != exception)
+		{
+			messange[n] = newValue[n];
+		}
 	}
 	mustSendMessangeto[WhowMustSend] = true;
 	messangeLenght = newMessangeLength-1;
@@ -202,12 +205,12 @@ int main()
 		{
 			if (mustSendAll[i])
 			{
-				printf("пришло время отправить сообщение игроку\n");
+				//printf("пришло время отправить сообщение игроку\n");
 				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 				{
 					//printf("ошибка отправки сообщения:%d", errno);
 					break;
-				}else printf("X: %d, Y: %d\n", messangeForAll.GetX(), messangeForAll.GetY());
+				}else //printf("X: %d, Y: %d\n", messangeForAll.GetX(), messangeForAll.GetY());
 				mustSendAll[i] = false;
 			}
 		}
@@ -216,14 +219,14 @@ int main()
 		{
 			if (mustSendMessangeto[i])
 			{
-				printf("пришло время отправить длиное сообщение одному игроку\n");
+				//printf("пришло время отправить длиное сообщение одному игроку\n");
 				while(messangeLenght >= 0)	
 				{
 					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						break;
-					}else printf("X: %d, Y: %d\n", messange[messangeLenght].GetX(), messange[messangeLenght].GetY());
+					}else //printf("X: %d, Y: %d\n", messange[messangeLenght].GetX(), messange[messangeLenght].GetY());
 					messangeLenght--;
 				}
 				mustSendMessangeto[i] = false;
@@ -289,9 +292,8 @@ int main()
 					break;
 				}
 				Game.GetPlayer(playerCount-1).setStatue(alive);
-				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);
-				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount);
-
+				GeneralObjectArray = SetGeneralObjectArray<object, player, bomb>(GeneralObjectArray, playerCount+BombCount, Game.GetPlayerArray(), playerCount, Game.GetBombArray(), BombCount);	//надо сделать так что бы новому игроку приходили позиции всехз кроме него
+				SetMessange<object, object>(messange, GeneralObjectArray, mustSendMessangeto, playerCount-1, messangeLenght, playerCount+BombCount, playerCount-1);
 			}
 
 		//начало работы с игроками на прямую:
@@ -300,7 +302,7 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &readfds))
 				{
-					printf("пришло сообщение от игрока\n");
+					//printf("пришло сообщение от игрока\n");
 					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(messangeFrom[i]))))
 					{
 						printf("ошибка чтения данных:%d\n", errno);
@@ -309,7 +311,7 @@ int main()
 					{
 						Game.GetPlayer(i) = messangeFrom[i];
 						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i), i);	
-						printf("position changed\n");
+						//printf("position changed\n");
 					}else	
 					{ 
 						Game.GetPlayer(i).setStatue(dead);
@@ -320,7 +322,7 @@ int main()
 			}
 		}else
 		{
-			printf("timeout\n");
+			//printf("timeout\n");
 		}
 	}
     //конец
