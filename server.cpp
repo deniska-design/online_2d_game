@@ -232,7 +232,6 @@ int main()
 				mustSendMessangeto[i] = false;
 			}
 		}
-		/*
 		if(playerCount > 0)
 		{
 			//printf("щас будем хуярить\n");
@@ -267,7 +266,7 @@ int main()
 				if (!MustGenerateBomb)
 					if(true == stopwatch(BombExplodingTime, time(NULL), BombExplodingTime))
 					MustGenerateBomb = true;
-		}*/
+		}
         if (SelRes < 0)
         {
             if (errno != EINTR)
