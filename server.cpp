@@ -205,12 +205,12 @@ int main()
 		{
 			if (mustSendAll[i])
 			{
-				//printf("пришло время отправить сообщение игроку\n");
+				printf("пришло время отправить сообщение игроку\n");
 				if(write(pd[i], &messangeForAll, sizeof(messangeForAll)) == -1)
 				{
-					//printf("ошибка отправки сообщения:%d", errno);
+					printf("ошибка отправки сообщения:%d", errno);
 					break;
-				}else //printf("X: %d, Y: %d\n", messangeForAll.GetX(), messangeForAll.GetY());
+				}else printf("X: %d, Y: %d\n", messangeForAll.GetX(), messangeForAll.GetY());
 				mustSendAll[i] = false;
 			}
 		}
@@ -219,14 +219,14 @@ int main()
 		{
 			if (mustSendMessangeto[i])
 			{
-				//printf("пришло время отправить длиное сообщение одному игроку\n");
+				printf("пришло время отправить длиное сообщение одному игроку\n");
 				while(messangeLenght >= 0)	
 				{
 					if(write(pd[i], &messange[messangeLenght], sizeof(messange[messangeLenght])) == -1)
 					{
 						printf("ошибка отправки сообщения:%d", errno);
 						break;
-					}else //printf("X: %d, Y: %d\n", messange[messangeLenght].GetX(), messange[messangeLenght].GetY());
+					}else printf("X: %d, Y: %d\n", messange[messangeLenght].GetX(), messange[messangeLenght].GetY());
 					messangeLenght--;
 				}
 				mustSendMessangeto[i] = false;
@@ -234,10 +234,10 @@ int main()
 		}
 		if(playerCount > 0)
 		{
-			//printf("щас будем хуярить\n");
+			printf("щас будем хуярить\n");
 			if(MustGenerateBomb)
 			{
-				//printf("создём пукалку\n");
+				printf("создём пукалку\n");
 				Game.GetBomb(MaxBombCount - 1).setPosition(Random(MinBombYPos, MaxBombYPos), Random(MinBombXPos, MaxBombXPos));
 				Game.GetBomb(MaxBombCount - 1).setStatue(active);
 				RandomTime = Random(2, 4);
@@ -250,10 +250,10 @@ int main()
 			}
 			if(BombGenerated)
 			{
-				//printf("ща ещё чуть чуть\n");
+				printf("ща ещё чуть чуть\n");
 				if(stopwatch(RandomTime, time(NULL), 0))
 				{
-					//printf("бабах\n");
+					printf("бабах\n");
 					Game.GetBomb(MaxBombCount - 1).setStatue(disactiv);
 					SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetBomb(BombCount - 1), -1);
 					BombGenerated = false;
@@ -301,7 +301,7 @@ int main()
 			{
 				if(FD_ISSET(pd[i], &readfds))
 				{
-					//printf("пришло сообщение от игрока\n");
+					printf("пришло сообщение от игрока\n");
 					if (0 > (ReadBytes = read(pd[i], &messangeFrom[i], sizeof(messangeFrom[i]))))
 					{
 						printf("ошибка чтения данных:%d\n", errno);
@@ -310,7 +310,7 @@ int main()
 					{
 						Game.GetPlayer(i) = messangeFrom[i];
 						SetMessangeForAll(messangeForAll, WhowMustSend, playerCount, mustSendAll, Game.GetPlayer(i), i);	
-						//printf("position changed\n");
+						printf("position changed\n");
 					}else	
 					{ 
 						Game.GetPlayer(i).setStatue(dead);
@@ -321,7 +321,7 @@ int main()
 			}
 		}else
 		{
-			//printf("timeout\n");
+			printf("timeout\n");
 		}
 	}
     //конец
