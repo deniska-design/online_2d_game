@@ -311,8 +311,8 @@ int main()
                     Color = BombColor;
                 }
                 Object.Show(Color);
-                //Object.GetY();  // почему то без  const_cast<int &>(position.y); всё ломается
-                //Object.GetX();
+                Object.GetY();  // почему то без  const_cast<int &>(position.y); всё ломается
+                Object.GetX();
                 //mvprintw(Object.GetY(), Object.GetX(),"X: %d, Y: %d", Object.GetX(), Object.GetY());      
             }else if (Object.getType() == BombType)
             {
