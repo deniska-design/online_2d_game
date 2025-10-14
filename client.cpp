@@ -310,11 +310,13 @@ int main()
                 {
                     Color = BombColor;
                 }
-                Object.Show(Color);  
+                Object.Show(Color); 
+                refresh(); 
             }else if (Object.getType() == BombType)
             {
                 Bomb.setPosition(Object.GetY(), Object.GetX());
                 bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);  
+                refresh();
                 if(Player.GetX() > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
                 {
                     if(Player.GetX() < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)

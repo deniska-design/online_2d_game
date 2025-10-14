@@ -33,7 +33,7 @@ enum
     MinBombXPos	=	1,      
     MinBombYPos =	1,	
 
-	BombExplodingTime = 1,
+	BombExplodingTime = 2,
 };
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
