@@ -5,7 +5,6 @@
 #include <cstdio>
 #include <unistd.h>
 #include <ncurses.h>
-#include <variant>
 
 #include "vector.h"
 #include "player.h"
@@ -139,8 +138,8 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
 
 int SetFdss(int fd1, int fd2, fd_set &readfds)
 {
-  FD_ZERO(&readfds);
-  FD_SET(fd1, &readfds);
+    FD_ZERO(&readfds);
+    FD_SET(fd1, &readfds);
     FD_SET(fd2, &readfds);
   return 0;
 }
@@ -196,8 +195,6 @@ int main()
     init_pair(HPColor, COLOR_RED, COLOR_BLACK);
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
-
-    PositionBorders/2;
 
     Player.setStatue(alive);
     Player.setPosition(PositionBorders.y/2, PositionBorders.x/2);

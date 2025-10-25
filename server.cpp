@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
-#include <variant>
 
 #include "vector.h"
 #include "game.h"
