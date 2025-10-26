@@ -1,6 +1,6 @@
 make.exe --dry-run --always-make --keep-going --print-directory
 make: Entering directory 'c:/Users/denis/Desktop/vrotebalc++/progs/online_2d_game'
+g++ -Wall -g client.cpp -o client -lncurses
+g++ -Wall -g server.cpp -o server -lncurses
 make: Leaving directory 'c:/Users/denis/Desktop/vrotebalc++/progs/online_2d_game'
  
-make: *** No targets specified and no makefile found.  Stop.
-
