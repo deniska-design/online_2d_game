@@ -5,7 +5,11 @@
 #include <cstdio>
 #include <unistd.h>
 #include <ncurses.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
+#include "sound.h"
 #include "vector.h"
 #include "player.h"
 #include "bomb.h"
