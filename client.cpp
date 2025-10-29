@@ -18,21 +18,24 @@
 const char *ServerIp = "192.168.1.120";
 int ServPort = 10;
 
-using namespace std;
-
 enum
 {
-    AffectedArea = 15,
-    AffectedAreaXCoefficient = 2,
-    AffectedAreaYCoefficient = 1,
+    AffectedArea                = 15,
+    AffectedAreaXCoefficient    = 2,
+    AffectedAreaYCoefficient    = 1,
+
+    HintergroundMusic           = 0,
+    BombExplodingMusic          = 1,
+    StartMusic                  = 2,
+    hitSound                    = 3
 };
 
 typedef enum 
 {
-    firstStation = 1,
-    SecondStation = 2,
-    ThirdStation = 3,
-    lastStation = 4,
+    firstStation    = 1,
+    SecondStation   = 2,
+    ThirdStation    = 3,
+    lastStation     = 4,
 }stations;
 
 typedef enum
@@ -156,8 +159,14 @@ void StartWindow()
     noecho();
     curs_set(0);
 }
-int main()
+int main()      //проблема с бомбами: игра прорисовует их появление и взрыв только когда игрок ходит
 {    
+    char **musicName = new (char*[5]);
+    musicName[HintergroundMusic] = "tututu.wav";
+    musicName[BombExplodingMusic] = "ahhh-for-donbass.wav";
+    musicName[StartMusic] = "damn-why-did-i-come-here.wav";
+    musicName[hitSound] = "ay-i-got-sniped-in-flight.wav";
+    sound music(musicName, 4);
     colors Color;
     struct timeval timeout;
     object MessangeFrom; 
@@ -192,6 +201,7 @@ int main()
 
     StartWindow();
     start_color();
+    music.playSound(musicName[StartMusic]);
 
     init_pair(NothingColor, COLOR_BLACK, COLOR_BLACK);
     init_pair(PlayerColor, COLOR_YELLOW, COLOR_BLACK);
@@ -293,10 +303,13 @@ int main()
             }
         }else if(SelRes == 0)
         {
-            Player.setStatue(alive);
-            Object = Player;
-            MustShowObject = true;
-            timeout.tv_usec = 333333;
+            if(MustShowObject == false)
+            {
+                Player.setStatue(alive);
+                Object = Player;
+                MustShowObject = true;
+                timeout.tv_usec = 333333;
+            }
         } 
         if(MustShowObject)
         {
@@ -315,6 +328,7 @@ int main()
                 refresh(); 
             }else if (Object.getType() == BombType)
             {
+                music.playSound(musicName[BombExplodingMusic]);
                 Bomb.setPosition(Object.GetY(), Object.GetX());
                 bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);  
                 refresh();
@@ -327,6 +341,7 @@ int main()
                             if(Player.GetY() < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                             {
                                 Player.GetHP()--;
+                                music.playSound(musicName[hitSound]);
                             }
                         }
                     }
@@ -343,6 +358,7 @@ int main()
         if(bombExploding)
         {
             bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);
+            refresh();
         }
 
         if (MustSend)
@@ -354,6 +370,11 @@ int main()
             }
             MustSend = false;
         } 
+        if (!music.IsSoundPLaying())
+        {
+            music.playSound(musicName[HintergroundMusic]);
+        }
+        
         //конец
         refresh();
     }

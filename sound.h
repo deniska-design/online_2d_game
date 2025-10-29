@@ -5,12 +5,16 @@
 
 class sound
 {
-private:
     char **sounds;
     int soundCount;
+    ALuint buffer;
+    ALuint source;
+    ALenum error;
+    ALint status;
 public:
     sound(char **filenames, int fileCount);
-    void playSound (const char *fileName);
+    const void playSound (const char *fileName);
+    const bool IsSoundPLaying();
     ~sound();
 };
 
@@ -27,13 +31,8 @@ sound::sound(char **filenames, int fileCount)
     }
 }
 
-void sound::playSound (const char *fileName)
+const void sound::playSound (const char *fileName)
 {
-  ALuint buffer;
-  ALuint source;
-  ALenum error;
-  ALint status;
-
   /* Create an AL buffer from the given sound file. */
   buffer = alutCreateBufferFromFile (fileName);
   if (buffer == AL_NONE)
@@ -58,7 +57,16 @@ void sound::playSound (const char *fileName)
       alutExit ();
       exit (EXIT_FAILURE);
     }
-    exit (EXIT_SUCCESS);
+}
+
+const bool sound::IsSoundPLaying()
+{
+    alGetSourcei (source, AL_SOURCE_STATE, &status);
+    if (status == AL_PLAYING)
+    {
+        return true;
+    }
+    return false;
 }
 
 sound::~sound()
