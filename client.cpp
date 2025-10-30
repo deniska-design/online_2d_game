@@ -161,14 +161,26 @@ void StartWindow()
 }
 int main()      //проблема с бомбами: игра прорисовует их появление и взрыв только когда игрок ходит
 {    
+    int soundCount = 4;
     char **soundsName = new (char*);
-    char **musicName = new (char*);
+    char **musicName = new (char*[soundCount]);
+    char **SoundAndMusicArray = new (char*);
     musicName[HintergroundMusic] = "tututu.wav";
     musicName[StartMusic] = "damn-why-did-i-come-here.wav";
     soundsName[BombExplodingSound] = "ahhh-for-donbass.wav";
     soundsName[hitSound] = "ay-i-got-sniped-in-flight.wav";
+    SoundAndMusicArray[0] = musicName[HintergroundMusic];
+    SoundAndMusicArray[1] = musicName[StartMusic];
+    SoundAndMusicArray[2] = soundsName[BombExplodingSound];
+    SoundAndMusicArray[3] = soundsName[hitSound];
     sound sounds(soundsName, 2);
     sound music(musicName, 2);
+    if (!alutInit (&soundCount, SoundAndMusicArray))
+    {
+      ALenum error = alutGetError ();
+      fprintf (stderr, "%s\n", alutGetErrorString (error));
+      exit (EXIT_FAILURE);
+    }
     colors Color;
     struct timeval timeout;
     object MessangeFrom; 

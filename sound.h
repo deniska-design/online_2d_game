@@ -23,12 +23,6 @@ sound::sound(char **filenames, int fileCount)
     sounds = new (char*);
     sounds = filenames;
     soundCount = fileCount;
-    if (!alutInit (&soundCount, sounds))
-    {
-      ALenum error = alutGetError ();
-      fprintf (stderr, "%s\n", alutGetErrorString (error));
-      exit (EXIT_FAILURE);
-    }
 }
 
 const void sound::playSound (const char *fileName)
