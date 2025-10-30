@@ -25,9 +25,9 @@ enum
     AffectedAreaYCoefficient    = 1,
 
     HintergroundMusic           = 0,
-    BombExplodingMusic          = 1,
-    StartMusic                  = 2,
-    hitSound                    = 3
+    StartMusic                  = 1,
+    BombExplodingSound          = 0,
+    hitSound                    = 1
 };
 
 typedef enum 
@@ -161,12 +161,14 @@ void StartWindow()
 }
 int main()      //проблема с бомбами: игра прорисовует их появление и взрыв только когда игрок ходит
 {    
-    char **musicName = new (char*[5]);
+    char **soundsName = new (char*);
+    char **musicName = new (char*);
     musicName[HintergroundMusic] = "tututu.wav";
-    musicName[BombExplodingMusic] = "ahhh-for-donbass.wav";
     musicName[StartMusic] = "damn-why-did-i-come-here.wav";
-    musicName[hitSound] = "ay-i-got-sniped-in-flight.wav";
-    sound music(musicName, 4);
+    soundsName[BombExplodingSound] = "ahhh-for-donbass.wav";
+    soundsName[hitSound] = "ay-i-got-sniped-in-flight.wav";
+    sound sounds(soundsName, 3);
+    sound music(musicName, 1);
     colors Color;
     struct timeval timeout;
     object MessangeFrom; 
@@ -328,7 +330,7 @@ int main()      //проблема с бомбами: игра прорисов�
                 refresh(); 
             }else if (Object.getType() == BombType)
             {
-                music.playSound(musicName[BombExplodingMusic]);
+                sounds.playSound(soundsName[BombExplodingSound]);
                 Bomb.setPosition(Object.GetY(), Object.GetX());
                 bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);  
                 refresh();
@@ -341,7 +343,7 @@ int main()      //проблема с бомбами: игра прорисов�
                             if(Player.GetY() < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                             {
                                 Player.GetHP()--;
-                                music.playSound(musicName[hitSound]);
+                                sounds.playSound(soundsName[hitSound]);
                             }
                         }
                     }
