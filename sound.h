@@ -14,7 +14,7 @@ class sound
 public:
     sound(char **filenames, int fileCount);
     const void playSound (const char *fileName);
-    const void stopSound ();
+    const void stopSound (const char *fileName);
     const bool IsSoundPLaying();
     ~sound();
 };
@@ -60,9 +60,21 @@ const void sound::playSound (const char *fileName)
   }
 }
 
-const void sound::stopSound()
+const void sound::stopSound(const char *fileName)
 {
-  alSourceStop  (source);
+  buffer = alutCreateBufferFromFile (fileName);
+  if (buffer == AL_NONE)
+  {
+    error = alutGetError ();
+    fprintf (stderr, "Error loading file: '%s'\n",
+              alutGetErrorString (error));
+    alutExit ();
+    exit (EXIT_FAILURE);
+  }
+
+  alGenSources (1, &source);
+  alSourcei (source, AL_BUFFER, buffer);
+  alSourceStop (source);
 }
 
 const bool sound::IsSoundPLaying()
