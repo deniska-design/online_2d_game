@@ -166,7 +166,10 @@ int main()      //проблема с бомбами: игра прорисов�
     musicName[BombExplodingMusic] = "ahhh-for-donbass.wav";
     musicName[StartMusic] = "damn-why-did-i-come-here.wav";
     musicName[hitSound] = "ay-i-got-sniped-in-flight.wav";
-    sound music(musicName, 4);
+    sound HintergroundMus(musicName, 4);
+    sound BombExplodingMus(musicName, 4);
+    sound StartMus(musicName, 4);
+    sound hitSou(musicName, 4);
     colors Color;
     struct timeval timeout;
     object MessangeFrom; 
@@ -201,7 +204,7 @@ int main()      //проблема с бомбами: игра прорисов�
 
     StartWindow();
     start_color();
-    music.playSound(musicName[StartMusic]);
+    StartMus.playSound(musicName[StartMusic]);
 
     init_pair(NothingColor, COLOR_BLACK, COLOR_BLACK);
     init_pair(PlayerColor, COLOR_YELLOW, COLOR_BLACK);
@@ -328,8 +331,7 @@ int main()      //проблема с бомбами: игра прорисов�
                 refresh(); 
             }else if (Object.getType() == BombType)
             {
-                music.stopSound(musicName[HintergroundMusic]);
-                music.playSound(musicName[BombExplodingMusic]);
+                BombExplodingMus.playSound(musicName[BombExplodingMusic]);
                 Bomb.setPosition(Object.GetY(), Object.GetX());
                 bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);  
                 refresh();
@@ -342,7 +344,7 @@ int main()      //проблема с бомбами: игра прорисов�
                             if(Player.GetY() < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                             {
                                 Player.GetHP()--;
-                                music.playSound(musicName[hitSound]);
+                                hitSou.playSound(musicName[hitSound]);
                             }
                         }
                     }
@@ -371,10 +373,9 @@ int main()      //проблема с бомбами: игра прорисов�
             }
             MustSend = false;
         } 
-        if (!music.IsSoundPLaying())
+        if (!HintergroundMus.IsSoundPLaying())
         {
-            mvprintw(Player.GetY(), Player.GetX(), "HintergroundMusic is ended");
-            music.playSound(musicName[HintergroundMusic]);
+            HintergroundMus.playSound(musicName[HintergroundMusic]);
         }
         
         //конец
