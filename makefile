@@ -1,5 +1,5 @@
 game: client.cpp server.cpp;
-	g++ -Wall -g client.cpp -o client -lncurses -lopenal -l openal -lalut
+	g++ -Wall -g client.cpp -o client -lncurses -lopenal -lalut
 	g++ -Wall -g server.cpp -o server -lncurses
 clean: 
 	rm -f client

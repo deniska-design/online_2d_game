@@ -14,6 +14,7 @@ class sound
 public:
     sound(char **filenames, int fileCount);
     const void playSound (const char *fileName);
+    const void stopSound ();
     const bool IsSoundPLaying();
     ~sound();
 };
@@ -36,13 +37,13 @@ const void sound::playSound (const char *fileName)
   /* Create an AL buffer from the given sound file. */
   buffer = alutCreateBufferFromFile (fileName);
   if (buffer == AL_NONE)
-    {
-      error = alutGetError ();
-      fprintf (stderr, "Error loading file: '%s'\n",
-               alutGetErrorString (error));
-      alutExit ();
-      exit (EXIT_FAILURE);
-    }
+  {
+    error = alutGetError ();
+    fprintf (stderr, "Error loading file: '%s'\n",
+              alutGetErrorString (error));
+    alutExit ();
+    exit (EXIT_FAILURE);
+  }
 
   /* Generate a single source, attach the buffer to it and start playing. */
   alGenSources (1, &source);
@@ -52,11 +53,16 @@ const void sound::playSound (const char *fileName)
   /* Normally nothing should go wrong above, but one never knows... */
   error = alGetError ();
   if (error != ALUT_ERROR_NO_ERROR)
-    {
-      fprintf (stderr, "%s\n", alGetString (error));
-      alutExit ();
-      exit (EXIT_FAILURE);
-    }
+  {
+    fprintf (stderr, "%s\n", alGetString (error));
+    alutExit ();
+    exit (EXIT_FAILURE);
+  }
+}
+
+const void sound::stopSound()
+{
+  alSourceStop  (source);
 }
 
 const bool sound::IsSoundPLaying()
