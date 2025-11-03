@@ -1,6 +1,4 @@
 make.exe all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.4.1
 # Built for x86_64-w64-mingw32
 # Copyright (C) 1988-2023 Free Software Foundation, Inc.
@@ -8,7 +6,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Oct 29 13:55:11 2025
+# Make data base, printed on Mon Nov 03 19:28:14 2025
 
 # Variables
 
@@ -23,8 +21,6 @@ USERPROFILE = C:\Users\denis
 # environment
 LOCALAPPDATA = C:\Users\denis\AppData\Local
 # environment
-EFC_10088_1262719628 = 1
-# environment
 VSCODE_CRASH_REPORTER_PROCESS_TYPE = extensionHost
 # environment
 VSCODE_CWD = C:\Users\denis\Desktop\Microsoft VS Code
@@ -32,6 +28,8 @@ VSCODE_CWD = C:\Users\denis\Desktop\Microsoft VS Code
 CHOCOLATEYINSTALL = C:\ProgramData\chocolatey
 # environment
 SYSTEMROOT = C:\WINDOWS
+# environment
+EFC_6920_2283032206 = 1
 # environment
 PROCESSOR_LEVEL = 23
 # environment
@@ -41,9 +39,7 @@ MAKE_COMMAND := make.exe
 # automatic
 @D = $(patsubst %/,%,$(patsubst %\,%,$(dir $@)))
 # environment
-CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_11940_IRXAWTNMPDCZMBKF
-# environment
-EFC_10088_1592913036 = 1
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_13436_RQLKUHHBRKVQLQXI
 # environment
 FPS_BROWSER_USER_PROFILE_STRING = Default
 # environment
@@ -70,6 +66,8 @@ TMP = C:\Users\denis\AppData\Local\Temp
 MAKEFLAGS = pqrR
 # environment
 ONEDRIVE = C:\Users\denis\OneDrive
+# environment
+EFC_6920_3789132940 = 1
 # makefile
 CURDIR := c:/Users/denis/Desktop/vrotebalc++/progs/online_2d_game
 # environment
@@ -88,12 +86,12 @@ COMMONPROGRAMW6432 = C:\Program Files\Common Files
 +D = $(patsubst %/,%,$(patsubst %\,%,$(dir $+)))
 # makefile (from 'makefile', line 1)
 MAKEFILE_LIST := makefile
-# environment
-EFC_10088_2283032206 = 1
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 11940
+VSCODE_PID = 13436
+# environment
+EFC_6920_2775293581 = 1
 # automatic
 ?D = $(patsubst %/,%,$(patsubst %\,%,$(dir $?)))
 # automatic
@@ -131,13 +129,13 @@ MAKEFILES :=
 # automatic
 ^F = $(notdir $^)
 # environment
+EFC_6920_1592913036 = 1
+# environment
 PROMPT = $P$G
 # environment
 CHOCOLATEYLASTPATHUPDATE = 133551722216430636
 # environment
 LOGONSERVER = \\DENCHIK
-# environment
-EFC_10088_3789132940 = 1
 # environment
 USERNAME = denis
 # environment
@@ -146,6 +144,8 @@ COMMONPROGRAMFILES = C:\Program Files\Common Files
 ?F = $(notdir $?)
 # environment
 PROGRAMW6432 = C:\Program Files
+# environment
+EFC_6920_1262719628 = 1
 # environment
 PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
 # automatic
@@ -175,8 +175,6 @@ APPDATA = C:\Users\denis\AppData\Roaming
 # environment
 HOMEDRIVE = C:
 # environment
-EFC_10088_2775293581 = 1
-# environment
 PROCESSOR_ARCHITECTURE = AMD64
 # environment
 COMMONPROGRAMFILES(X86) = C:\Program Files (x86)\Common Files
@@ -203,7 +201,10 @@ PROCESSOR_REVISION = 6801
 # environment
 VSCODE_ESM_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
-PROCESSOR_IDENTIFIER = AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD
+PROCE 
+make: *** No rule to make target 'all'.  Stop.
+
+SSOR_IDENTIFIER = AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD
 # variable set hash-table stats:
 # Load=96/1024=9%, Rehash=0, Collisions=9/123=7%
 
@@ -213,9 +214,9 @@ PROCESSOR_IDENTIFIER = AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD
 
 # Directories
 
-# . (key c:/Users/denis/Desktop/vrotebalc++/progs/online_2d_game, mtime 1761668948): 15 files, no impossibilities.
+# . (key c:/Users/denis/Desktop/vrotebalc++/progs/online_2d_game, mtime 1761836627): 21 files, no impossibilities.
 
-# 15 files, no impossibilities in 1 directories.
+# 21 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -229,7 +230,7 @@ game: client.cpp server.cpp
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 1):
 	
-	g++ -Wall -g client.cpp -o client -lncurses -lopenal -l openal -lalut
+	g++ -Wall -g client.cpp -o client -lncurses -lopenal -lalut
 	g++ -Wall -g server.cpp -o server -lncurses
 
 update:
@@ -266,7 +267,7 @@ all:
 makefile:
 #  Implicit rule search has been done.
 #  File is secondary (prerequisite of .SECONDARY).
-#  Last modified 2025-10-28 17:27:24
+#  Last modified 2025-10-30 14:36:25
 #  File has been updated.
 #  Successfully updated.
 
@@ -290,12 +291,12 @@ client.cpp:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 21 / storage = 152 B / avg = 7 B
-# current buf: size = 8162 B / used = 152 B / count = 21 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 27 / storage = 261 B / avg = 9 B
+# current buf: size = 8162 B / used = 261 B / count = 27 / avg = 9 B
 
-# strcache performance: lookups = 30 / hit rate = 30%
+# strcache performance: lookups = 36 / hit rate = 25%
 # hash-table stats:
-# Load=21/8192=0%, Rehash=0, Collisions=0/30=0%
-# Finished Make data base on Wed Oct 29 13:55:11 2025
+# Load=27/8192=0%, Rehash=0, Collisions=0/36=0%
+# Finished Make data base on Mon Nov 03 19:28:14 2025
 
  
