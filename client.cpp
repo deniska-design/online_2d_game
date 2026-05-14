@@ -5,66 +5,80 @@
 #include <cstdio>
 #include <unistd.h>
 #include <ncurses.h>
-#include <variant>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
+#include "sound.h"
 #include "vector.h"
 #include "player.h"
 #include "bomb.h"
 #include "time.h"
 
-
-using namespace std;
+const char *ServerIp = "192.168.1.120";
+int ServPort = 10;
 
 enum
 {
-    AffectedArea = 15,
-    AffectedAreaXCoefficient = 2,
-    AffectedAreaYCoefficient = 1,
+    AffectedArea                = 15,
+    AffectedAreaXCoefficient    = 2,
+    AffectedAreaYCoefficient    = 1,
+
+    HintergroundMusic           = 0,
+    StartMusic                  = 1,
+    BombExplodingSound          = 0,
+    hitSound                    = 1
 };
 
 typedef enum 
 {
-    firstStation = 1,
-    SecondStation = 2,
-    ThirdStation = 3,
-    lastStation = 4,
+    firstStation    = 1,
+    SecondStation   = 2,
+    ThirdStation    = 3,
+    lastStation     = 4,
 }stations;
 
-const char *ServerIp = "192.168.1.120";
-int ServPort = 10;
+typedef enum
+{
+    NothingColor    = 1,
+    PlayerColor     = 2,
+    BombColor       = 3,
+    HPColor         = 4,
+}colors;
 
 struct sockaddr_in FillAddr(struct sockaddr_in ServAddr, const char *ip, int ServPort)
 {
-	ServAddr.sin_family = AF_INET;
-   	ServAddr.sin_port = htons(ServPort);
+  ServAddr.sin_family = AF_INET;
+     ServAddr.sin_port = htons(ServPort);
     if (!inet_aton(ip, &(ServAddr.sin_addr)))
-	{
+  {
         printf("ошибка: %d", errno);
         errno = -1;
-		return ServAddr;
-	}
-	return ServAddr;
+    return ServAddr;
+  }
+  return ServAddr;
 }
 
 int CreateAndConnectTo(struct sockaddr_in ServAddr)
 {
-	int sd;
-	if((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-	{
+  int sd;
+  if((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+  {
         printf("ошибка: %d", errno);
-		return -1;
-	}
+    return -1;
+  }
 
     if (-1 == (connect(sd, (struct sockaddr *)&ServAddr, sizeof(ServAddr))))
     {   
         printf("ошибка: %d", errno);
         return -1;
     }
-	return sd;
+  return sd;
 }
 
-bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime)       //если timeInterval сделать слишком коротким будет работатьт не праивльно
+bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int waitingTime, int ExplodeColor)       
 {
+    attrset(COLOR_PAIR(ExplodeColor));
     static bool BombExploded;
     static stations station = firstStation;
     switch (station)
@@ -129,14 +143,12 @@ bool explode(int BombPositionY, int BombPositionX, Vector PositionBorders, int w
     return BombExploded;
 }
 
-int SetFdss(int fd1, int fd2, fd_set &readfds, fd_set &writefds)
+int SetFdss(int fd1, int fd2, fd_set &readfds)
 {
-	FD_ZERO(&readfds);
-	FD_SET(fd1, &readfds);
+    FD_ZERO(&readfds);
+    FD_SET(fd1, &readfds);
     FD_SET(fd2, &readfds);
-    FD_SET(fd1, &writefds);
-    FD_SET(fd2, &writefds);
-	return 0;
+  return 0;
 }
 
 void StartWindow()
@@ -147,18 +159,39 @@ void StartWindow()
     noecho();
     curs_set(0);
 }
-
-int main()
+int main()      //проблема с бомбами: игра прорисовует их появление и взрыв только когда игрок ходит
 {    
+    int soundCount = 4;
+    char **soundsName = new (char*);
+    char **musicName = new (char*);
+    char **SoundAndMusicArray = new (char*[soundCount]);
+    musicName[HintergroundMusic] = "tututu.wav";
+    musicName[StartMusic] = "damn-why-did-i-come-here.wav";
+    soundsName[BombExplodingSound] = "ahhh-for-donbass.wav";
+    soundsName[hitSound] = "ay-i-got-sniped-in-flight.wav";
+    SoundAndMusicArray[0] = musicName[HintergroundMusic];
+    SoundAndMusicArray[1] = musicName[StartMusic];
+    SoundAndMusicArray[2] = soundsName[BombExplodingSound];
+    SoundAndMusicArray[3] = soundsName[hitSound];
+    sound sounds(soundsName, 2);
+    sound music(musicName, 2);
+    if (!alutInit (&soundCount, SoundAndMusicArray))
+    {
+      ALenum error = alutGetError ();
+      fprintf (stderr, "%s\n", alutGetErrorString (error));
+      exit (EXIT_FAILURE);
+    }
+    colors Color;
+    struct timeval timeout;
     object MessangeFrom; 
-    Vector messangeFor; 
-    Vector PositionBorders, position;
-    object Object(DefaultHigh, DefaultWidth, position);
-    object Bomb(DefaultBombHigh, DefaultBombWidth, position);
-    bool MustSend = false, bombExploding = false;
+    Vector PositionBorders;
+    object Object;
+    player Player;
+    bomb Bomb;
+    bool MustSend = false, bombExploding = false, MustShowObject;
     int sd, MaxD, SelRes, ReadBytes, key;
     struct sockaddr_in ServAddr;
-    fd_set readfds, writefds;
+    fd_set readfds;
     FD_ZERO(&readfds);
     
     ServAddr = FillAddr(ServAddr, ServerIp, ServPort);
@@ -177,19 +210,32 @@ int main()
         printf( "while connect read error:%d\n", errno);
         return(-1);
     }
-
+    
     MaxD = sd;
 
     StartWindow();
+    start_color();
+    music.playSound(musicName[StartMusic]);
+
+    init_pair(NothingColor, COLOR_BLACK, COLOR_BLACK);
+    init_pair(PlayerColor, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(BombColor, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(HPColor, COLOR_RED, COLOR_BLACK);
 
     getmaxyx(stdscr, PositionBorders.y, PositionBorders.x);
 
+    Player.setStatue(alive);
+    Player.setPosition(PositionBorders.y/2, PositionBorders.x/2);
+    Object = Player;
+    MustShowObject = true;
+    MustSend = true;
     //начало бесконечного цыкла
 
     while (true)
     {
-        SetFdss(sd, STDIN_FILENO, readfds, writefds);
-        if ((SelRes = select(MaxD+1, &readfds, &writefds, NULL, NULL)) == -1)
+        SetFdss(sd, STDIN_FILENO, readfds);
+        timeout.tv_usec = 333333;
+        if ((SelRes = select(MaxD+1, &readfds, NULL, NULL, &timeout)) < 0)
         {
             if (errno != EINTR)
             {
@@ -201,126 +247,148 @@ int main()
                 break;
             }
             continue;
-        }
-         
-        if (FD_ISSET(STDIN_FILENO, &writefds))
+        }else if (SelRes > 0)
         {
-            if(bombExploding)
+            //общение с клиентом:
+            if(FD_ISSET(STDIN_FILENO, &readfds))
             {
-                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);
+
+                if (10 != (key = getch()))
+                {   
+                    switch (key)
+                    {
+                    case KEY_UP:
+                        if(Player.GetY()-1 > 0)
+                        {
+                            Player.GetY()--;
+                            MustSend = true;
+                        }
+                        break;
+                    case KEY_RIGHT:
+                        if(Player.GetX()+DefaultWidth+1< PositionBorders.x)
+                        {
+                            Player.GetX()++;
+                            MustSend = true;
+                        }
+                        break;
+                    case KEY_LEFT:
+                        if(Player.GetX()-1 > 0)
+                        {
+                            Player.GetX()--;
+                            MustSend = true;
+                        }
+                        break;
+                    case KEY_DOWN:
+                        if(Player.GetY()+DefaultHigh+1 < PositionBorders.y)
+                        {
+                            Player.GetY()++;
+                            MustSend = true;
+                        }
+                        break;
+                    default:
+                        break;
+                    } 
+                    if(MustSend)
+                    {
+                        Player.setStatue(alive);
+                        Object = Player;
+                        MustShowObject = true;
+                    }
+                }else break;
             }
-        }
 
-        //общение с клиентом:
-        if(FD_ISSET(STDIN_FILENO, &readfds))
-        {
+            //конец
 
-            if (10 != (key = getch()))
-            {   
-                switch (key)
-                {
-                case KEY_UP:
-                    if(position.y > 0)
-                    {
-                        position.y--;
-                        MustSend = true;
-                    }
+            //начало прямого общения с сервиром:
+            if(FD_ISSET(sd, &readfds))
+            {
+                if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
+                {   
+                    printf( "read error:%d\n", errno);
                     break;
-                case KEY_RIGHT:
-                    if(position.x+DefaultWidth < PositionBorders.x)
-                    {
-                        position.x++;
-                        MustSend = true;
-                    }
-                    break;
-                case KEY_LEFT:
-                    if(position.x > 0)
-                    {
-                        position.x--;
-                        MustSend = true;
-                    }
-                    break;
-                case KEY_DOWN:
-                    if(position.y+DefaultHigh < PositionBorders.y)
-                    {
-                        position.y++;
-                        MustSend = true;
-                    }
-                    break;
-                default:
-                    break;
-                } 
-                if(MustSend)
-                {
-                    messangeFor = position;
-                    Object.GetHigh() = DefaultHigh;
-                    Object.GetWidth() = DefaultWidth;
-                    Object.setType(PlayerType);
-                    Object.setPosition(position.y, position.x);
-                    Object.Hide();
-                    Object.Show();
                 }
-                
-            }else break;
-        }
-
-        //конец
-
-        //начало прямого общения с сервиром:
-
-        if(FD_ISSET(sd, &readfds))
+                else if(ReadBytes == 0)
+                {
+                    printf("novogo goda ne bydet, idi nahyi\n");
+                    break;
+                }
+                Object = MessangeFrom;
+                MustShowObject = true;
+            }
+        }else if(SelRes == 0)
         {
-            if (0 > (ReadBytes = read(sd, &MessangeFrom, sizeof(MessangeFrom))))
-            {   
-                printf( "read error:%d\n", errno);
-                break;
-            }
-            else if(ReadBytes == 0)
+            if(MustShowObject == false)
             {
-                close(sd);
-                endwin();
-                printf( "novogo goda ne bydet, idi nahyi\n");
-                return(1);
+                Player.setStatue(alive);
+                Object = Player;
+                MustShowObject = true;
+                timeout.tv_usec = 333333;
             }
-            Object = MessangeFrom;
-            Object.Hide();
+        } 
+        if(MustShowObject)
+        {
+            Object.Hide(NothingColor);
             if (Object.getStatue() == active) 
             {
-                Object.Show();
-            }
-            else if (Object.getType() == BombType)
-            {
-                if (Object.getStatue() == exploded) 
+                if (Object.getType() == PlayerType)
                 {
-                    Bomb.GetY() = Object.GetY();
-                    Bomb.GetX() = Object.GetX();
-                    bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1);  
-                    if(position.x > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
+                    Color = PlayerColor;
+                    Player.showHP(Player.GetY()-1, Player.GetX()-1, HPColor);
+                }else if (Object.getType() == BombType)
+                {
+                    Color = BombColor;
+                }
+                Object.Show(Color); 
+                refresh(); 
+            }else if (Object.getType() == BombType)
+            {
+                sounds.playSound(soundsName[BombExplodingSound]);
+                Bomb.setPosition(Object.GetY(), Object.GetX());
+                bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);  
+                refresh();
+                if(Player.GetX() > Bomb.GetX() - AffectedArea*AffectedAreaXCoefficient)
+                {
+                    if(Player.GetX() < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
                     {
-                        if(position.x < Bomb.GetX() + AffectedArea*AffectedAreaXCoefficient)
+                        if(Player.GetY() > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
                         {
-                            if(position.y > Bomb.GetY() - AffectedArea*AffectedAreaYCoefficient)
+                            if(Player.GetY() < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
                             {
-                                if(position.y < Bomb.GetY() + AffectedArea*AffectedAreaYCoefficient)
-                                {
-                                    break;
-                                }
+                                Player.GetHP()--;
+                                sounds.playSound(soundsName[hitSound]);
                             }
                         }
                     }
                 }
             }
+            MustShowObject = false;
+        }
+
+        if(Player.GetHP() == 0)
+        {
+            break;
+        }
+
+        if(bombExploding)
+        {
+            bombExploding = !explode(Bomb.GetY(), Bomb.GetX(), PositionBorders, 1, BombColor);
+            refresh();
         }
 
         if (MustSend)
         {
-            if(write(sd, &messangeFor, sizeof(messangeFor)) == -1)
+            if(write(sd, &Player, sizeof(Player)) == -1)
             {
                 printf("ошибка: %d", errno);
                 break;
             }
             MustSend = false;
         } 
+        if (!music.IsSoundPLaying())
+        {
+            music.playSound(musicName[HintergroundMusic]);
+        }
+        
         //конец
         refresh();
     }

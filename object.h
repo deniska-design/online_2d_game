@@ -10,6 +10,7 @@ enum
     
     DefaultPositionX= 0,
     DefaultPositionY= 0,
+    
     DefaultHigh     = 5,
     DefaultWidth    = 2,
 };
@@ -31,8 +32,8 @@ protected:
 public:
     object();
     object(int objectH, int objectW, Vector NewPosition);
-    void Show() const;
-    void Hide() const;
+    void Show(int color) const;
+    void Hide(int color) const;
     int &GetY();
     int &GetX();
     int &GetHigh();
@@ -60,8 +61,9 @@ object::object(int PlayerH, int PlayerW, Vector NewPosition)
     statue = disactiv;
 }
 
-void object::Show() const
+void object::Show(int color) const
 {
+    attrset(COLOR_PAIR(color));
     for(int i = position.y; i < position.y + High; i++)
     {
         for (int n = position.x; n < position.x + Width; n++)
@@ -72,11 +74,12 @@ void object::Show() const
     }
 }
 
-void object::Hide() const
+void object::Hide(int color) const
 {
-    for (int i = position.y-1; i < position.y + High+1; i++)
+    attrset(COLOR_PAIR(color));
+    for (int i = position.y-3; i < position.y + High+3; i++)
     {
-        for (int n = position.x-1; n < position.x + Width+1; n++)
+        for (int n = position.x-3; n < position.x + Width+3; n++)
         {
             move(i, n);
             addch(' ');
