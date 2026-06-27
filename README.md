@@ -31,10 +31,10 @@ Installation, Configuration & Compilation:
 Clone this repository to all devices participating in the game session:
 
 ```
-git clone [https://github.com/username/project.git](https://github.com/username/project.git)
+git clone https://github.com/deniska-design/online_2d_game.git
 ```
 ```
-cd project
+cd online_2d_game
 ```
 
 2. Network Configuration
