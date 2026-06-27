@@ -32,6 +32,8 @@ Clone this repository to all devices participating in the game session:
 
 ```
 git clone [https://github.com/username/project.git](https://github.com/username/project.git)
+```
+```
 cd project
 ```
 
@@ -61,7 +63,9 @@ Next, launch the client binary on each player's machine:
 
 ---
 
-Usage:
+Execution:
+
+https://github.com/user-attachments/assets/ad4e8f01-a018-4159-b4e2-0784c25dd672
 
 ---
 
