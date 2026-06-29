@@ -6,13 +6,13 @@ A minimalist, high-performance 2D multiplayer game running entirely inside the t
 
 Features:
 
-Real-Time Multiplayer: Multiple users can connect to the central game server simultaneously, move across the map, and instantly see each other's actions in real time.
-Dynamic Audio Feedback: Integrated audio engine triggered by key game events:
-Play sound when a new player joins the session.
-Bomb explosion sound effect.
-Hit registration sound effect when a player gets caught in the blast area[cite: 3].
-High Optimization (Doubly Linked List): The active player pool on the server is handled via a doubly linked list structure, allowing for rapid player instantiation/cleanup upon connect or disconnect with minimal memory overhead.
-HP & Combat Mechanics:Every player starts with 3 Health Points. Current HP is rendered directly above the player character model in real time[cite: 3, 7]. Getting caught inside the bomb blast area reduces the player's health by 1 HP. Once a player's HP reaches 0, they die and disconnect.
+* **Real-Time Multiplayer:** Multiple users can connect to the central game server simultaneously, move across the map, and instantly see each other's actions in real time.
+* **Dynamic Audio Feedback:** Integrated audio engine triggered by key game events:
+  * Play sound when a new player joins the session.
+  * Bomb explosion sound effect.
+  * Hit registration sound effect when a player gets caught in the blast area.
+* **High Optimization (Doubly Linked List):** The active player pool on the server is handled via a doubly linked list structure, allowing for rapid player instantiation/cleanup upon connect or disconnect with minimal memory overhead.
+* **HP & Combat Mechanics:** Every player starts with 3 Health Points (HP). Current HP is rendered directly above the player character model in real time. Getting caught inside the bomb blast area reduces the player's health by 1 HP. Once a player's HP reaches 0, they die and disconnect.
 
 ---
 
@@ -20,8 +20,8 @@ Requirements & Dependencies:
 
 To successfully compile and run the project, your system must have the following development libraries installed:
 
-1. ncurses — Handles terminal manipulation, window context management, and 2D character-based rendering.
-2. OpenAL & ALUT (OpenAL Utility Toolkit) — Power the underlying audio engine, handling `.wav` asset buffering and real-time audio playback execution.
+1. **ncurses** — Handles terminal manipulation, window context management, and 2D character-based rendering.
+2. **OpenAL & ALUT (OpenAL Utility Toolkit)** — Power the underlying audio engine, handling `.wav` asset buffering and real-time audio playback execution.
 
 ---
 
